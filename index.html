@@ -640,9 +640,9 @@ loadImage(logoBlack, LOGO_B);
 loadImage(distImg, DIST);
 
 const HEADPHONES_IMG = 'https://cdn.shopify.com/s/files/1/1194/9120/files/Reading_Stats_Graphic_3a514f4f-e8ea-4abd-a6a0-f309efcf5c71.png?v=1780954048';
-
 const headphonesImg = new Image();
-loadImage(headphonesImg, HEADPHONES_IMG);
+headphonesImg.crossOrigin = 'anonymous';
+headphonesImg.src = HEADPHONES_IMG;
 
 // Detect unit from locale/timezone
 function detectUnit(){
@@ -1422,58 +1422,37 @@ function drawCard(canvas,forExport){
 let _renderTimer = null;
 let _inputFocused = false;  // suppress renders while keyboard is open on Android
 
-let _renderTimer = null;
-
-function renderDebounced() {
-
-  clearTimeout(_renderTimer);
-
-  if (isMobile) {
-
-    _renderTimer = setTimeout(() => {
-      try {
-        render();
-      } catch (err) {
-        console.error('Render error:', err);
-      }
-    }, 100);
-
+function renderDebounced(){
+  if(isMobile){
+    if(_inputFocused) return; // don't render while keyboard is open
+    clearTimeout(_renderTimer);
+    _renderTimer = setTimeout(render, 300);
   } else {
-
     render();
-
   }
 }
 
 function render(){
-  try {
-
-    const wrap = document.getElementById('canvas-wrap');
-
-    if(S.bgOn){
-      if(S.bgType==='color'){
-        wrap.style.background=S.bgSrc;
-        wrap.style.backgroundImage='none';
-      } else {
-        wrap.style.background='';
-        wrap.style.backgroundImage=`url(${S.bgSrc})`;
-        wrap.style.backgroundSize='cover';
-        wrap.style.backgroundPosition='center';
-      }
-      wrap.classList.remove('checker');
+  const wrap=document.getElementById('canvas-wrap');
+  if(S.bgOn){
+    if(S.bgType==='color'){
+      wrap.style.background=S.bgSrc;
+      wrap.style.backgroundImage='none';
     } else {
       wrap.style.background='';
-      wrap.style.backgroundImage='';
-      wrap.style.backgroundSize='';
-      wrap.style.backgroundPosition='';
-      wrap.classList.add('checker');
+      wrap.style.backgroundImage=`url(${S.bgSrc})`;
+      wrap.style.backgroundSize='cover';
+      wrap.style.backgroundPosition='center';
     }
-
-    drawCard(document.getElementById('c'), false);
-
-  } catch(err) {
-    console.error('Render failed:', err);
+    wrap.classList.remove('checker');
+  } else {
+    wrap.style.background='';
+    wrap.style.backgroundImage='';
+    wrap.style.backgroundSize='';
+    wrap.style.backgroundPosition='';
+    wrap.classList.add('checker');
   }
+  drawCard(document.getElementById('c'),false);
 }
 
 function fireConfetti(){
@@ -1744,22 +1723,16 @@ window.addEventListener('resize', () => {
 
 // Track focus state across all inputs — suppress renders while keyboard is open on Android
 const _allInputs = document.querySelectorAll('input, textarea');
-
 _allInputs.forEach(inp => {
-
-  inp.addEventListener('input', () => {
-    renderDebounced();
+  inp.addEventListener('focus', () => {
+    _inputFocused = true;
   });
-
-  inp.addEventListener('change', () => {
-    renderDebounced();
-  });
-
   inp.addEventListener('blur', () => {
+    _inputFocused = false;
+    // Render once after keyboard closes
     clearTimeout(_renderTimer);
-    _renderTimer = setTimeout(render, 100);
+    _renderTimer = setTimeout(render, 400);
   });
-
 });
 
 // Re-match when bg toggle changes (swatch row adds height to form)
