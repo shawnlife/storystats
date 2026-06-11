@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StoryStats</title>
+<!-- StoryStats v5.53 -->
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
+<meta name="apple-mobile-web-app-title" content="StoryStats">
+<meta property="og:title" content="StoryStats — Share Your Reading Session">
+<meta property="og:description" content="Log your reading session and download a personalised stats card to share on Instagram. Perfect for Silent Book Club sessions.">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/1194/9120/files/Preview_Image.jpg?v=1777367692">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/1194/9120/files/Preview_Image.jpg?v=1777367692">
+<meta name="twitter:title" content="StoryStats — Share Your Reading Session">
+<meta name="twitter:description" content="Log your reading session and download a personalised stats card to share on Instagram. Perfect for Silent Book Club sessions.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden;width:100%}
+body{font-family:'Mulish',-apple-system,sans-serif;background:#ffffff;color:#364049;min-height:100dvh}
+
+/* ── PAGE HEADER ───────────────────────────────────────────────────── */
+.page-header{max-width:1100px;margin:0 auto;padding:20px 16px 16px;text-align:center}
+.page-header h1{font-size:22px;font-weight:bold;font-family:'Rosina',serif;letter-spacing:0;margin-bottom:8px;line-height:1.2}
+.page-header p{font-size:13px;line-height:1.6;color:#444;max-width:1100px;margin:0 auto}
+.page-header p strong{color:#364049}
+.brand{font-style:normal;font-weight:900;letter-spacing:-.03em}
+
+.page-intro{max-width:1100px;margin:0 auto 16px;padding:0 16px;font-size:16px;line-height:1.7;color:#444;text-align:center;}
+
+/* ── APP LAYOUT ────────────────────────────────────────────────────── */
+.app{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1100px;margin:0 auto;padding:0 16px;align-items:start}
+
+/* ── PANEL ─────────────────────────────────────────────────────────── */
+.panel{background:#ffffff;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:11px;border:1px solid #e4e1dc}
+.sep{border:none;border-top:1px solid #f0ede8;margin:2px 0}.app hr,.app .sep{margin:2px 0!important;padding:0!important}.app br{display:none}
+.sec{font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#d25343}
+.row{display:flex;flex-direction:column;gap:4px}
+.lbl{font-size:14px;color:#364049;font-weight:600}
+input[type=text],input[type=number],textarea{box-sizing:border-box;width:100%;padding:8px 10px;border:1px solid #e0ddd8;border-radius:8px;font-size:14px;font-family:inherit;outline:none;background:#f0f3f2;color:#364049;transition:border .15s}
+input[type=number].is-default{color:#aaa}
+input[type=text]:focus,input[type=number]:focus,textarea:focus{border-color:#364049;background:#ffffff}
+textarea{resize:none}
+input[type=number]{-moz-appearance:textfield}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pct-wrap{display:grid;grid-template-columns:1fr 14px 1fr calc((100% - 16px) / 3);gap:8px;align-items:end;min-width:0}
+.sec-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0}
+.stats-label-row{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-bottom:4px}
+.mode-switcher{display:flex;gap:10px;justify-content:center;margin:0 0 16px;padding:0 12px}
+.mode-btn{flex:1;max-width:220px;padding:11px 10px;border:2px solid #d25343;border-radius:9px;background:#ffffff;color:#d25343;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;text-align:center;transition:background .15s,color .15s;outline:none}
+.mode-btn.active{background:#d25343;color:#ffffff}
+.mode-btn:hover:not(.active){background:#fdf0ee}
+.sec-with-toggle{display:flex;align-items:center;justify-content:space-between}
+.unit-toggle-wrap{display:flex;align-items:center;gap:2px;background:#f0f3f2;border-radius:6px;padding:2px}
+.unit-btn{padding:3px 8px;border:none;border-radius:4px;background:transparent;color:#767676;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s,color .15s}
+.unit-btn.active{background:#ffffff;color:#d25343;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.ab-stats-label-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px}
+.ab-stats-label-row .lbl:first-child{grid-column:span 2}
+.four-col{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+.ab-preset-inputs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end}
+.unit-toggle-wrap-inline{display:flex;gap:2px;background:#f0f3f2;border-radius:6px;padding:2px;width:100%}
+.unit-btn-lg{flex:1;padding:6px 4px;border:none;border-radius:4px;background:transparent;color:#767676;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s,color .15s}
+.unit-btn-lg.active{background:#ffffff;color:#d25343;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+#ab-unit-col{min-width:70px}
+.hhmm-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:4px;align-items:end}
+.hhmm-sep{font-size:18px;font-weight:700;color:#364049;text-align:center;padding-bottom:6px}
+.upload-box{border:1.5px dashed #d25343;border-radius:10px;padding:10px 12px;text-align:center;cursor:pointer;background:#f0f3f2;position:relative;overflow:hidden;transition:background .15s,border-color .15s;min-height:54px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px}
+.upload-box:hover{border-color:#999;background:#e8eceb}
+.upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;font-size:0}
+.mini{font-size:13px;color:#767676;margin-bottom:3px}
+.or-div{font-size:10px;color:#ccc;font-weight:700;text-align:center;margin-bottom:9px}
+
+/* ── UPLOAD ────────────────────────────────────────────────────────── */
+
+.upload-icon{font-size:20px}
+.upload-hint{font-size:11px;color:#364049;line-height:1.5}
+.upload-dims{font-size:10px;color:#364049}
+.upload-dims{display:none}
+.optional-note{font-size:13px;color:#aaa;margin-bottom:4px}
+
+/* ── CUSTOM STAT ────────────────────────────────────────────────────── */
+.custom-stat-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.custom-stat-toggle-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.custom-stat-toggle-lbl{font-size:13px;color:#767676;font-weight:400;white-space:nowrap}
+.custom-stat-fields{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.preset-btns{display:flex;gap:6px;flex-wrap:wrap}
+.preset-btn{flex:1;min-width:0;padding:7px 4px;border:2px solid #e0ddd8;border-radius:8px;background:#faf9f7;color:#555;font-size:13px;cursor:pointer;text-align:center;font-family:inherit;font-weight:600;transition:background .15s,color .15s,border-color .15s;white-space:nowrap;line-height:1.4;outline:none}
+.preset-btn:focus-visible{box-shadow:0 0 0 2px #d25343}
+.preset-btn.active{background:#ffffff;color:#d25343;border-color:#d25343}
+.preset-btn:hover:not(.active){background:#f0ede8;border-color:#ccc}
+.custom-stat-inputs{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
+.custom-stat-inputs .mini{font-size:13px;color:#767676;margin-bottom:3px}
+.custom-num-wrap{width:88px;flex-shrink:0}
+.custom-stat-instruction{font-size:13px;color:#767676;font-weight:400;margin-bottom:2px}
+.bg-subhead{font-size:14px;font-weight:600;color:#364049;margin-bottom:4px}
+.bg-hint{font-size:13px;color:#767676;line-height:1.5}
+input.is-placeholder{color:#aaa}
+.swatch.swatch-transparent{background:repeating-conic-gradient(#ccc 0% 25%,#fff 0% 50%) 0 0/10px 10px}
+.optional-inline{font-size:11px;color:#aaa;font-weight:400;text-transform:none;letter-spacing:0}
+.upload-thumb{max-height:100px;max-width:100%;object-fit:contain;border-radius:4px;pointer-events:none}
+
+/* ── TOGGLES ───────────────────────────────────────────────────────── */
+.tog-row{display:flex;gap:6px}
+.tog{flex:1;padding:7px 6px;border:2px solid #e0ddd8;border-radius:8px;background:#faf9f7;color:#777;font-size:14px;cursor:pointer;text-align:center;font-family:inherit;transition:background .15s,color .15s,border-color .15s;font-weight:600;outline:none}
+.tog:focus-visible{box-shadow:0 0 0 2px #d25343}
+.tog.active{background:#ffffff;color:#d25343;border-color:#d25343}
+.tog:hover:not(.active){background:#f0ede8;border-color:#ccc}
+.toggle-row{display:flex;align-items:center;gap:10px}
+.toggle-lbl{font-size:11px;color:#666;font-weight:600;flex:1}
+.switch{position:relative;width:38px;height:22px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0;position:absolute}
+.slider{position:absolute;inset:0;background:#ddd;border-radius:11px;cursor:pointer;transition:background .2s}
+.slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch input:checked+.slider{background:#d25343}
+.switch input:checked+.slider:before{transform:translateX(16px)}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;padding:4px 2px;overflow:visible}
+#swatch-row:not([style*="flex"]){margin:0;padding:0}
+.swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s,border-color .15s;flex-shrink:0;box-shadow:0 0 0 1px rgba(0,0,0,0.25)}
+.swatch:hover{transform:scale(1.15)}
+.swatch.active{border-color:#d25343;transform:scale(1.1)}
+
+/* ── CANVAS PANEL ──────────────────────────────────────────────────── */
+.canvas-panel{background:#ffffff;border-radius:14px;padding:16px;border:1px solid #e4e1dc;display:flex;flex-direction:column;gap:10px;box-sizing:border-box;position:sticky;top:16px}
+.canvas-label{font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#d25343}
+.canvas-outer{display:flex;justify-content:center;align-items:center;flex:1;min-height:0}
+.canvas-outer{display:flex;align-items:center;justify-content:center;flex:1;overflow:hidden}
+.canvas-wrap{position:relative;border-radius:8px;overflow:hidden;outline:1px solid rgba(0,0,0,0.15);margin:0 auto;display:block;flex-shrink:0}
+.checker{background:repeating-conic-gradient(#e8e5e0 0% 25%,#f5f3ef 0% 50%) 0 0/14px 14px}
+canvas{display:block;width:100%;height:100%;max-width:100%}
+.dl-btn{width:100%;padding:12px 10px;border:1.5px solid #d25343;border-radius:9px;background:#d25343;color:#fff;font-size:13px;cursor:pointer;font-family:inherit;font-weight:700;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.dl-main{font-size:14px;font-weight:800}
+.dl-sub{font-size:10px;font-weight:400;opacity:0.85;letter-spacing:.01em}
+.dl-btn:hover{background:#b8392a}
+.dl-btn:active{transform:scale(.98)}
+.reset-btn{background:none;border:none;font-size:11px;color:#bbb;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:2px}
+.reset-btn:hover{color:#666}
+
+/* ── SOCIAL INSTRUCTIONS ───────────────────────────────────────────── */
+.help-section{max-width:1100px;margin:12px auto 0;padding:0 16px}
+.help-box{background:#fff;border-radius:14px;padding:20px;border:1px solid #e4e1dc}
+.help-tab-inner{display:grid;grid-template-columns:1fr 228px;gap:27px;align-items:start;padding-right:27px}
+.help-inspo{width:120px;border-radius:8px;object-fit:cover;display:block;margin:0 auto;box-shadow:0 2px 8px rgba(0,0,0,0.12)}
+@media(max-width:825px){.help-tab-inner{grid-template-columns:1fr;padding-right:0;gap:16px}.inspo-gallery{justify-content:flex-start}.inspo-item img{width:80px}}
+.inspo-column{display:flex;flex-direction:column;align-items:center;gap:6px}
+.inspo-gallery{display:flex;gap:8px;flex-direction:row;align-items:flex-start;justify-content:flex-start}
+.inspo-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.inspo-item img{border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.12);transition:transform .15s;width:110px}
+.inspo-item img:hover{transform:scale(1.03)}
+.inspo-caption{font-size:10px;color:#aaa;text-align:center}
+.inspo-video{width:180px;aspect-ratio:9/16;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.12);display:block;object-fit:cover;background:#000}
+@media(max-width:825px){.inspo-video{width:140px}}
+.lightbox-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.lightbox-overlay.open{opacity:1;pointer-events:all}
+.lightbox-overlay img{max-width:100%;max-height:90vh;border-radius:12px;object-fit:contain}
+.help-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:#364049;padding:0;text-align:left}
+.help-toggle:hover{color:#444}
+.help-arrow{font-size:11px;color:#aaa;transition:transform .2s}
+.help-arrow.open{transform:rotate(180deg)}
+.help-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.help-tab{padding:6px 14px;border:1px solid #e0ddd8;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:600;background:#faf9f7;color:#777;transition:all .15s}
+.help-tab.active{background:#d25343;color:#fff;border-color:#d25343}
+.help-content{display:none}
+.help-content.active{display:block}
+.help-content ol{padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.help-content li{font-size:13px;color:#444;line-height:1.5;margin:0!important;padding:0!important}
+.help-content li strong{color:#364049}
+
+/* ── FOOTER ────────────────────────────────────────────────────────── */
+.footer{max-width:1100px;margin:10px auto;padding:0 16px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.footer-copy{font-size:11px;color:#aaa}.footer-shawn{font-size:11px!important;color:#aaa!important;text-decoration:underline;text-underline-offset:2px;font-family:inherit!important;font-weight:normal!important;letter-spacing:normal!important;}
+.footer-links{display:flex;gap:16px}
+.footer-links a,.footer-links button{font-size:11px;color:#364049;text-decoration:underline;text-underline-offset:2px;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
+.footer-links a:hover,.footer-links button:hover{color:#666}
+
+/* ── MODAL ─────────────────────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:999998;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:16px;padding:24px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;position:relative}
+.modal h2{font-size:16px;font-weight:700;margin-bottom:14px}
+.modal p,.modal li{font-size:13px;color:#444;line-height:1.6}
+.modal ul,.modal ol{padding-left:18px;margin:10px 0;display:flex;flex-direction:column;gap:6px}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#888;line-height:1}
+.modal-close:hover{color:#364049}
+.modal h3{font-size:13px;font-weight:700;margin:16px 0 6px}
+
+/* ── CONGRATS MODAL ────────────────────────────────────────────────── */
+.congrats-modal{text-align:center}
+.congrats-modal .emoji{font-size:48px;margin-bottom:12px}
+.congrats-modal h2{font-size:22px;margin-bottom:8px}
+.congrats-modal p{font-size:14px;color:#666;margin-bottom:20px}
+.congrats-modal .dl-btn{max-width:200px;margin:0 auto}
+
+/* ── MOBILE ────────────────────────────────────────────────────────── */
+@media(max-width:825px){
+  .page-header{padding:16px 12px 12px}
+  .page-header h1{font-size:18px}
+  .app{grid-template-columns:1fr;padding:0 12px}
+  .canvas-panel{padding:12px;box-sizing:border-box;height:auto;position:static}
+  .canvas-outer{justify-content:center}
+  .canvas-wrap{max-width:280px;margin:0 auto}
+  .app{align-items:start}
+  .help-tabs{flex-wrap:wrap}
+  .pct-wrap{grid-template-columns:1fr auto 1fr calc((100% - 16px) / 3);gap:8px;align-items:center}
+  .or-div{white-space:nowrap;margin-bottom:9px}
+  .two-col{gap:6px}
+  .help-section{padding:0 12px}
+  .footer{padding:0 12px 16px}
+  .preset-btns{flex-wrap:wrap}
+  .preset-btn{font-size:11px;padding:6px 4px;white-space:normal;line-height:1.3;min-width:calc(50% - 3px);flex:none}
+  #audiobook-presets .preset-btn:last-child:nth-child(odd){margin:0 auto;min-width:calc(50% - 3px)}
+  .ab-stats-label-row .lbl{font-size:12px;word-break:break-word;hyphens:auto}
+}
+
+/* Prevent horizontal overflow globally */
+html,body{max-width:100%;overflow-x:hidden}
+*{min-width:0}
+.app{padding:0 12px}
+.help-section{padding:0 12px}
+.footer{padding:0 12px 16px}
+.page-header{padding:20px 12px 14px}
+</style>
+<!-- Google Analytics — StoryStats property -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGY31RVKFY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-PGY31RVKFY', { page_title: 'StoryStats Generator' });
+  const isPreviewMode = window.location.search.includes('shawn');
+  function trackEvent(name, params){
+    if(isPreviewMode) return;
+    var p = params || {};
+    gtag('event', name, Object.assign({send_to:'G-PGY31RVKFY'}, p));
+  }
+</script>
+</head>
+<body>
+<!-- ── MAIN APP ── -->
+<div class="page-intro">Ever been jealous of runners sharing their workout stats after every run? Now it's readers' turn to celebrate that they sat down with a book today. Log your reading session, download your personalised stats card, add it on top of a picture or video, and share it with the world. Perfect for Silent Book Club sessions or any time you sit down with a good book. Tag <strong>@silentbookclub</strong> on social when you share, and bookmark this page so you can come back after every session.</div>
+
+<div class="mode-switcher">
+  <button class="mode-btn active" id="mode-physical" onclick="setMode('physical')">📖 Physical Book</button>
+  <button class="mode-btn" id="mode-audiobook" onclick="setMode('audiobook')">🎧 Audiobook</button>
+</div>
+<div class="app">
+  <div class="panel">
+    <!-- ── SECTION HEADING (changes by mode) ── -->
+    <div class="sec-with-toggle">
+      <div id="stats-section-heading" class="sec">Reading stats</div>
+    </div>
+
+    <!-- ── PHYSICAL BOOK STATS ── -->
+    <div id="physical-stats">
+      <div class="row">
+        <div class="stats-label-row">
+          <div class="lbl">Pages read</div>
+          <div class="lbl">Time spent reading</div>
+        </div>
+        <div class="three-col">
+          <div><input type="number" id="inp-pages" placeholder="Pages" min="1" class="is-default"></div>
+          <div><input type="number" id="inp-hours" placeholder="Hours" min="0" max="99" class="is-default"></div>
+          <div><input type="number" id="inp-mins" placeholder="Minutes" min="0" max="59" class="is-default"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── AUDIOBOOK STATS ── -->
+    <div id="audiobook-stats" style="display:none;flex-direction:column;gap:11px">
+      <!-- Row 1: Time spent listening + Percent complete -->
+      <div class="row">
+        <div class="ab-stats-label-row">
+          <div class="lbl">Time spent listening</div>
+          <div class="lbl">Percent complete</div>
+        </div>
+        <div class="three-col">
+          <div><input type="number" id="inp-ab-hours" placeholder="Hours" min="0" max="99" class="is-default"></div>
+          <div><input type="number" id="inp-ab-mins" placeholder="Minutes" min="0" max="59" class="is-default"></div>
+          <div><input type="number" id="inp-ab-pct" placeholder="Enter %" min="0" max="100" class="is-default"></div>
+        </div>
+      </div>
+      <!-- Row 2: Custom stat (always visible, no toggle) -->
+      <div class="row">
+        <div class="custom-stat-header">
+          <div class="lbl">Choose your custom stat</div>
+        </div>
+        <div class="custom-stat-instruction">Choose one below, or type your own</div>
+        <div class="preset-btns" id="audiobook-presets">
+          <button class="preset-btn active" data-label="Distance Walked" data-emoji="🚶" id="preset-walked">🚶 Distance Walked</button>
+          <button class="preset-btn" data-label="Distance Driven" data-emoji="🚗" id="preset-driven">🚗 Distance Driven</button>
+          <button class="preset-btn" data-label="Listening Speed" data-emoji="⚡" id="preset-speed">⚡ Listening Speed</button>
+        </div>
+        <!-- Distance selected: stat label | choose units | distance -->
+        <div id="ab-distance-inputs" class="ab-preset-inputs">
+          <div>
+            <div class="mini">Stat label</div>
+            <input type="text" id="inp-ab-custom-label" maxlength="20" placeholder="Distance Walked" autocomplete="off" class="is-placeholder">
+          </div>
+          <div id="ab-unit-col">
+            <div class="mini">Choose units</div>
+            <div class="unit-toggle-wrap-inline">
+              <button class="unit-btn-lg active" id="ab-unit-mi" data-unit="mi">mi</button>
+              <button class="unit-btn-lg" id="ab-unit-km" data-unit="km">km</button>
+            </div>
+          </div>
+          <div id="ab-num-wrap">
+            <div class="mini">Distance</div>
+            <input type="number" id="inp-ab-custom-val" placeholder="0" min="0" step="0.1">
+          </div>
+        </div>
+        <!-- Listening speed: stat label | slider -->
+        <div id="ab-time-inputs" class="ab-preset-inputs" style="display:none">
+          <div>
+            <div class="mini">Stat label</div>
+            <input type="text" id="inp-ab-tr-label" maxlength="20" placeholder="Listening Speed" autocomplete="off" class="is-placeholder">
+          </div>
+          <div style="grid-column:span 2">
+            <div class="mini" style="display:flex;justify-content:space-between"><span>Speed</span><span id="ab-speed-display" style="color:#d25343;font-weight:700">1.0x</span></div>
+            <input type="range" id="inp-ab-speed" min="0.5" max="3.5" step="0.1" value="1.0" style="width:100%;accent-color:#d25343;cursor:pointer;margin-top:4px">
+          </div>
+        </div>
+        <!-- Custom label: full-width label + number -->
+        <div id="ab-custom-inputs" class="custom-stat-inputs" style="display:none">
+          <div>
+            <div class="mini">Stat label</div>
+            <input type="text" id="inp-ab-free-label" maxlength="20" placeholder="Your stat" autocomplete="off">
+          </div>
+          <div class="custom-num-wrap">
+            <div class="mini">Number</div>
+            <input type="number" id="inp-ab-free-val" placeholder="0" min="0">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" id="pct-section-row">
+      <div class="custom-stat-header">
+        <div class="lbl" id="pct-section-lbl">Percent complete</div>
+        <div class="custom-stat-toggle-wrap">
+          <span class="custom-stat-toggle-lbl">Add your own stat?</span>
+          <label class="switch"><input type="checkbox" id="custom-stat-toggle" aria-label="Enable custom stat"><span class="slider"></span></label>
+        </div>
+      </div>
+      <!-- Standard pct fields — physical -->
+      <div id="pct-fields">
+        <div class="pct-wrap">
+          <div><div class="mini">Enter %</div><input type="number" id="inp-pct" placeholder="25" min="1" max="100"></div>
+          <div class="or-div">or</div>
+          <div><div class="mini" id="curpage-lbl">Page I'm on</div><input type="number" id="inp-curpage" placeholder="25" min="1"></div>
+          <div><div class="mini" id="total-lbl">Total pages</div><input type="number" id="inp-total" placeholder="100" min="1"></div>
+        </div>
+      </div>
+      <!-- Custom stat fields (hidden by default) -->
+      <div id="custom-stat-fields" class="custom-stat-fields" style="display:none">
+        <div class="custom-stat-instruction">Choose one below, or type your own</div>
+        <!-- Physical book presets -->
+        <div class="preset-btns" id="physical-presets">
+          <button class="preset-btn active" data-label="Cups of Tea" data-emoji="🍵" id="preset-tea">🍵 Cups of Tea</button>
+          <button class="preset-btn" data-label="Tears Cried" data-emoji="😭" id="preset-tears">😭 Tears Cried</button>
+          <button class="preset-btn" data-label="Plot Twists" data-emoji="😱" id="preset-plot">😱 Plot Twists</button>
+          <button class="preset-btn" data-label="Days Read in a Row" data-emoji="📕" id="preset-days">📕 Days in a Row</button>
+        </div>
+        <div class="custom-stat-inputs">
+          <div>
+            <div class="mini">Stat label</div>
+            <input type="text" id="inp-custom-label" maxlength="20" placeholder="Cups of Tea" autocomplete="off" class="is-placeholder">
+          </div>
+          <div class="custom-num-wrap">
+            <div class="mini" id="custom-val-lbl">Number</div>
+            <input type="number" id="inp-custom-val" placeholder="0" min="0" maxlength="5">
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="sec-row">
+      <div class="sec" style="margin:0" id="book-section-heading">Book <span class="optional-inline">(Optional)</span></div>
+      <div class="custom-stat-toggle-wrap">
+        <span class="custom-stat-toggle-lbl" id="hide-graphic-lbl">Hide book graphic</span>
+        <label class="switch"><input type="checkbox" id="hide-book-toggle" aria-label="Hide book graphic"><span class="slider"></span></label>
+      </div>
+    </div>
+    <div class="row" style="margin-top:-8px">
+      <div class="lbl" id="cover-lbl">Book cover <button class="reset-btn" id="reset-btn" onclick="resetBook()" style="font-size:11px;color:#aaa;font-weight:400;width:auto;display:inline;text-align:left">(Reset to default)</button></div>
+      <div class="upload-box" id="upload-box">
+        <input type="file" accept="image/*" id="book-file" aria-label="Upload book cover image">
+        <div id="upload-preview">
+          <div class="upload-icon">📖</div>
+          <div class="upload-hint" id="upload-hint">Take a photo of your book, or Google the cover and upload it. Portrait works best.</div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="lbl" id="title-lbl">Book title</div>
+      <input type="text" id="inp-title" maxlength="50" placeholder="e.g. The Hitchhiker's Guide to the Galaxy" autocomplete="off">
+    </div>
+    <hr class="sep">
+    <div class="sec">Color &amp; Background Preview</div>
+    <div class="row">
+      <div class="bg-subhead">Font color</div>
+      <div class="tog-row">
+        <button class="tog active" data-key="ink" data-val="black">Black</button>
+        <button class="tog" data-key="ink" data-val="white">White</button>
+      </div>
+    </div>
+    <div class="row" style="margin-top:2px">
+      <div class="bg-subhead">Try it on a background</div>
+      <div class="bg-hint">See how your font color looks on different backgrounds before you share.</div>
+      <div id="swatch-row" class="swatches" style="margin-top:6px"></div>
+    </div>
+  </div>
+
+  <div class="canvas-panel">
+    <span class="canvas-label">Preview</span>
+    <div class="canvas-outer">
+      <div class="canvas-wrap checker" id="canvas-wrap">
+        <canvas id="c" width="1080" height="1920"></canvas>
+      </div>
+    </div>
+    <button class="dl-btn" id="dl-btn">
+  <span class="dl-main">↓ Download Your StoryStat</span>
+  <span class="dl-sub">Downloads as a transparent PNG</span>
+</button>
+  </div>
+</div>
+
+<!-- ── SOCIAL INSTRUCTIONS ── -->
+<div class="help-section">
+  <div class="help-box">
+    <button class="help-toggle" id="help-toggle" onclick="toggleHelp()">
+      <span>Need help sharing your StoryStats?</span>
+      <span class="help-arrow" id="help-arrow">&#9660;</span>
+    </button>
+    <div class="help-body" id="help-body" style="display:none;margin-top:16px">
+      <div class="help-tabs">
+        <button class="help-tab active" data-tab="stories">Instagram Stories</button>
+        <button class="help-tab" data-tab="reels">Instagram Reels</button>
+        <button class="help-tab" data-tab="capcut">CapCut / Edits App</button>
+      </div>
+      <div class="help-content active" id="tab-stories">
+        <div class="help-tab-inner">
+          <ol>
+            <li><strong>Download your stats card</strong> using the button above. It will save to your camera roll.</li>
+            <li><strong>Open Instagram</strong> and tap the + button to create a new Story.</li>
+            <li><strong>Choose a photo or video</strong> from your camera roll as your background, or use a solid colour.</li>
+            <li><strong>Tap the sticker icon</strong> at the top of the screen, then tap <strong>Photo</strong>.</li>
+            <li><strong>Select your stats card</strong> from your camera roll. It will appear as a sticker you can resize and reposition.</li>
+            <li><strong>Tag @silentbookclub</strong> and share!</li>
+          </ol>
+          <div class="inspo-column"><div class="inspo-gallery"><div class="inspo-item" onclick="openLightbox('https://cdn.shopify.com/s/files/1/1194/9120/files/B17F1333-F7E9-4FF9-B565-78F6FE8896AE.jpg?v=1777098276')"><img src="https://cdn.shopify.com/s/files/1/1194/9120/files/B17F1333-F7E9-4FF9-B565-78F6FE8896AE.jpg?v=1777098276" alt="Indoor story example"></div><div class="inspo-item" onclick="openLightbox('https://cdn.shopify.com/s/files/1/1194/9120/files/DC2A07B8-10BF-448D-BBC9-4F6E9EEACE22.jpg?v=1777098275')"><img src="https://cdn.shopify.com/s/files/1/1194/9120/files/DC2A07B8-10BF-448D-BBC9-4F6E9EEACE22.jpg?v=1777098275" alt="Outdoor story example"></div></div><p class="inspo-caption" style="text-align:center;margin-top:6px">Tap to enlarge</p></div>
+        </div>
+      </div>
+      <div class="help-content" id="tab-reels">
+        <div class="help-tab-inner">
+          <ol>
+            <li><strong>Download your stats card</strong> using the button above.</li>
+            <li><strong>Open Instagram</strong> and create a new Reel.</li>
+            <li><strong>Record or upload your video</strong> as the base layer.</li>
+            <li><strong>Tap the sticker icon</strong>, then <strong>Photo</strong>, and select your stats card from your camera roll.</li>
+            <li><strong>Resize and position</strong> the card anywhere on screen. Pinch to scale it down for a corner overlay look.</li>
+            <li><strong>Add music</strong>, tag <strong>@silentbookclub</strong>, and post!</li>
+          </ol>
+          <div class="inspo-column"><video class="inspo-video" autoplay muted loop playsinline preload="metadata" src="https://cdn.shopify.com/videos/c/o/v/8a34d738884f4e29a6826173c67ca608.mp4"></video></div>
+        </div>
+      </div>
+      <div class="help-content" id="tab-capcut">
+        <div class="help-tab-inner">
+          <ol>
+            <li><strong>Download your stats card</strong> using the button above.</li>
+            <li><strong>Open CapCut</strong> and start a new project with your video.</li>
+            <li>Tap <strong>Overlay</strong> at the bottom, then <strong>Add Overlay</strong>.</li>
+            <li><strong>Select your stats card</strong> from your camera roll.</li>
+            <li><strong>Resize, reposition and set the duration</strong> to match your clip. You can also adjust opacity for a subtle look.</li>
+            <li><strong>Tip:</strong> Use CapCut's <strong>Freeze Frame</strong> feature to hold a still moment — great for letting your stats linger on screen.</li>
+            <li><strong>Export</strong> your video and share it, tagging <strong>@silentbookclub</strong>!</li>
+          </ol>
+          <div class="inspo-column"><video class="inspo-video" autoplay muted loop playsinline preload="metadata" src="https://cdn.shopify.com/videos/c/o/v/39d31a7faed246b989ea1d2fe3ea89cf.mp4"></video></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<div class="footer">
+  <span class="footer-copy">&copy; 2026 StoryStats Generator. All rights reserved. Tool made using AI coding by <a href="https://shawnlife.com" target="_blank" class="footer-shawn" onclick="trackEvent('ss_shawnlife_click')">ShawnLife</a>.</span>
+  <div class="footer-links">
+    <button onclick="document.getElementById('modal-tnc').classList.add('open')">Terms &amp; Conditions</button>
+    <a href="mailto:cptsilentbookclub@gmail.com?subject=StoryStats Suggestion or Bug Report">Suggestion / Report a Bug</a>
+  </div>
+</div>
+
+
+<!-- ── EMAIL CAPTURE MODAL ── -->
+<div class="modal-overlay" id="modal-email">
+  <div class="modal" style="text-align:center;max-width:420px">
+    <button class="modal-close" onclick="skipEmail()">&times;</button>
+    <div style="font-size:32px;margin-bottom:10px">📬</div>
+    <h2 style="margin-bottom:8px">One last thing...</h2>
+    <p style="margin-bottom:16px;color:#444;font-size:13px;line-height:1.6">Sign up for our newsletter to get book recommendations, event updates, and news from Silent Book Club delivered right to your inbox.</p>
+    <input type="email" id="email-input" placeholder="your@email.com" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #e4e1dc;border-radius:8px;font-size:14px;font-family:inherit;margin-bottom:10px;outline:none;">
+    <label style="display:flex;align-items:flex-start;gap:8px;text-align:left;margin-bottom:16px;cursor:pointer;font-size:12px;color:#444;line-height:1.5">
+      <input type="checkbox" id="email-optin" aria-label="Subscribe to email updates" style="margin-top:2px;flex-shrink:0;">
+      <span>Yes, sign me up for the Silent Book Club newsletter. You can unsubscribe at any time. See our <a href="https://silentbook.club/policies/privacy-policy" target="_blank" style="color:#d25343;text-decoration:underline;font-size:inherit;">Privacy Policy</a>.</span>
+    </label>
+    <button class="dl-btn" id="email-submit-btn" onclick="submitEmail()" style="margin-bottom:8px">↓ Download My StoryStat</button>
+    <button onclick="skipEmail()" style="background:none;border:none;font-size:12px;color:#aaa;cursor:pointer;text-decoration:underline;font-family:inherit;">Skip and download without signing up</button>
+  </div>
+</div>
+
+<!-- ── T&C MODAL ── -->
+<div class="modal-overlay" id="modal-tnc">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal-tnc').classList.remove('open')">&times;</button>
+    <h2>Terms &amp; Conditions</h2>
+    <p>Last updated: April 2026</p>
+    <h3>1. Use of this tool</h3>
+    <p>StoryStats is provided free to use for personal, non-commercial purposes. By using this tool you agree to these terms.</p>
+    <h3>2. No liability</h3>
+    <p>This tool is provided as is, without warranty of any kind. The creator of StoryStats is not liable for any loss, damage, or issues arising from your use of this tool.</p>
+    <h3>3. Intellectual property</h3>
+    <p>StoryStats, including its design, code, and graphics, is the intellectual property of its creator. You may not copy, reproduce, redistribute, or reverse-engineer any part of this tool without written permission.</p>
+    <h3>4. Your content</h3>
+    <p>Any images you upload are processed locally in your browser and are never stored or transmitted to any server.</p>
+    <h3>5. Third party content</h3>
+    <p>The Silent Book Club name and logo are property of Silent Book Club. Use of their name on this tool does not imply endorsement or affiliation.</p>
+    <h3>6. Email & privacy</h3>
+    <p>If you choose to share your email address, it will be used only to send you Silent Book Club newsletter communications. You can unsubscribe at any time. Your email is never sold or shared with third parties. For full details, see our <a href="https://silentbook.club/policies/privacy-policy" target="_blank" style="color:#d25343">Privacy Policy</a>.</p>
+    <h3>7. Changes</h3>
+    <p>These terms may be updated at any time. Continued use of the tool constitutes acceptance of any changes.</p>
+    <p style="margin-top:16px">Questions? Email <a href="mailto:hello@silentbook.club">hello@silentbook.club</a></p>
+  </div>
+</div>
+
+<!-- ── MOBILE SAVE OVERLAY ── -->
+<div class="modal-overlay" id="modal-mobile-save" style="background:rgba(0,0,0,0.92);flex-direction:column;gap:0;padding:0;align-items:stretch;position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483647;height:100dvh">
+  <div style="background:#d25343;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:1">
+    <div>
+      <div style="color:#fff;font-size:15px;font-weight:800;font-family:'Mulish',sans-serif">Long press the image</div>
+      <div style="color:rgba(255,255,255,0.85);font-size:12px;font-family:'Mulish',sans-serif;margin-top:2px">Tap <strong>Save to Photos</strong> to add to your camera roll</div>
+    </div>
+    <button onclick="document.getElementById('modal-mobile-save').classList.remove('open')" style="background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:18px;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit">&times;</button>
+  </div>
+  <div style="flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:12px;background:repeating-conic-gradient(#333 0% 25%,#222 0% 50%) 0 0/20px 20px;min-height:0">
+    <img id="mobile-save-img" src="" alt="Your StoryStats Card" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,0.5);display:block">
+  </div>
+  <div style="background:#1a1a1a;padding:12px 20px;text-align:center;flex-shrink:0">
+    <div id="mobile-save-home-prompt" style="display:none;background:#2a2a2a;border-radius:8px;padding:10px 14px;margin-bottom:10px;text-align:left">
+      <div style="color:#fff;font-size:13px;font-weight:700;margin-bottom:3px">📱 Add StoryStats to your home screen</div>
+      <div id="home-prompt-text" style="color:#aaa;font-size:11px;line-height:1.6"></div>
+    </div>
+    <button onclick="document.getElementById('modal-mobile-save').classList.remove('open')" style="background:none;border:none;color:#aaa;font-size:12px;font-family:'Mulish',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:2px">Close</button>
+  </div>
+</div>
+
+<!-- ── MOBILE SAVE TIP MODAL ── -->
+<div class="modal-overlay" id="modal-mobile-tip">
+  <div class="modal" style="text-align:center">
+    <button class="modal-close" onclick="document.getElementById('modal-mobile-tip').classList.remove('open')">&times;</button>
+    <div style="font-size:36px;margin-bottom:12px">📸</div>
+    <h2 style="margin-bottom:8px">Save to your camera roll</h2>
+    <p style="margin-bottom:16px">Your StoryStats card has opened in a new tab. Long press the image and tap <strong>Save to Photos</strong> to add it to your camera roll.</p>
+    <button class="dl-btn" onclick="document.getElementById('modal-mobile-tip').classList.remove('open')">Got it</button>
+  </div>
+</div>
+
+<!-- ── SAVED MODAL ── -->
+<div class="modal-overlay" id="modal-saved">
+  <div class="modal" style="text-align:center">
+    <button class="modal-close" onclick="document.getElementById('modal-saved').classList.remove('open')">&times;</button>
+    <div style="font-size:36px;margin-bottom:12px">&#x2705;</div>
+    <h2 style="margin-bottom:8px">Your StoryStat is saved!</h2>
+    <p style="margin-bottom:20px;color:#666">Check your downloads folder.</p>
+    <div id="home-screen-prompt" style="display:none;background:#f7f4f1;border-radius:10px;padding:14px 16px;margin-bottom:16px;text-align:left">
+      <div style="font-size:14px;font-weight:700;color:#364049;margin-bottom:4px">📱 Add StoryStats to your home screen</div>
+      <div id="home-prompt-text-saved" style="font-size:12px;color:#666;line-height:1.6"></div>
+    </div>
+    <a href="javascript:location.reload()" style="font-size:13px;color:#d25343;text-decoration:underline;text-underline-offset:3px">Make another one?</a>
+  </div>
+</div>
+
+<!-- ── CONGRATS MODAL ── -->
+<div class="modal-overlay" id="modal-congrats">
+  <div class="modal congrats-modal">
+    <div class="emoji">🎉</div>
+    <h2 id="congrats-heading">You finished a book!</h2>
+    <p>That's a big deal. Download your stats card and share it with the world!</p>
+    <button class="dl-btn" id="congrats-dl-btn" style="max-width:260px;margin:0 auto">Get My StoryStat</button>
+    <button class="reset-btn" style="margin-top:10px" onclick="document.getElementById('modal-congrats').classList.remove('open')">Close</button>
+  </div>
+</div>
+
+<script>
+const isMobile=/Mobi|Android|iPhone|iPad/.test(navigator.userAgent);
+const _ua=navigator.userAgent;
+const _os=(/iPhone|iPad|iPod/.test(_ua)?'iOS':/Android/.test(_ua)?'Android':/Windows/.test(_ua)?'Windows':/Mac/.test(_ua)?'Mac':/Linux/.test(_ua)?'Linux':'Other');
+const _source='shopify';
+document.getElementById('dl-btn').querySelector('.dl-main').textContent=isMobile?'↓ Save Your StoryStat':'↓ Download Your StoryStat';
+document.getElementById('dl-btn').querySelector('.dl-sub').textContent=isMobile?'Opens image to save to camera roll':'Downloads as a transparent PNG';
+function getUploadHintText(){
+  if(typeof S !== 'undefined' && S.mode==='audiobook') return 'Screenshot your audiobook or Google the cover and upload it. Square works best.';
+  return isMobile ? 'Take a photo of your book, or upload from your camera roll. Portrait works best.' : 'Take a photo of your book, or Google the cover and upload it. Portrait works best.';
+}
+function defaultPreviewHTML(){ return `<div class="upload-icon">${typeof S !== 'undefined' && S.mode==='audiobook'?'🎧':'📖'}</div><div class="upload-hint">${getUploadHintText()}</div>`; }
+function resetBook(){
+  S.bookImg=null;S.useDefault=true;
+  trackEvent('ss_cover_reset');
+  document.getElementById('upload-preview').innerHTML=defaultPreviewHTML();
+  document.getElementById('book-file').value='';
+  render();
+}
+
+const LOGO_W='https://cdn.shopify.com/s/files/1/1194/9120/files/SBC_Logo_white.png?v=1777098967';
+const LOGO_B='https://cdn.shopify.com/s/files/1/1194/9120/files/SBC_Logo_black.png?v=1777098968';
+const DIST  ='https://cdn.shopify.com/s/files/1/1194/9120/files/Reading_Stats_Graphic.png?v=1777136248';
+
+function loadImage(img, src) {
+  img.crossOrigin = 'anonymous';
+  img.onload = () => render();
+  img.onerror = () => {
+    img.crossOrigin = null;
+    img.onload = () => render();
+    img.onerror = null;
+    img.src = src + (src.includes('?') ? '&' : '?') + 'retry=1';
+  };
+  img.src = src;
+}
+const logoWhite=new Image();
+const logoBlack=new Image();
+const distImg=new Image();
+loadImage(logoWhite, LOGO_W);
+loadImage(logoBlack, LOGO_B);
+loadImage(distImg, DIST);
+
+const HEADPHONES_IMG = 'https://cdn.shopify.com/s/files/1/1194/9120/files/Reading_Stats_Graphic_3a514f4f-e8ea-4abd-a6a0-f309efcf5c71.png?v=1780954048';
+const headphonesImg = new Image();
+headphonesImg.crossOrigin = 'anonymous';
+headphonesImg.src = HEADPHONES_IMG;
+
+// Detect unit from locale/timezone
+function detectUnit(){
+  const lang = navigator.language || '';
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+  const usZones = ['America/','Pacific/Honolulu','Pacific/Anchorage'];
+  const isUS = lang === 'en-US' || usZones.some(z => tz.startsWith(z));
+  return isUS ? 'mi' : 'km';
+}
+
+const S={ink:'black',bgOn:false,bgColor:'#87CEEB',title:'',hours:'0',mins:'55',pages:'50',pct:'25',bookImg:null,useDefault:true,hideBook:false,customStat:false,customLabel:'Cups of Tea',customEmoji:'🍵',customVal:'0',mode:'physical',unit:detectUnit(),abHours:'0',abMins:'00',abTrHours:'0',abTrMins:'00',abSpeed:'1.0'};
+document.getElementById('upload-hint').innerHTML = getUploadHintText();
+const DEFAULTS={hours:'0',mins:'55',pages:'50',pct:'25',curpage:'25',total:'100'};
+
+const W=1080,H=1920,CX=540;
+const LBL_FS=52,VAL_FS=120,TTL_FS=45;
+const BAR_W=413,BAR_H=13,BAR_X=Math.round((W-413)/2);
+const BK={x:Math.round((1080-340)/2),w:340,h:520};
+const LG_W=395,LG_H=148;
+const RED='#c24e42',GREY='#3a3a3a';
+let _cachedFormH=0;
+
+const POS={
+  l1_base:180,v1_base:296,
+  l2_base:414,v2_base:530,
+  l3_base:648,v3_base:764,
+  bar:809,book:902,
+  title_base:1502,logo:1592,
+};
+
+// Swatches
+// Background options: 4 images + black + white
+const BG_OPTIONS = [
+  {type:'image', src:'https://cdn.shopify.com/s/files/1/1194/9120/files/8_912d8817-946e-4af4-b465-3eaa4b1cecfe.jpg?v=1777129922',  label:'Cloud',  thumb:'#c8a882'},
+  {type:'image', src:'https://cdn.shopify.com/s/files/1/1194/9120/files/10_76f066e6-597e-4b20-bb70-5e78624d9b5b.jpg?v=1777129922', label:'Sunset',  thumb:'#8fa8c8'},
+  {type:'image', src:'https://cdn.shopify.com/s/files/1/1194/9120/files/9_e5b7660d-dbdf-476c-a2a4-b45597b51b67.jpg?v=1777129923',  label:'Tree',  thumb:'#a8c8a0'},
+  {type:'image', src:'https://cdn.shopify.com/s/files/1/1194/9120/files/11_689d94a3-b854-40bb-b163-f320b321fc56.jpg?v=1777129923', label:'Forest',  thumb:'#c8b8a0'},
+  {type:'color', src:'#000000',       label:'Black',   thumb:'#000000'},
+  {type:'color', src:'#ffffff',       label:'White',   thumb:'#ffffff'},
+];
+
+// Preload background images
+const bgImgCache = {};
+BG_OPTIONS.forEach(opt=>{
+  if(opt.type==='image'){
+    const img=new Image();
+    img.crossOrigin='anonymous';
+    img.src=opt.src;
+    bgImgCache[opt.label]=img;
+  }
+});
+
+S.bgType='none';
+S.bgSrc='';
+S.bgLabel='none';
+S.bgOn=false;
+
+const swRow=document.getElementById('swatch-row');
+
+// Transparent swatch (first, active by default)
+const transEl=document.createElement('div');
+transEl.className='swatch swatch-transparent active';
+transEl.title='Transparent';
+transEl.addEventListener('click',()=>{
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+  transEl.classList.add('active');
+  S.bgOn=false; S.bgType='none'; S.bgSrc=''; S.bgLabel='none';
+  trackEvent('ss_background_color',{label:'transparent'});
+  renderDebounced();
+});
+swRow.appendChild(transEl);
+
+BG_OPTIONS.forEach((opt)=>{
+  const el=document.createElement('div');
+  el.className='swatch';
+  el.style.background=opt.thumb;
+  el.style.backgroundSize='cover';
+  el.style.backgroundPosition='center';
+  if(opt.type==='image') el.style.backgroundImage=`url(${opt.src})`;
+  el.title=opt.label;
+  el.addEventListener('click',()=>{
+    trackEvent('ss_background_color',{label:opt.label});
+    document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+    el.classList.add('active');
+    S.bgOn=true;
+    S.bgType=opt.type;
+    S.bgSrc=opt.src;
+    S.bgLabel=opt.label;
+    renderDebounced();
+  });
+  swRow.appendChild(el);
+});
+document.querySelectorAll('.tog').forEach(t=>{
+  t.addEventListener('click',()=>{
+    S[t.dataset.key]=t.dataset.val;
+    if(t.dataset.key==='ink') trackEvent('ss_ink_color',{color:t.dataset.val});
+    document.querySelectorAll(`.tog[data-key="${t.dataset.key}"]`).forEach(b=>b.classList.toggle('active',b.dataset.val===t.dataset.val));
+    renderDebounced();
+  });
+});
+
+// ── MODE SWITCHER ─────────────────────────────────────────────────────────────
+const AB_DEFAULTS = {abHours:'0', abMins:'00', pct:'25'};
+const PHYSICAL_DEFAULTS = {hours:'0', mins:'55', pages:'50', pct:'25'};
+
+function updateDistanceLabels(){
+  const walked = document.getElementById('preset-walked');
+  const driven = document.getElementById('preset-driven');
+  if(walked) walked.textContent = `🚶 Distance Walked`;
+  if(driven) driven.textContent = `🚗 Distance Driven`;
+}
+
+function setMode(mode){
+  if(S.mode === mode) return;
+  S.mode = mode;
+
+  // Toggle mode buttons
+  document.getElementById('mode-physical').classList.toggle('active', mode==='physical');
+  document.getElementById('mode-audiobook').classList.toggle('active', mode==='audiobook');
+
+  // Show/hide the physical custom stat toggle row
+  const physCustomRow = document.querySelector('#physical-stats ~ .row');
+  // Hide pct/custom toggle row in audiobook (audiobook has its own always-visible custom stat)
+  document.getElementById('pct-section-row').style.display = mode==='audiobook' ? 'none' : '';
+
+  // Show/hide stat sections
+  document.getElementById('physical-stats').style.display = mode==='physical' ? '' : 'none';
+  document.getElementById('audiobook-stats').style.display = mode==='audiobook' ? 'flex' : 'none';
+
+  // Show/hide preset buttons (physical only in main custom stat section)
+  document.getElementById('physical-presets').style.display = mode==='physical' ? '' : 'none';
+
+  // Show/hide unit toggle (now in ab custom stat row, handled by ab preset JS)
+
+
+  // Update section headings and labels
+  document.getElementById('stats-section-heading').textContent = mode==='audiobook' ? 'Listening stats' : 'Reading stats';
+  document.getElementById('book-section-heading').innerHTML = mode==='audiobook'
+    ? 'Audiobook <span class="optional-inline">(Optional)</span>'
+    : 'Book <span class="optional-inline">(Optional)</span>';
+  document.getElementById('cover-lbl').innerHTML = (mode==='audiobook' ? 'Audiobook cover' : 'Book cover') +
+    ' <button class="reset-btn" onclick="resetBook()" style="font-size:11px;color:#aaa;font-weight:400;width:auto;display:inline;text-align:left">(Reset to default)</button>';
+  document.getElementById('title-lbl').textContent = mode==='audiobook' ? 'Audiobook title' : 'Book title';
+  document.getElementById('hide-graphic-lbl').textContent = 'Hide graphic';
+
+  // Update pct calculator labels
+  document.getElementById('curpage-lbl').textContent = mode==='audiobook' ? 'Time I\'m on (h:mm)' : 'Page I\'m on';
+  document.getElementById('total-lbl').textContent = mode==='audiobook' ? 'Total time (h:mm)' : 'Total pages';
+
+  // Update upload hint
+  const uploadHint = document.getElementById('upload-hint');
+  if(uploadHint) uploadHint.innerHTML = getUploadHintText();
+
+  // Reset custom stat to audiobook defaults if switching to audiobook
+  if(mode==='audiobook' && S.customStat){
+    // Switch to first audiobook preset
+    S.customLabel='Distance Walked'; S.customEmoji='🚶';
+    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+    const walkedBtn=document.getElementById('preset-walked');
+    if(walkedBtn) walkedBtn.classList.add('active');
+  } else if(mode==='physical' && S.customStat){
+    S.customLabel='Cups of Tea'; S.customEmoji='🍵';
+    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+    const teaBtn=document.getElementById('preset-tea');
+    if(teaBtn) teaBtn.classList.add('active');
+  }
+
+  // Reset to defaults
+  resetBook();
+  S.useDefault=true;
+
+  trackEvent('ss_mode_toggle',{mode});
+  setTimeout(matchHeights, 50);
+  renderDebounced();
+}
+
+// ── AUDIOBOOK CUSTOM STAT ─────────────────────────────────────────────────────
+(()=>{
+  const AB_PRESETS = [
+    {id:'preset-walked',    label:'Distance Walked',  emoji:'🚶', type:'distance'},
+    {id:'preset-driven',    label:'Distance Driven',  emoji:'🚗', type:'distance'},
+    {id:'preset-speed',     label:'Listening Speed',  emoji:'⚡', type:'speed'},
+  ];
+
+  const distanceInputs  = document.getElementById('ab-distance-inputs');
+  const timeInputs      = document.getElementById('ab-time-inputs');
+  const customInputs    = document.getElementById('ab-custom-inputs');
+  const abBtns          = document.querySelectorAll('#audiobook-presets .preset-btn');
+  const abPctEl         = document.getElementById('inp-ab-pct');
+
+  // Distance fields
+  const distLabelInp = document.getElementById('inp-ab-custom-label');
+  const distVal      = document.getElementById('inp-ab-custom-val');
+  const unitMiBtn    = document.getElementById('ab-unit-mi');
+  const unitKmBtn    = document.getElementById('ab-unit-km');
+
+  // Time remaining fields
+  const trLabelInp   = document.getElementById('inp-ab-tr-label');
+  // Speed slider fields (handled separately below)
+
+  // Free custom fields
+  const freeLabelInp = document.getElementById('inp-ab-free-label');
+  const freeVal      = document.getElementById('inp-ab-free-val');
+
+  let _abMode = 'distance'; // 'distance', 'time', 'custom'
+
+  // Initialise unit buttons
+  [unitMiBtn, unitKmBtn].forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.unit===S.unit);
+    btn.addEventListener('mousedown', e=>e.preventDefault());
+    btn.addEventListener('click',()=>{
+      S.unit = btn.dataset.unit;
+      [unitMiBtn, unitKmBtn].forEach(b=>b.classList.toggle('active', b.dataset.unit===S.unit));
+      trackEvent('ss_unit_toggle',{unit:S.unit});
+      renderDebounced();
+    });
+  });
+
+  function showPanel(mode){
+    _abMode = mode;
+    distanceInputs.style.display = mode==='distance' ? '' : 'none';
+    timeInputs.style.display     = mode==='speed'    ? '' : 'none';
+    customInputs.style.display   = mode==='custom'   ? '' : 'none';
+  }
+
+  function setAbPreset(id, explicit){
+    const p = AB_PRESETS.find(x=>x.id===id);
+    if(!p) return;
+    abBtns.forEach(b=>b.classList.toggle('active', b.id===id));
+    S.customLabel = p.label; S.customEmoji = p.emoji;
+
+    if(p.type==='distance'){
+      showPanel('distance');
+      if(explicit){
+        distLabelInp.value=p.label; distLabelInp.classList.remove('is-placeholder');
+      } else {
+        distLabelInp.value=''; distLabelInp.classList.add('is-placeholder'); distLabelInp.placeholder=p.label;
+      }
+    } else if(p.type==='speed'){
+      showPanel('speed');
+      if(explicit){
+        trLabelInp.value=p.label; trLabelInp.classList.remove('is-placeholder');
+      } else {
+        trLabelInp.value=''; trLabelInp.classList.add('is-placeholder'); trLabelInp.placeholder=p.label;
+      }
+    }
+    renderDebounced();
+  }
+
+  // Set initial state
+  setAbPreset('preset-walked', false);
+
+  abBtns.forEach(btn=>{
+    btn.addEventListener('click',()=>setAbPreset(btn.id, true));
+  });
+
+  // Distance label typing
+  distLabelInp.addEventListener('focus',()=>{ if(distLabelInp.classList.contains('is-placeholder')){distLabelInp.value='';distLabelInp.classList.remove('is-placeholder');} });
+  distLabelInp.addEventListener('input',()=>{
+    const val = distLabelInp.value.trim();
+    const match = AB_PRESETS.find(p=>p.type==='distance'&&p.label.toLowerCase()===val.toLowerCase());
+    if(match){ S.customLabel=match.label; S.customEmoji=match.emoji; abBtns.forEach(b=>b.classList.toggle('active',b.id===match.id)); }
+    else if(val){ S.customLabel=val; S.customEmoji=''; abBtns.forEach(b=>b.classList.remove('active')); showPanel('custom'); freeLabelInp.value=val; }
+    renderDebounced();
+  });
+  distLabelInp.addEventListener('blur',()=>{ if(!distLabelInp.value.trim()){ setAbPreset('preset-walked',false); } });
+
+  trLabelInp.addEventListener('blur',()=>{ if(!trLabelInp.value.trim()){ setAbPreset('preset-speed',false); } });
+
+  // Slider wiring
+  const speedSlider = document.getElementById('inp-ab-speed');
+  const speedDisplay = document.getElementById('ab-speed-display');
+  if(speedSlider){
+    speedSlider.addEventListener('input',()=>{
+      const v = parseFloat(speedSlider.value).toFixed(1);
+      S.abSpeed = v;
+      if(speedDisplay) speedDisplay.textContent = v+'x';
+      renderDebounced();
+    });
+  }
+
+  // Time remaining label typing (now speed label)
+  trLabelInp.addEventListener('focus',()=>{ if(trLabelInp.classList.contains('is-placeholder')){trLabelInp.value='';trLabelInp.classList.remove('is-placeholder');} });
+  trLabelInp.addEventListener('input',()=>{
+    const val = trLabelInp.value.trim();
+    const match = AB_PRESETS.find(p=>p.label.toLowerCase()===val.toLowerCase());
+    if(match){ setAbPreset(match.id,true); }
+    else if(val){ S.customLabel=val; S.customEmoji=''; abBtns.forEach(b=>b.classList.remove('active')); showPanel('custom'); freeLabelInp.value=val; }
+    renderDebounced();
+  });
+
+  // Free custom inputs
+  freeLabelInp.addEventListener('input',()=>{
+    const val = freeLabelInp.value.trim();
+    const match = AB_PRESETS.find(p=>p.label.toLowerCase()===val.toLowerCase());
+    if(match){ setAbPreset(match.id,true); return; }
+    S.customLabel=val||'Distance Walked'; S.customEmoji='';
+    abBtns.forEach(b=>b.classList.remove('active'));
+    renderDebounced();
+  });
+  freeLabelInp.addEventListener('blur',()=>{ if(!freeLabelInp.value.trim()){ setAbPreset('preset-walked',false); } });
+  freeVal.addEventListener('input',()=>{ S.customVal=freeVal.value; renderDebounced(); });
+
+  // Distance value
+  distVal.addEventListener('input',()=>{ S.customVal=distVal.value; renderDebounced(); });
+
+  // Time remaining values
+  // (speed handled by slider above)
+
+  // Wire audiobook pct field
+  if(abPctEl){
+    abPctEl.classList.add('is-default');
+    abPctEl.addEventListener('focus',()=>{ if(abPctEl.classList.contains('is-default')){abPctEl.value='';abPctEl.classList.remove('is-default');} });
+    abPctEl.addEventListener('blur',()=>{
+      if(abPctEl.value===''){abPctEl.classList.add('is-default');S.pct='25';}
+      else{const v=Math.max(0,Math.min(100,parseInt(abPctEl.value)||0));abPctEl.value=v;S.pct=String(v);}
+      renderDebounced();
+    });
+    abPctEl.addEventListener('input',()=>{ abPctEl.classList.remove('is-default'); S.pct=abPctEl.value; renderDebounced(); });
+  }
+})();
+function initField(id,key){
+  const el=document.getElementById(id);
+  const def=DEFAULTS[key];
+  el.classList.add('is-default'); // starts faded
+  el.addEventListener('focus',()=>{
+    if(el.classList.contains('is-default')){el.value='';el.classList.remove('is-default');}
+  });
+  el.addEventListener('blur',()=>{
+    if(el.value===''||el.value===null){
+      el.classList.add('is-default');
+      S[key]=def;
+      renderDebounced();
+    } else {
+      // Ensure value is committed even if input event didn't fire (Android paste)
+      el.classList.remove('is-default');
+      S[key]=el.value||def;
+      renderDebounced();
+    }
+  });
+  // Handle both input and paste events for Android compatibility
+  const onChange=()=>{
+    el.classList.remove('is-default');
+    S[key]=el.value||def;
+    renderDebounced();
+  };
+  el.addEventListener('input', onChange);
+  el.addEventListener('paste',()=>setTimeout(onChange, 0));
+}
+['hours','mins','pages'].forEach(k=>initField('inp-'+k,k));
+
+// Audiobook time fields
+function initAbTimeField(id, key, max, def){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.add('is-default');
+  el.addEventListener('focus',()=>{ if(el.classList.contains('is-default')){el.value='';el.classList.remove('is-default');} });
+  el.addEventListener('blur',()=>{
+    if(el.value===''){el.classList.add('is-default');S[key]=def;}
+    else{const v=Math.max(0,Math.min(max,parseInt(el.value)||0));el.value=String(v);el.classList.remove('is-default');S[key]=String(v);}
+    renderDebounced();
+  });
+  el.addEventListener('input',()=>{el.classList.remove('is-default');S[key]=el.value;renderDebounced();});
+}
+initAbTimeField('inp-ab-hours','abHours',99,'0');
+initAbTimeField('inp-ab-mins','abMins',59,'00');
+
+function wire(id,key){document.getElementById(id).addEventListener('input',e=>{S[key]=e.target.value;renderDebounced();});}
+wire('inp-title','title');
+document.getElementById('inp-title').addEventListener('blur',e=>{if(e.target.value.trim()) trackEvent('ss_title_entered');});
+
+// Hours/mins/pages clamp on blur
+document.getElementById('inp-hours').addEventListener('blur',e=>{
+  if(e.target.value) trackEvent('ss_field_hours',{value:parseInt(e.target.value)||0});
+  if(e.target.value!==''){const v=Math.max(0,Math.min(99,parseInt(e.target.value)||0));e.target.value=v;S.hours=String(v);}
+});
+document.getElementById('inp-mins').addEventListener('blur',e=>{
+  if(e.target.value) trackEvent('ss_field_mins',{value:parseInt(e.target.value)||0});
+  if(e.target.value!==''){const v=Math.max(0,Math.min(59,parseInt(e.target.value)||0));e.target.value=v;S.mins=String(v);}
+});
+document.getElementById('inp-pages').addEventListener('blur',e=>{
+  if(e.target.value) trackEvent('ss_field_pages_read',{value:parseInt(e.target.value)||0});
+  if(e.target.value===''||parseInt(e.target.value)<1){
+    e.target.value='';e.target.classList.add('is-default');S.pages='50';
+  } else {
+    const v=Math.max(1,Math.min(99999,parseInt(e.target.value)||1));
+    e.target.value=v;S.pages=String(v);
+  }
+  renderDebounced();
+});
+// ── FULLY SYNCED PCT / PAGE / TOTAL CALCULATOR ──────────────────────────────
+// Defaults: pct=25, curpage=25, total=100
+(()=>{
+  const pctEl   = document.getElementById('inp-pct');
+  const pageEl  = document.getElementById('inp-curpage');
+  const totalEl = document.getElementById('inp-total');
+
+  // Set initial default values
+  pctEl.value   = '25'; S.pct = '25';
+  pageEl.value  = '25';
+  totalEl.value = '100';
+
+  // Style all three as default (faded) initially
+  [pctEl, pageEl, totalEl].forEach(el => el.classList.add('is-default'));
+
+  // Focus clears the field
+  [pctEl, pageEl, totalEl].forEach(el => {
+    el.addEventListener('focus', () => {
+      if(el.classList.contains('is-default')){ el.value=''; el.classList.remove('is-default'); }
+    });
+  });
+
+  function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
+
+  function getVal(el, min, max, def){
+    const v = parseInt(el.value);
+    return isNaN(v) ? def : clamp(v, min, max);
+  }
+
+  // Edit %: update page I'm on = round(pct/100 * total)
+  const onPctChange = () => {
+    pctEl.classList.remove('is-default');
+    const pct   = getVal(pctEl, 1, 100, 25);
+    const total = getVal(totalEl, 1, 99999, 100);
+    const page  = Math.round(pct / 100 * total);
+    pageEl.value = page; pageEl.classList.remove('is-default');
+    S.pct = String(pct);
+    renderDebounced();
+  };
+  pctEl.addEventListener('input', onPctChange);
+  pctEl.addEventListener('paste', () => setTimeout(onPctChange, 0));
+  pctEl.addEventListener('blur', () => {
+    if(pctEl.value) trackEvent('ss_field_pct',{value:parseInt(pctEl.value)||0});
+    if(pctEl.value === ''){ pctEl.value='25'; pctEl.classList.add('is-default'); S.pct='25'; renderDebounced(); }
+    else {
+      const v = clamp(parseInt(pctEl.value)||1, 1, 100);
+      pctEl.value = v; S.pct = String(v); renderDebounced();
+    }
+  });
+
+  const onPageChange = () => {
+    pageEl.classList.remove('is-default');
+    let page  = getVal(pageEl, 1, 99999, 25);
+    let total = getVal(totalEl, 1, 99999, 100);
+    if(page > total){ total = page; totalEl.value = total; totalEl.classList.remove('is-default'); }
+    const pct = Math.round(page / total * 100);
+    const pctClamped = clamp(pct, 1, 100);
+    pctEl.value = pctClamped; pctEl.classList.remove('is-default');
+    S.pct = String(pctClamped);
+    renderDebounced();
+  };
+  pageEl.addEventListener('input', onPageChange);
+  pageEl.addEventListener('paste', () => setTimeout(onPageChange, 0));
+  pageEl.addEventListener('blur', () => {
+    if(pageEl.value) trackEvent('ss_field_curpage',{value:parseInt(pageEl.value)||0});
+    if(pageEl.value === ''){ pageEl.value='25'; pageEl.classList.add('is-default'); }
+  });
+
+  const onTotalChange = () => {
+    totalEl.classList.remove('is-default');
+    const page  = getVal(pageEl, 1, 99999, 25);
+    const total = getVal(totalEl, 1, 99999, 100);
+    const pct   = Math.round(page / total * 100);
+    const pctClamped = clamp(pct, 1, 100);
+    pctEl.value = pctClamped; pctEl.classList.remove('is-default');
+    S.pct = String(pctClamped);
+    renderDebounced();
+  };
+  totalEl.addEventListener('input', onTotalChange);
+  totalEl.addEventListener('paste', () => setTimeout(onTotalChange, 0));
+  totalEl.addEventListener('blur', () => {
+    if(totalEl.value) trackEvent('ss_field_total_pages',{value:parseInt(totalEl.value)||0});
+    if(totalEl.value === ''){ totalEl.value='100'; totalEl.classList.add('is-default'); }
+  });
+})();
+
+document.getElementById('book-file').addEventListener('change',e=>{
+  trackEvent('ss_cover_uploaded');
+  const file=e.target.files[0];if(!file)return;
+  const url=URL.createObjectURL(file);
+  const img=new Image();
+  img.onload=()=>{S.bookImg=img;S.useDefault=false;document.getElementById('upload-preview').innerHTML=`<img src="${url}" class="upload-thumb" alt="cover">`;render();};
+  img.src=url;
+});
+// reset handled via resetBook() global function
+
+// Help dropdown toggle
+function playVisibleVideos(){
+  document.querySelectorAll('.help-content.active video').forEach(v=>{
+    if(v.readyState===0){v.load();}
+    v.currentTime=0;
+    v.play().catch(()=>{});
+  });
+}
+function toggleHelp(){
+  const body=document.getElementById('help-body');
+  const arrow=document.getElementById('help-arrow');
+  const open=body.style.display==='none';
+  body.style.display=open?'block':'none';
+  arrow.classList.toggle('open',open);
+  if(open) setTimeout(playVisibleVideos, 50);
+}
+// Help tabs
+document.querySelectorAll('.help-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    trackEvent('ss_help_tab',{tab:tab.dataset.tab});
+    document.querySelectorAll('.help-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.help-content').forEach(c=>{
+      c.classList.remove('active');
+      // Pause videos in tabs being hidden
+      c.querySelectorAll('video').forEach(v=>v.pause());
+    });
+    tab.classList.add('active');
+    const panel=document.getElementById('tab-'+tab.dataset.tab);
+    panel.classList.add('active');
+    setTimeout(()=>{
+      panel.querySelectorAll('video').forEach(v=>{
+        if(v.readyState===0){v.load();}
+        v.currentTime=0;
+        v.play().catch(()=>{});
+      });
+    }, 50);
+  });
+});
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.classList.remove('open');});
+});
+
+function pill(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+}
+function wrapText(ctx,text,maxW){
+  const words=text.split(' '),lines=[];let line='';
+  for(const w of words){const t=line?line+' '+w:w;if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=w;}else line=t;}
+  if(line)lines.push(line);return lines;
+}
+
+function drawCard(canvas,forExport){
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  if(!forExport&&S.bgOn){
+    if(S.bgType==='color'){
+      ctx.fillStyle=S.bgSrc;
+      ctx.fillRect(0,0,W,H);
+    } else {
+      const bgImg=bgImgCache[S.bgLabel];
+      if(bgImg&&bgImg.complete&&bgImg.naturalWidth>0){
+        // Cover-fit: fill canvas preserving aspect ratio
+        const bRatio=bgImg.naturalWidth/bgImg.naturalHeight;
+        const cRatio=W/H;
+        let bw,bh,bx,by;
+        if(bRatio>cRatio){bh=H;bw=bgImg.naturalWidth*(H/bgImg.naturalHeight);bx=(W-bw)/2;by=0;}
+        else{bw=W;bh=bgImg.naturalHeight*(W/bgImg.naturalWidth);bx=0;by=(H-bh)/2;}
+        ctx.drawImage(bgImg,bx,by,bw,bh);
+      } else {
+        ctx.fillStyle='#87CEEB';ctx.fillRect(0,0,W,H);
+      }
+    }
+  }
+  const ink=S.ink==='white'?'#ffffff':'#000000';
+  ctx.textAlign='center';
+  ctx.textBaseline='alphabetic';
+
+  // Labels
+  // Font sizes — bigger in custom stat mode to fill the space the progress bar leaves
+  const activeLblFS = S.customStat ? 62 : LBL_FS;
+  const activeValFS = S.customStat ? 140 : VAL_FS;
+
+  // Y positions — scale spacing proportionally with font size in custom mode
+  const scaleFactor = S.customStat ? (activeValFS / VAL_FS) : 1;
+  const l1 = POS.l1_base;
+  const v1 = l1 + Math.round(116 * scaleFactor);
+  const l2 = v1 + Math.round(118 * scaleFactor);
+  const v2 = l2 + Math.round(116 * scaleFactor);
+  // For audiobook: l3/v3 anchor below the progress bar (bar is at v2+36)
+  const abBarY = v2 + 36;
+  const l3 = S.mode==='audiobook' ? (abBarY + BAR_H + 118) : v2 + Math.round(118 * scaleFactor);
+  const v3 = l3 + Math.round(116 * scaleFactor);
+  // Bottom of the stats block (book zone starts here)
+  const statsBottom = S.mode==='audiobook'
+    ? (v3 + 40)
+    : S.customStat ? (v3 + Math.round(20 * scaleFactor)) : (POS.bar + BAR_H);
+
+  // Labels
+  ctx.font=`600 ${activeLblFS}px 'Inter',sans-serif`;
+  ctx.fillStyle=ink;
+
+  if(S.mode==='audiobook'){
+    // Stat 1: Time Spent Listening
+    ctx.fillText('Time Spent Listening',CX,l1);
+    // Stat 2: Percent Complete
+    ctx.font=`600 ${activeLblFS}px 'Inter',sans-serif`;
+    ctx.fillStyle=ink;
+    ctx.fillText('Percent Complete',CX,l2);
+    // Stat 3: Custom stat label
+    const abLabel = (S.customLabel||'Distance Walked').trim().slice(0,20);
+    let ab3FontSize = activeLblFS;
+    ctx.font=`600 ${ab3FontSize}px 'Inter',sans-serif`;
+    while(ctx.measureText(abLabel).width > 900 && ab3FontSize > 36){
+      ab3FontSize -= 2;
+      ctx.font=`600 ${ab3FontSize}px 'Inter',sans-serif`;
+    }
+    ctx.fillText(abLabel, CX, l3);
+  } else {
+    // Physical: Stat 1 = Pages Read, Stat 2 = Time Spent
+    ctx.fillText('Pages Read',CX,l1);
+    ctx.fillText('Time Spent',CX,l2);
+    // Stat 3 label
+    if(S.customStat){
+      const rawLabel = (S.customLabel||'Cups of Tea').trim().slice(0,20);
+      let lblFontSize = activeLblFS;
+      ctx.font=`600 ${lblFontSize}px 'Inter',sans-serif`;
+      while(ctx.measureText(rawLabel).width > 900 && lblFontSize > 36){
+        lblFontSize -= 2;
+        ctx.font=`600 ${lblFontSize}px 'Inter',sans-serif`;
+      }
+      ctx.fillText(rawLabel, CX, l3);
+    } else {
+      ctx.font=`600 ${activeLblFS}px 'Inter',sans-serif`;
+      ctx.fillText('Percent Complete',CX,l3);
+    }
+  }
+
+  // Values
+  ctx.font=`800 ${activeValFS}px 'Inter',sans-serif`;
+  ctx.fillStyle=ink;
+  const pct=Math.max(0,Math.min(100,parseInt(S.pct)||0));
+
+  if(S.mode==='audiobook'){
+    // Stat 1: Time Spent Listening
+    const abH=Math.min(99,Math.max(0,parseInt(S.abHours)||0));
+    const abM=Math.min(59,Math.max(0,parseInt(S.abMins)||0));
+    ctx.fillText(`${abH}h ${String(abM).padStart(2,'0')}m`,CX,v1);
+    // Stat 2: Percent Complete
+    ctx.fillText(pct+'%',CX,v2);
+    // Stat 3: Custom stat value
+    const isDistance = S.customLabel==='Distance Walked' || S.customLabel==='Distance Driven';
+    const isSpeed = S.customLabel==='Listening Speed';
+    let customValStr;
+    if(isDistance){
+      customValStr = `${S.customVal||'0'} ${S.unit}`;
+    } else if(isSpeed){
+      customValStr = `${parseFloat(S.abSpeed||1.0).toFixed(1)}x`;
+    } else {
+      customValStr = String(parseInt(S.customVal)||0);
+    }
+    let ab3ValSize = activeValFS;
+    ctx.font=`800 ${ab3ValSize}px 'Inter',sans-serif`;
+    while(ctx.measureText(customValStr).width > 900 && ab3ValSize > 60){
+      ab3ValSize -= 4;
+      ctx.font=`800 ${ab3ValSize}px 'Inter',sans-serif`;
+    }
+    ctx.fillText(customValStr, CX, v3);
+    // Progress bar sits below stat 2 (pct value)
+    ctx.fillStyle=ink;
+    pill(ctx,BAR_X,abBarY,BAR_W,BAR_H,BAR_H/2);ctx.fill();
+    const abFw=Math.max(BAR_H,Math.round(BAR_W*pct/100));
+    ctx.fillStyle=RED;
+    pill(ctx,BAR_X,abBarY,abFw,BAR_H,BAR_H/2);ctx.fill();
+  } else {
+    // Physical mode
+    const h=Math.min(99,Math.max(0,parseInt(S.hours)||0));
+    const m=Math.min(59,Math.max(0,parseInt(S.mins)||0));
+    ctx.fillText((S.pages||'0')+' Pages',CX,v1);
+    ctx.fillText(`${h}h ${String(m).padStart(2,'0')}m`,CX,v2);
+    if(S.customStat){
+      const customValStr = String(parseInt(S.customVal)||0);
+      let valFontSize = activeValFS;
+      ctx.font=`800 ${valFontSize}px 'Inter',sans-serif`;
+      while(ctx.measureText(customValStr).width > 900 && valFontSize > 60){
+        valFontSize -= 4;
+        ctx.font=`800 ${valFontSize}px 'Inter',sans-serif`;
+      }
+      ctx.fillText(customValStr, CX, v3);
+    } else {
+      ctx.fillText(pct+'%',CX,v3);
+    }
+    // Progress bar — physical standard mode only
+    if(!S.customStat){
+      ctx.fillStyle=ink;
+      pill(ctx,BAR_X,POS.bar,BAR_W,BAR_H,BAR_H/2);ctx.fill();
+      const fw=Math.max(BAR_H,Math.round(BAR_W*pct/100));
+      ctx.fillStyle=RED;
+      pill(ctx,BAR_X,POS.bar,fw,BAR_H,BAR_H/2);ctx.fill();
+    }
+  }
+
+  // Book cover — title from textarea, respect manual line breaks, cap at 2 lines
+  const ttlFs=TTL_FS;
+  let titleLines=[];
+  if(S.title&&S.title.trim()){
+    const rawLines = S.title.split('\n').map(l=>l.trim()).filter(Boolean);
+    ctx.font=`700 ${ttlFs}px 'Inter',sans-serif`;
+    for(const line of rawLines){
+      const wrapped = wrapText(ctx, line, 720);
+      for(const wl of wrapped){ titleLines.push(wl); if(titleLines.length>=2) break; }
+      if(titleLines.length>=2) break;
+    }
+    titleLines = titleLines.slice(0,2);
+  }
+
+  // ── LAYOUT CONSTANTS ──────────────────────────────────────────────
+  const LOGO_Y_FIXED = H - POS.l1_base - LG_H;
+  const AVAILABLE = LOGO_Y_FIXED - statsBottom;
+  const TTL_LINE_H = TTL_FS * 1.35;
+  const TITLE_GAP = 12;
+
+  // Audiobook mode: square graphic. Physical: portrait graphic.
+  const isAudiobook = S.mode === 'audiobook';
+  let bkW, bkH;
+  if(isAudiobook){
+    // Square headphones graphic — sized to fit available space
+    const squareSize = titleLines.length === 0 ? 520 : titleLines.length === 1 ? 460 : 420;
+    bkW = squareSize; bkH = squareSize;
+  } else {
+    bkW = titleLines.length === 0 ? 381 : titleLines.length === 1 ? 340 : 313;
+    bkH = titleLines.length === 0 ? 582 : titleLines.length === 1 ? 520 : 478;
+  }
+  const bkX = Math.round((W - bkW) / 2);
+
+  // Total height of the book+title block
+  const titleBlockH = titleLines.length > 0
+    ? TITLE_GAP + TTL_FS + (titleLines.length - 1) * TTL_LINE_H
+    : 0;
+  const totalBlockH = bkH + titleBlockH;
+
+  // Center the whole block in available space
+  const blockTop = Math.round(statsBottom + (AVAILABLE - totalBlockH) / 2);
+  const bookY = blockTop;
+  const logoY = LOGO_Y_FIXED;
+
+  if(!S.hideBook){
+    const isDefault = S.useDefault || !S.bookImg;
+    if(isDefault){
+      // Use headphones or book graphic
+      const defaultSrc = isAudiobook ? headphonesImg : distImg;
+      if(defaultSrc&&defaultSrc.complete&&defaultSrc.naturalWidth>0){
+        ctx.drawImage(defaultSrc, bkX, bookY, bkW, bkH);
+      }
+    } else {
+      // User uploaded cover -- fit to the bounding box
+      const src = S.bookImg;
+      if(src&&src.complete&&src.naturalWidth>0){
+        const sw=src.naturalWidth,sh=src.naturalHeight;
+        const sa=bkW/bkH,ia=sw/sh;
+        let idw,idh,idx2,idy;
+        if(ia>sa){idh=bkH;idw=sw*(bkH/sh);idx2=bkX-(idw-bkW)/2;idy=bookY;}
+        else{idw=bkW;idh=sh*(bkW/sw);idx2=bkX;idy=bookY-(idh-bkH)/2;}
+        ctx.save();ctx.beginPath();ctx.rect(bkX,bookY,bkW,bkH);ctx.clip();
+        ctx.drawImage(src,idx2,idy,idw,idh);ctx.restore();
+      }
+    }
+  }
+
+  // Title sits between book bottom and logo
+  if(titleLines.length>0){
+    const titleStartY = bookY + bkH + TITLE_GAP;
+    ctx.fillStyle=ink;ctx.textBaseline='alphabetic';
+    ctx.font=`700 ${TTL_FS}px 'Inter',sans-serif`;
+    titleLines.forEach((ln,i)=>ctx.fillText(ln,CX,titleStartY + TTL_FS + i * TTL_LINE_H));
+  }
+
+  // Logo — always fixed position
+  const logo=S.ink==='white'?logoWhite:logoBlack;
+  if(logo&&logo.complete&&logo.naturalWidth>0){
+    ctx.drawImage(logo,Math.round((W-LG_W)/2),logoY,LG_W,LG_H);
+  }
+}
+
+// Debounced render for mobile — prevents Android keyboard dismissal on rapid redraws
+let _renderTimer = null;
+let _inputFocused = false;  // suppress renders while keyboard is open on Android
+
+function renderDebounced(){
+  if(isMobile){
+    if(_inputFocused) return; // don't render while keyboard is open
+    clearTimeout(_renderTimer);
+    _renderTimer = setTimeout(render, 300);
+  } else {
+    render();
+  }
+}
+
+function render(){
+  const wrap=document.getElementById('canvas-wrap');
+  if(S.bgOn){
+    if(S.bgType==='color'){
+      wrap.style.background=S.bgSrc;
+      wrap.style.backgroundImage='none';
+    } else {
+      wrap.style.background='';
+      wrap.style.backgroundImage=`url(${S.bgSrc})`;
+      wrap.style.backgroundSize='cover';
+      wrap.style.backgroundPosition='center';
+    }
+    wrap.classList.remove('checker');
+  } else {
+    wrap.style.background='';
+    wrap.style.backgroundImage='';
+    wrap.style.backgroundSize='';
+    wrap.style.backgroundPosition='';
+    wrap.classList.add('checker');
+  }
+  drawCard(document.getElementById('c'),false);
+}
+
+function fireConfetti(){
+  const duration=3000;
+  const end=Date.now()+duration;
+  (function frame(){
+    confetti({particleCount:6,angle:60,spread:55,origin:{x:0},colors:['#c24e42','#ffffff','#1a1a1a']});
+    confetti({particleCount:6,angle:120,spread:55,origin:{x:1},colors:['#c24e42','#ffffff','#1a1a1a']});
+    if(Date.now()<end)requestAnimationFrame(frame);
+  })();
+}
+
+// Core save function — called from main button (sub-100%) and congrats modal (100%)
+function doSave(){
+  const exp=document.createElement('canvas');
+  exp.width=W;exp.height=H;
+  drawCard(exp,true);
+  const now=new Date();
+  const mm=String(now.getMonth()+1).padStart(2,'0');
+  const dd=String(now.getDate()).padStart(2,'0');
+  const yyyy=now.getFullYear();
+  const fname='StoryStat_'+mm+dd+yyyy+'.png';
+  if(isMobile){
+    const dataUrl=exp.toDataURL('image/png');
+    const overlay=document.getElementById('modal-mobile-save');
+    const img=document.getElementById('mobile-save-img');
+    img.src=dataUrl;
+    const vp=document.querySelector('meta[name=viewport]');
+    if(vp) vp.setAttribute('content','width=device-width,initial-scale=1,maximum-scale=1');
+    overlay.classList.add('open');
+    const prompt = document.getElementById('mobile-save-home-prompt');
+    const promptText = document.getElementById('home-prompt-text');
+    const isAndroid = /Android/.test(navigator.userAgent);
+    promptText.innerHTML = isAndroid
+      ? 'Come back after every session without searching. Tap the <strong style="color:#ddd">three-dot menu</strong> then <strong style="color:#ddd">Add to Home Screen</strong>.'
+      : 'Come back after every session without searching. Tap the <strong style="color:#ddd">share icon</strong> then <strong style="color:#ddd">Add to Home Screen</strong>.';
+    prompt.style.display = 'block';
+  } else {
+    try {
+      exp.toBlob(function(blob){
+        const blobUrl=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=blobUrl;
+        a.download=fname;
+        a.style.position='fixed';
+        a.style.left='-9999px';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function(){
+          document.body.removeChild(a);
+          URL.revokeObjectURL(blobUrl);
+        },1000);
+        document.getElementById('modal-saved').classList.add('open');
+        if(isMobile){
+          const isAndroid = /Android/.test(navigator.userAgent);
+          const savedPromptText = document.getElementById('home-prompt-text-saved');
+          savedPromptText.innerHTML = isAndroid
+            ? 'Come back after every session without searching. Tap the <strong>three-dot menu</strong> then <strong>Add to Home Screen</strong>.'
+            : 'Come back after every session without searching. Tap the <strong>share icon</strong> then <strong>Add to Home Screen</strong>.';
+          document.getElementById('home-screen-prompt').style.display='block';
+        }
+      },'image/png');
+    } catch(e) {
+      alert('Download blocked: ' + e.message);
+    }
+  }
+}
+
+
+// ── STATS SHEET LOGGING ──────────────────────────────────────────────────────
+const STATS_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxbaUdSX48FO_tDRmgiE91dyxUdnFAgytSClqKI5BQCqSsd9nRA_Hn1vXg4F7NQRQjLVQ/exec';
+
+// Capture new vs returning BEFORE the modal stores anything
+const _isReturningUser = !!(getStoredEmail());
+
+function logStatsToSheet(){
+  if(isPreviewMode) return;
+  const now = new Date();
+  const hoursEl   = document.getElementById('inp-hours');
+  const minsEl    = document.getElementById('inp-mins');
+  const pagesEl   = document.getElementById('inp-pages');
+  const pctEl     = document.getElementById('inp-pct');
+  const curpageEl = document.getElementById('inp-curpage');
+  const totalEl   = document.getElementById('inp-total');
+
+  const isAudiobook = S.mode === 'audiobook';
+  const hours    = isAudiobook
+    ? (document.getElementById('inp-ab-hours').classList.contains('is-default') ? null : parseInt(document.getElementById('inp-ab-hours').value)||0)
+    : (hoursEl.classList.contains('is-default') ? null : parseInt(hoursEl.value)||0);
+  const mins     = isAudiobook
+    ? (document.getElementById('inp-ab-mins').classList.contains('is-default') ? null : parseInt(document.getElementById('inp-ab-mins').value)||0)
+    : (minsEl.classList.contains('is-default') ? null : parseInt(minsEl.value)||0);
+  const pages    = isAudiobook ? null : (pagesEl.classList.contains('is-default') ? null : parseInt(pagesEl.value)||0);
+  const pct      = pctEl.classList.contains('is-default') ? null : parseInt(pctEl.value)||0;
+  const totalPgs = totalEl.classList.contains('is-default') ? null : parseInt(totalEl.value)||0;
+  const totalMins = (hours !== null && mins !== null) ? hours*60 + mins : null;
+
+  const payload = {
+    // Timestamp
+    timestamp:        now.toISOString(),
+    date:             now.toLocaleDateString('en-GB'),
+    time:             now.toLocaleTimeString('en-GB') + ' (UTC' + (now.getTimezoneOffset() <= 0 ? '+' : '-') + String(Math.abs(Math.floor(now.getTimezoneOffset()/60))).padStart(2,'0') + ':' + String(Math.abs(now.getTimezoneOffset()%60)).padStart(2,'0') + ')',
+    // Mode
+    mode:             S.mode,
+    unit:             isAudiobook ? S.unit : null,
+    // Reading/listening stats
+    pages_read:       pages,
+    hours:            hours,
+    minutes:          mins,
+    total_mins:       totalMins,
+    percent_complete: pct,
+    total_pages:      totalPgs,
+    finished_book:    pct === 100,
+    // Custom stat
+    custom_stat_used:   isAudiobook ? true : S.customStat,
+    custom_stat_label:  isAudiobook ? (S.customLabel||'Distance Walked') : (S.customStat ? (S.customLabel||'') : null),
+    custom_stat_value:  isAudiobook
+      ? (S.customLabel==='Listening Speed'
+          ? parseFloat(S.abSpeed||1.0)
+          : (parseFloat(document.getElementById('inp-ab-custom-val')?.value||document.getElementById('inp-ab-free-val')?.value||0)||0))
+      : (S.customStat ? (S.customVal||0) : null),
+    // Book/audiobook info
+    book_title:       S.title ? S.title.trim() : '',
+    has_title:        !!(S.title && S.title.trim()),
+    // Design choices
+    ink_color:        S.ink,
+    cover_type:       S.hideBook ? 'hidden' : S.useDefault ? 'default' : 'uploaded',
+    used_background:  S.bgOn,
+    background:       S.bgOn ? S.bgLabel : 'none',
+    // Session context
+    device:           isMobile ? 'mobile' : 'desktop',
+    os:               _os,
+    source:           _source,
+    returning_user:   _isReturningUser
+  };
+  fetch(STATS_SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  }).catch(function(){});
+}
+
+// ── EMAIL CAPTURE ────────────────────────────────────────────────────────────
+function getStoredEmail(){ try{ return localStorage.getItem('sbc_email_captured'); }catch(e){ return null; } }
+function storeEmail(email){ try{ localStorage.setItem('sbc_email_captured', email); }catch(e){} }
+
+let _pendingSave = null;
+
+function triggerSaveWithEmailCheck(saveCallback){
+  _pendingSave = saveCallback;
+  if(isPreviewMode || getStoredEmail()){
+    // Already captured — just download
+    saveCallback();
+  } else {
+    trackEvent('ss_email_modal_shown');
+    document.getElementById('modal-email').classList.add('open');
+    document.getElementById('email-input').focus();
+  }
+}
+
+function submitEmail(){
+  const email = document.getElementById('email-input').value.trim();
+  const optin = document.getElementById('email-optin').checked;
+  if(email && !email.includes('@')){
+    document.getElementById('email-input').style.borderColor='#d25343';
+    return;
+  }
+  document.getElementById('email-input').style.borderColor='#e4e1dc';
+  if(email) storeEmail(email);
+  if(email){
+    trackEvent('ss_email_signup', {email: email, opted_in: optin});
+    fetch('https://script.google.com/macros/s/AKfycbzZFIBydTq3buuKogSjBvjO_A564ZOzZZbdBPRD8IHsLEQE-TJzreCf1QX6Nphh_v9SEQ/exec', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email: email, optedIn: optin})
+    }).catch(function(){});
+  }
+  document.getElementById('modal-email').classList.remove('open');
+  if(_pendingSave){ _pendingSave(); _pendingSave=null; }
+}
+
+function skipEmail(){
+  storeEmail('skipped');
+  trackEvent('ss_email_skipped');
+  document.getElementById('modal-email').classList.remove('open');
+  if(_pendingSave){ _pendingSave(); _pendingSave=null; }
+}
+// Allow Enter key to submit
+document.getElementById('email-input').addEventListener('keydown', function(e){
+  if(e.key==='Enter') submitEmail();
+});
+
+// Congrats modal download button
+document.getElementById('congrats-dl-btn').addEventListener('click',()=>{
+  document.getElementById('modal-congrats').classList.remove('open');
+  doSave();
+  logStatsToSheet();
+  trackEvent('ss_download',{ink:S.ink,bg_on:S.bgOn,bg_color:S.bgOn?S.bgColor:'none',cover:S.hideBook?'hidden':S.useDefault?'default':'uploaded',has_title:!!(S.title&&S.title.trim()),hours:parseInt(S.hours)||0,mins:parseInt(S.mins)||0,pages:parseInt(S.pages)||0,pct:parseInt(S.pct)||0,total_pages:parseInt(document.getElementById('inp-total').value)||0});
+});
+
+document.getElementById('dl-btn').addEventListener('click',()=>{
+  document.fonts.ready.then(()=>{
+    const pctVal=Math.max(0,Math.min(100,parseInt(S.pct)||0));
+    if(pctVal===100){
+      fireConfetti();
+      // Update congrats heading based on mode
+      document.getElementById('congrats-heading').textContent = S.mode==='audiobook' ? 'You finished an audiobook!' : 'You finished a book!';
+      trackEvent('ss_book_finished',{mode:S.mode,ink:S.ink,cover:S.hideBook?'hidden':S.useDefault?'default':'uploaded',has_title:!!(S.title&&S.title.trim()),total_pages:parseInt(document.getElementById('inp-total').value)||0});
+      triggerSaveWithEmailCheck(()=>document.getElementById('modal-congrats').classList.add('open'));
+    } else {
+      triggerSaveWithEmailCheck(()=>{ doSave(); logStatsToSheet(); trackEvent('ss_download',{mode:S.mode}); });
+    }
+  });
+});
+
+document.fonts.ready.then(()=>{render();_cachedFormH=0;matchHeights();});
+render();
+function matchHeights(){
+  const isMob=window.innerWidth<=825;
+  const panel=document.querySelector('.panel');
+  const canvasPanel=document.querySelector('.canvas-panel');
+  const wrap=document.getElementById('canvas-wrap');
+  if(!panel||!canvasPanel||!wrap) return;
+  if(isMob){
+    // On mobile: single column, no height matching needed. Always clear and return.
+    canvasPanel.style.height='';
+    wrap.style.height='';
+    wrap.style.width='';
+    _cachedFormH=0;
+    return;
+  }
+  const formH=panel.offsetHeight;
+  if(formH===_cachedFormH&&canvasPanel.style.height) return;
+  _cachedFormH=formH;
+  canvasPanel.style.height=formH+'px';
+  canvasPanel.style.boxSizing='border-box';
+  const labelEl=canvasPanel.querySelector('.canvas-label');
+  const btnEl=canvasPanel.querySelector('.dl-btn');
+  const labelH=labelEl?labelEl.offsetHeight+10:24;
+  const btnH=btnEl?btnEl.offsetHeight+16:60;
+  const outerEl=canvasPanel.querySelector('.canvas-outer');
+  const availH=formH-32-labelH-btnH;
+  if(outerEl) outerEl.style.height=availH+'px';
+  const wrapW=Math.round(availH*(1080/1920));
+  wrap.style.height=availH+'px';
+  wrap.style.width=wrapW+'px';
+  wrap.style.maxWidth='100%';
+}
+
+// Prevent buttons from stealing focus on click (causes layout recalc flicker)
+document.querySelectorAll('.tog, .preset-btn, .mode-btn, .unit-btn, .unit-btn-lg').forEach(btn=>{
+  btn.addEventListener('mousedown', e=>e.preventDefault());
+});
+document.getElementById('hide-book-toggle').addEventListener('change',e=>{S.hideBook=e.target.checked;trackEvent('ss_cover_hidden',{hidden:S.hideBook});render();});
+let _lastWidth = window.innerWidth;
+window.addEventListener('resize', () => {
+  const newWidth = window.innerWidth;
+  // On mobile, width changes = real viewport change (rotation), not keyboard
+  // Height-only changes on Android = keyboard open/close, ignore those
+  if(newWidth !== _lastWidth) {
+    _lastWidth = newWidth;
+    _cachedFormH = 0;
+    matchHeights();
+  }
+});
+
+// Track focus state across all inputs — suppress renders while keyboard is open on Android
+const _allInputs = document.querySelectorAll('input, textarea');
+_allInputs.forEach(inp => {
+  inp.addEventListener('focus', () => {
+    _inputFocused = true;
+  });
+  inp.addEventListener('blur', () => {
+    _inputFocused = false;
+    // Render once after keyboard closes
+    clearTimeout(_renderTimer);
+    _renderTimer = setTimeout(render, 400);
+  });
+});
+
+// Re-match when bg toggle changes (swatch row adds height to form)
+// ── CUSTOM STAT ──────────────────────────────────────────────────────────────
+(()=>{
+  const toggle    = document.getElementById('custom-stat-toggle');
+  const pctFields = document.getElementById('pct-fields');
+  const csFields  = document.getElementById('custom-stat-fields');
+  const labelInp  = document.getElementById('inp-custom-label');
+  const valInp    = document.getElementById('inp-custom-val');
+  const presets   = document.querySelectorAll('.preset-btn');
+  const sectionLbl = document.getElementById('pct-section-lbl');
+
+  const PRESETS_PHYSICAL = [
+    {id:'preset-tea',   label:'Cups of Tea',        emoji:'🍵'},
+    {id:'preset-tears', label:'Tears Cried',         emoji:'😭'},
+    {id:'preset-plot',  label:'Plot Twists',         emoji:'😱'},
+    {id:'preset-days',  label:'Days Read in a Row',  emoji:'📕'},
+  ];
+  const PRESETS_AUDIO = [
+    {id:'preset-walked',    label:'Distance Walked', emoji:'🚶'},
+    {id:'preset-driven',    label:'Distance Driven', emoji:'🚗'},
+    {id:'preset-remaining', label:'Time Remaining',  emoji:'⏱️'},
+  ];
+  const PRESETS = [...PRESETS_PHYSICAL, ...PRESETS_AUDIO];
+
+  let activePreset = 'preset-tea';
+
+  // Label field starts in gray placeholder state
+  function setLabelPlaceholder(){
+    labelInp.value = '';
+    labelInp.classList.add('is-placeholder');
+    labelInp.placeholder = 'Cups of Tea';
+  }
+
+  function setLabelActive(text){
+    labelInp.value = text;
+    labelInp.classList.remove('is-placeholder');
+  }
+
+  function setPreset(id){
+    activePreset = id;
+    const p = PRESETS.find(x=>x.id===id);
+    if(!p) return;
+    presets.forEach(b=>b.classList.toggle('active', b.id===id));
+    S.customLabel = p.label;
+    S.customEmoji = p.emoji;
+    // If it's the default (tea), keep gray placeholder; if explicitly clicked, fill active
+    if(id === 'preset-tea' && !_presetExplicitlyClicked){
+      setLabelPlaceholder();
+    } else {
+      setLabelActive(p.label);
+    }
+    renderDebounced();
+  }
+
+  let _presetExplicitlyClicked = false;
+
+  presets.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      _presetExplicitlyClicked = true;
+      setPreset(btn.id);
+    });
+  });
+
+  // Focus: if still in placeholder state, clear for typing
+  labelInp.addEventListener('focus',()=>{
+    if(labelInp.classList.contains('is-placeholder')){
+      labelInp.value='';
+      labelInp.classList.remove('is-placeholder');
+    }
+  });
+
+  labelInp.addEventListener('input',()=>{
+    const val = labelInp.value.trim();
+    const match = PRESETS.find(p=>p.label.toLowerCase()===val.toLowerCase());
+    if(match){
+      activePreset = match.id;
+      S.customEmoji = match.emoji;
+      presets.forEach(b=>b.classList.toggle('active', b.id===match.id));
+    } else {
+      activePreset = 'custom';
+      S.customEmoji = '';
+      presets.forEach(b=>b.classList.remove('active'));
+    }
+    S.customLabel = val || 'Cups of Tea';
+    renderDebounced();
+  });
+
+  labelInp.addEventListener('blur',()=>{
+    if(!labelInp.value.trim()){
+      // Revert to tea default in gray
+      _presetExplicitlyClicked = false;
+      activePreset = 'preset-tea';
+      S.customLabel = 'Cups of Tea';
+      S.customEmoji = '🍵';
+      presets.forEach(b=>b.classList.toggle('active', b.id==='preset-tea'));
+      setLabelPlaceholder();
+      renderDebounced();
+    }
+  });
+
+  valInp.addEventListener('input',()=>{
+    if(valInp.value.length>5) valInp.value=valInp.value.slice(0,5);
+    S.customVal = valInp.value;
+    renderDebounced();
+  });
+
+  toggle.addEventListener('change',()=>{
+    S.customStat = toggle.checked;
+    pctFields.style.display = toggle.checked ? 'none' : '';
+    csFields.style.display  = toggle.checked ? 'flex' : 'none';
+    sectionLbl.textContent  = toggle.checked ? 'Choose your custom stat' : 'Percent complete';
+    if(toggle.checked){
+      // Init defaults on first open
+      if(!valInp.value){ valInp.value='0'; S.customVal='0'; }
+      // Label stays gray (placeholder) until user interacts
+      setLabelPlaceholder();
+      S.customLabel = 'Cups of Tea';
+      S.customEmoji = '🍵';
+      presets.forEach(b=>b.classList.toggle('active', b.id==='preset-tea'));
+    }
+    trackEvent('ss_custom_stat_toggle',{enabled:toggle.checked});
+    _cachedFormH=0;
+    setTimeout(matchHeights,50);
+    renderDebounced();
+  });
+})();
+</script>
+<!-- ── LIGHTBOX ── -->
+<div class="lightbox-overlay" id="lightbox" onclick="this.classList.remove('open')">
+  <img id="lightbox-img" src="" alt="Inspiration example">
+</div>
+</body>
+</html>
