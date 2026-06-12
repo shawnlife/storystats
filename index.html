@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v5.53 -->
+<!-- StoryStats v5.54 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -1420,11 +1420,9 @@ function drawCard(canvas,forExport){
 
 // Debounced render for mobile — prevents Android keyboard dismissal on rapid redraws
 let _renderTimer = null;
-let _inputFocused = false;  // suppress renders while keyboard is open on Android
 
 function renderDebounced(){
   if(isMobile){
-    if(_inputFocused) return; // don't render while keyboard is open
     clearTimeout(_renderTimer);
     _renderTimer = setTimeout(render, 300);
   } else {
@@ -1721,19 +1719,7 @@ window.addEventListener('resize', () => {
   }
 });
 
-// Track focus state across all inputs — suppress renders while keyboard is open on Android
-const _allInputs = document.querySelectorAll('input, textarea');
-_allInputs.forEach(inp => {
-  inp.addEventListener('focus', () => {
-    _inputFocused = true;
-  });
-  inp.addEventListener('blur', () => {
-    _inputFocused = false;
-    // Render once after keyboard closes
-    clearTimeout(_renderTimer);
-    _renderTimer = setTimeout(render, 400);
-  });
-});
+// Re-match heights on window resize (width changes only, not keyboard open/close)
 
 // Re-match when bg toggle changes (swatch row adds height to form)
 // ── CUSTOM STAT ──────────────────────────────────────────────────────────────
