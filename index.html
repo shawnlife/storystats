@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v5.55 -->
+<!-- StoryStats v5.57 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -945,9 +945,11 @@ function setMode(mode){
   });
   freeLabelInp.addEventListener('blur',()=>{ if(!freeLabelInp.value.trim()){ setAbPreset('preset-walked',false); } });
   freeVal.addEventListener('input',()=>{ S.customVal=freeVal.value; renderDebounced(); });
+  freeVal.addEventListener('change',()=>{ S.customVal=freeVal.value; renderDebounced(); });
 
   // Distance value
   distVal.addEventListener('input',()=>{ S.customVal=distVal.value; renderDebounced(); });
+  distVal.addEventListener('change',()=>{ S.customVal=distVal.value; renderDebounced(); });
 
   // Time remaining values
   // (speed handled by slider above)
@@ -962,6 +964,7 @@ function setMode(mode){
       renderDebounced();
     });
     abPctEl.addEventListener('input',()=>{ abPctEl.classList.remove('is-default'); S.pct=abPctEl.value; renderDebounced(); });
+    abPctEl.addEventListener('change',()=>{ abPctEl.classList.remove('is-default'); S.pct=abPctEl.value; renderDebounced(); });
   }
 })();
 function initField(id,key){
@@ -983,13 +986,14 @@ function initField(id,key){
       renderDebounced();
     }
   });
-  // Handle both input and paste events for Android compatibility
+  // Handle input, paste, and change events — iOS fires 'change' reliably on number fields
   const onChange=()=>{
     el.classList.remove('is-default');
     S[key]=el.value||def;
     renderDebounced();
   };
   el.addEventListener('input', onChange);
+  el.addEventListener('change', onChange);
   el.addEventListener('paste',()=>setTimeout(onChange, 0));
 }
 ['hours','mins','pages'].forEach(k=>initField('inp-'+k,k));
@@ -1006,6 +1010,7 @@ function initAbTimeField(id, key, max, def){
     renderDebounced();
   });
   el.addEventListener('input',()=>{el.classList.remove('is-default');S[key]=el.value;renderDebounced();});
+  el.addEventListener('change',()=>{el.classList.remove('is-default');S[key]=el.value;renderDebounced();});
 }
 initAbTimeField('inp-ab-hours','abHours',99,'0');
 initAbTimeField('inp-ab-mins','abMins',59,'00');
@@ -1073,6 +1078,7 @@ document.getElementById('inp-pages').addEventListener('blur',e=>{
     renderDebounced();
   };
   pctEl.addEventListener('input', onPctChange);
+  pctEl.addEventListener('change', onPctChange);
   pctEl.addEventListener('paste', () => setTimeout(onPctChange, 0));
   pctEl.addEventListener('blur', () => {
     if(pctEl.value) trackEvent('ss_field_pct',{value:parseInt(pctEl.value)||0});
@@ -1095,6 +1101,7 @@ document.getElementById('inp-pages').addEventListener('blur',e=>{
     renderDebounced();
   };
   pageEl.addEventListener('input', onPageChange);
+  pageEl.addEventListener('change', onPageChange);
   pageEl.addEventListener('paste', () => setTimeout(onPageChange, 0));
   pageEl.addEventListener('blur', () => {
     if(pageEl.value) trackEvent('ss_field_curpage',{value:parseInt(pageEl.value)||0});
@@ -1112,6 +1119,7 @@ document.getElementById('inp-pages').addEventListener('blur',e=>{
     renderDebounced();
   };
   totalEl.addEventListener('input', onTotalChange);
+  totalEl.addEventListener('change', onTotalChange);
   totalEl.addEventListener('paste', () => setTimeout(onTotalChange, 0));
   totalEl.addEventListener('blur', () => {
     if(totalEl.value) trackEvent('ss_field_total_pages',{value:parseInt(totalEl.value)||0});
@@ -1422,12 +1430,7 @@ function drawCard(canvas,forExport){
 let _renderTimer = null;
 
 function renderDebounced(){
-  if(isMobile){
-    clearTimeout(_renderTimer);
-    _renderTimer = setTimeout(()=>requestAnimationFrame(render), 100);
-  } else {
-    render();
-  }
+  render();
 }
 
 function render(){
@@ -1654,18 +1657,16 @@ document.getElementById('congrats-dl-btn').addEventListener('click',()=>{
 });
 
 document.getElementById('dl-btn').addEventListener('click',()=>{
-  document.fonts.ready.then(()=>{
-    const pctVal=Math.max(0,Math.min(100,parseInt(S.pct)||0));
-    if(pctVal===100){
-      fireConfetti();
-      // Update congrats heading based on mode
-      document.getElementById('congrats-heading').textContent = S.mode==='audiobook' ? 'You finished an audiobook!' : 'You finished a book!';
-      trackEvent('ss_book_finished',{mode:S.mode,ink:S.ink,cover:S.hideBook?'hidden':S.useDefault?'default':'uploaded',has_title:!!(S.title&&S.title.trim()),total_pages:parseInt(document.getElementById('inp-total').value)||0});
-      triggerSaveWithEmailCheck(()=>document.getElementById('modal-congrats').classList.add('open'));
-    } else {
-      triggerSaveWithEmailCheck(()=>{ doSave(); logStatsToSheet(); trackEvent('ss_download',{mode:S.mode}); });
-    }
-  });
+  const pctVal=Math.max(0,Math.min(100,parseInt(S.pct)||0));
+  if(pctVal===100){
+    fireConfetti();
+    // Update congrats heading based on mode
+    document.getElementById('congrats-heading').textContent = S.mode==='audiobook' ? 'You finished an audiobook!' : 'You finished a book!';
+    trackEvent('ss_book_finished',{mode:S.mode,ink:S.ink,cover:S.hideBook?'hidden':S.useDefault?'default':'uploaded',has_title:!!(S.title&&S.title.trim()),total_pages:parseInt(document.getElementById('inp-total').value)||0});
+    triggerSaveWithEmailCheck(()=>document.getElementById('modal-congrats').classList.add('open'));
+  } else {
+    triggerSaveWithEmailCheck(()=>{ doSave(); logStatsToSheet(); trackEvent('ss_download',{mode:S.mode}); });
+  }
 });
 
 document.fonts.ready.then(()=>{render();_cachedFormH=0;matchHeights();});
@@ -1822,6 +1823,11 @@ window.addEventListener('resize', () => {
   });
 
   valInp.addEventListener('input',()=>{
+    if(valInp.value.length>5) valInp.value=valInp.value.slice(0,5);
+    S.customVal = valInp.value;
+    renderDebounced();
+  });
+  valInp.addEventListener('change',()=>{
     if(valInp.value.length>5) valInp.value=valInp.value.slice(0,5);
     S.customVal = valInp.value;
     renderDebounced();
