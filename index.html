@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v5.54 -->
+<!-- StoryStats v5.55 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -1424,7 +1424,7 @@ let _renderTimer = null;
 function renderDebounced(){
   if(isMobile){
     clearTimeout(_renderTimer);
-    _renderTimer = setTimeout(render, 300);
+    _renderTimer = setTimeout(()=>requestAnimationFrame(render), 100);
   } else {
     render();
   }
