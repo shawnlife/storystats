@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v5.57 -->
+<!-- StoryStats v6.1 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -1589,6 +1589,25 @@ function logStatsToSheet(){
     source:           _source,
     returning_user:   _isReturningUser
   };
+
+  // Check for a previous submission within 15 minutes from this device
+  const DUPE_WINDOW_MS = 15 * 60 * 1000;
+  let supersedesTs = null;
+  try {
+    const prev = JSON.parse(localStorage.getItem('ss_last_submission') || 'null');
+    if (prev && prev.ts && (Date.now() - new Date(prev.ts).getTime()) < DUPE_WINDOW_MS) {
+      supersedesTs = prev.ts;
+    }
+  } catch(e) {}
+
+  // Store this submission's timestamp for future supersedes checks
+  try {
+    localStorage.setItem('ss_last_submission', JSON.stringify({ ts: payload.timestamp }));
+  } catch(e) {}
+
+  // Add to payload
+  payload.supersedes_ts = supersedesTs;
+
   fetch(STATS_SHEET_URL, {
     method: 'POST',
     mode: 'no-cors',
