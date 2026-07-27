@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v6.1 -->
+<!-- StoryStats v6.20 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -20,33 +20,35 @@
 <meta name="twitter:description" content="Log your reading session and download a personalised stats card to share on Instagram. Perfect for Silent Book Club sessions.">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js" defer></script>
 <style>
+:root{--brand:#d25343;--text:#364049;--white:#ffffff;--text-faint:#aaa;--text-muted:#767676;--text-body:#444;--surface-input:#f0f3f2;--border-input:#e0ddd8;--border-hover:#ccc;--text-secondary:#666;--surface:#faf9f7;--surface-hover:#f0ede8;--border:#e4e1dc;--text-muted2:#777;}
+
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{overflow-x:hidden;width:100%}
-body{font-family:'Mulish',-apple-system,sans-serif;background:#ffffff;color:#364049;min-height:100dvh}
+body{font-family:'Mulish',-apple-system,sans-serif;background:var(--white);color:var(--text);min-height:100dvh}
 
 /* ── PAGE HEADER ───────────────────────────────────────────────────── */
 .page-header{max-width:1100px;margin:0 auto;padding:20px 16px 16px;text-align:center}
 .page-header h1{font-size:22px;font-weight:bold;font-family:'Rosina',serif;letter-spacing:0;margin-bottom:8px;line-height:1.2}
-.page-header p{font-size:13px;line-height:1.6;color:#444;max-width:1100px;margin:0 auto}
-.page-header p strong{color:#364049}
+.page-header p{font-size:13px;line-height:1.6;color:var(--text-body);max-width:1100px;margin:0 auto}
+.page-header p strong{color:var(--text)}
 .brand{font-style:normal;font-weight:900;letter-spacing:-.03em}
 
-.page-intro{max-width:1100px;margin:0 auto 16px;padding:0 16px;font-size:16px;line-height:1.7;color:#444;text-align:center;}
+.page-intro{max-width:1100px;margin:0 auto 16px;padding:0 16px;font-size:16px;line-height:1.7;color:var(--text-body);text-align:center;}
 
 /* ── APP LAYOUT ────────────────────────────────────────────────────── */
 .app{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1100px;margin:0 auto;padding:0 16px;align-items:start}
 
 /* ── PANEL ─────────────────────────────────────────────────────────── */
-.panel{background:#ffffff;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:11px;border:1px solid #e4e1dc}
-.sep{border:none;border-top:1px solid #f0ede8;margin:2px 0}.app hr,.app .sep{margin:2px 0!important;padding:0!important}.app br{display:none}
-.sec{font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#d25343}
+.panel{background:var(--white);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:11px;border:1px solid var(--border)}
+.sep{border:none;border-top:1px solid var(--surface-hover);margin:2px 0}.app hr,.app .sep{margin:2px 0!important;padding:0!important}.app br{display:none}
+.sec{font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--brand)}
 .row{display:flex;flex-direction:column;gap:4px}
-.lbl{font-size:14px;color:#364049;font-weight:600}
-input[type=text],input[type=number],textarea{box-sizing:border-box;width:100%;padding:8px 10px;border:1px solid #e0ddd8;border-radius:8px;font-size:14px;font-family:inherit;outline:none;background:#f0f3f2;color:#364049;transition:border .15s}
-input[type=number].is-default{color:#aaa}
-input[type=text]:focus,input[type=number]:focus,textarea:focus{border-color:#364049;background:#ffffff}
+.lbl{font-size:14px;color:var(--text);font-weight:600}
+input[type=text],input[type=number],textarea{box-sizing:border-box;width:100%;padding:8px 10px;border:1px solid var(--border-input);border-radius:8px;font-size:14px;font-family:inherit;outline:none;background:var(--surface-input);color:var(--text);transition:border .15s}
+input[type=number].is-default{color:var(--text-faint)}
+input[type=text]:focus,input[type=number]:focus,textarea:focus{border-color:var(--text);background:var(--white)}
 textarea{resize:none}
 input[type=number]{-moz-appearance:textfield}
 input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
@@ -56,97 +58,102 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appear
 .sec-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0}
 .stats-label-row{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-bottom:4px}
 .mode-switcher{display:flex;gap:10px;justify-content:center;margin:0 0 16px;padding:0 12px}
-.mode-btn{flex:1;max-width:220px;padding:11px 10px;border:2px solid #d25343;border-radius:9px;background:#ffffff;color:#d25343;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;text-align:center;transition:background .15s,color .15s;outline:none}
-.mode-btn.active{background:#d25343;color:#ffffff}
+.mode-btn{flex:1;max-width:220px;padding:11px 10px;border:2px solid var(--brand);border-radius:9px;background:var(--white);color:var(--brand);font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;text-align:center;transition:background .15s,color .15s;outline:none}
+.mode-btn.active{background:var(--brand);color:var(--white)}
 .mode-btn:hover:not(.active){background:#fdf0ee}
 .sec-with-toggle{display:flex;align-items:center;justify-content:space-between}
-.unit-toggle-wrap{display:flex;align-items:center;gap:2px;background:#f0f3f2;border-radius:6px;padding:2px}
-.unit-btn{padding:3px 8px;border:none;border-radius:4px;background:transparent;color:#767676;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s,color .15s}
-.unit-btn.active{background:#ffffff;color:#d25343;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.unit-toggle-wrap{display:flex;align-items:center;gap:2px;background:var(--surface-input);border-radius:6px;padding:2px}
+.unit-btn{padding:3px 8px;border:none;border-radius:4px;background:transparent;color:var(--text-muted);font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s,color .15s}
+.unit-btn.active{background:var(--white);color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .ab-stats-label-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px}
 .ab-stats-label-row .lbl:first-child{grid-column:span 2}
 .four-col{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
 .ab-preset-inputs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end}
-.unit-toggle-wrap-inline{display:flex;gap:2px;background:#f0f3f2;border-radius:6px;padding:2px;width:100%}
-.unit-btn-lg{flex:1;padding:6px 4px;border:none;border-radius:4px;background:transparent;color:#767676;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s,color .15s}
-.unit-btn-lg.active{background:#ffffff;color:#d25343;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.unit-toggle-wrap-inline{display:flex;gap:2px;background:var(--surface-input);border-radius:6px;padding:2px;width:100%}
+.unit-btn-lg{flex:1;padding:6px 4px;border:none;border-radius:4px;background:transparent;color:var(--text-muted);font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s,color .15s}
+.unit-btn-lg.active{background:var(--white);color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.1)}
 #ab-unit-col{min-width:70px}
 .hhmm-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:4px;align-items:end}
-.hhmm-sep{font-size:18px;font-weight:700;color:#364049;text-align:center;padding-bottom:6px}
-.upload-box{border:1.5px dashed #d25343;border-radius:10px;padding:10px 12px;text-align:center;cursor:pointer;background:#f0f3f2;position:relative;overflow:hidden;transition:background .15s,border-color .15s;min-height:54px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px}
+.hhmm-sep{font-size:18px;font-weight:700;color:var(--text);text-align:center;padding-bottom:6px}
+.upload-box{border:1.5px dashed var(--brand);border-radius:10px;padding:10px 12px;text-align:center;cursor:pointer;background:var(--surface-input);position:relative;overflow:hidden;transition:background .15s,border-color .15s;min-height:54px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px}
 .upload-box:hover{border-color:#999;background:#e8eceb}
 .upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;font-size:0}
-.mini{font-size:13px;color:#767676;margin-bottom:3px}
-.or-div{font-size:10px;color:#ccc;font-weight:700;text-align:center;margin-bottom:9px}
+.mini{font-size:13px;color:var(--text-muted);margin-bottom:3px}
+.or-div{font-size:10px;color:var(--border-hover);font-weight:700;text-align:center;margin-bottom:9px}
 
 /* ── UPLOAD ────────────────────────────────────────────────────────── */
 
 .upload-icon{font-size:20px}
-.upload-hint{font-size:11px;color:#364049;line-height:1.5}
-.upload-dims{font-size:10px;color:#364049}
+.icon-inline{width:1em;height:1em;vertical-align:-0.15em;flex-shrink:0;display:inline-block}
+.mode-btn .icon-inline,.dl-main .icon-inline{margin-right:2px}
+.preset-btn .icon-inline{margin-right:3px}
+.upload-hint{font-size:11px;color:var(--text);line-height:1.5}
+.upload-dims{font-size:10px;color:var(--text)}
 .upload-dims{display:none}
-.optional-note{font-size:13px;color:#aaa;margin-bottom:4px}
+.optional-note{font-size:13px;color:var(--text-faint);margin-bottom:4px}
 
 /* ── CUSTOM STAT ────────────────────────────────────────────────────── */
 .custom-stat-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .custom-stat-toggle-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.custom-stat-toggle-lbl{font-size:13px;color:#767676;font-weight:400;white-space:nowrap}
+.custom-stat-toggle-lbl{font-size:13px;color:var(--text-muted);font-weight:400;white-space:nowrap}
 .custom-stat-fields{display:flex;flex-direction:column;gap:8px;margin-top:4px}
 .preset-btns{display:flex;gap:6px;flex-wrap:wrap}
-.preset-btn{flex:1;min-width:0;padding:7px 4px;border:2px solid #e0ddd8;border-radius:8px;background:#faf9f7;color:#555;font-size:13px;cursor:pointer;text-align:center;font-family:inherit;font-weight:600;transition:background .15s,color .15s,border-color .15s;white-space:nowrap;line-height:1.4;outline:none}
-.preset-btn:focus-visible{box-shadow:0 0 0 2px #d25343}
-.preset-btn.active{background:#ffffff;color:#d25343;border-color:#d25343}
-.preset-btn:hover:not(.active){background:#f0ede8;border-color:#ccc}
+.preset-btn{flex:1;min-width:0;padding:7px 4px;border:2px solid var(--border-input);border-radius:8px;background:var(--surface);color:#555;font-size:13px;cursor:pointer;text-align:center;font-family:inherit;font-weight:600;transition:background .15s,color .15s,border-color .15s;white-space:nowrap;line-height:1.4;outline:none}
+.preset-btn:focus-visible{box-shadow:0 0 0 2px var(--brand)}
+.preset-btn.active{background:var(--white);color:var(--brand);border-color:var(--brand)}
+.preset-btn:hover:not(.active){background:var(--surface-hover);border-color:var(--border-hover)}
 .custom-stat-inputs{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
-.custom-stat-inputs .mini{font-size:13px;color:#767676;margin-bottom:3px}
+.custom-stat-inputs .mini{font-size:13px;color:var(--text-muted);margin-bottom:3px}
 .custom-num-wrap{width:88px;flex-shrink:0}
-.custom-stat-instruction{font-size:13px;color:#767676;font-weight:400;margin-bottom:2px}
-.bg-subhead{font-size:14px;font-weight:600;color:#364049;margin-bottom:4px}
-.bg-hint{font-size:13px;color:#767676;line-height:1.5}
-input.is-placeholder{color:#aaa}
-.swatch.swatch-transparent{background:repeating-conic-gradient(#ccc 0% 25%,#fff 0% 50%) 0 0/10px 10px}
-.optional-inline{font-size:11px;color:#aaa;font-weight:400;text-transform:none;letter-spacing:0}
+.custom-stat-instruction{font-size:13px;color:var(--text-muted);font-weight:400;margin-bottom:2px}
+.bg-subhead{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.bg-hint{font-size:13px;color:var(--text-muted);line-height:1.5}
+input.is-placeholder{color:var(--text-faint)}
+.swatch.swatch-transparent{background:repeating-conic-gradient(var(--border-hover) 0% 25%,var(--white) 0% 50%) 0 0/10px 10px}
+.optional-inline{font-size:11px;color:var(--text-faint);font-weight:400;text-transform:none;letter-spacing:0}
 .upload-thumb{max-height:100px;max-width:100%;object-fit:contain;border-radius:4px;pointer-events:none}
 
 /* ── TOGGLES ───────────────────────────────────────────────────────── */
 .tog-row{display:flex;gap:6px}
-.tog{flex:1;padding:7px 6px;border:2px solid #e0ddd8;border-radius:8px;background:#faf9f7;color:#777;font-size:14px;cursor:pointer;text-align:center;font-family:inherit;transition:background .15s,color .15s,border-color .15s;font-weight:600;outline:none}
-.tog:focus-visible{box-shadow:0 0 0 2px #d25343}
-.tog.active{background:#ffffff;color:#d25343;border-color:#d25343}
-.tog:hover:not(.active){background:#f0ede8;border-color:#ccc}
+.design-row{display:flex;gap:16px;flex-wrap:wrap}
+.design-group{flex:1;min-width:175px}
+.tog{flex:1;padding:7px 6px;border:2px solid var(--border-input);border-radius:8px;background:var(--surface);color:var(--text-muted2);font-size:14px;cursor:pointer;text-align:center;font-family:inherit;transition:background .15s,color .15s,border-color .15s;font-weight:600;outline:none}
+.tog:focus-visible{box-shadow:0 0 0 2px var(--brand)}
+.tog.active{background:var(--white);color:var(--brand);border-color:var(--brand)}
+.tog:hover:not(.active){background:var(--surface-hover);border-color:var(--border-hover)}
 .toggle-row{display:flex;align-items:center;gap:10px}
-.toggle-lbl{font-size:11px;color:#666;font-weight:600;flex:1}
+.toggle-lbl{font-size:11px;color:var(--text-secondary);font-weight:600;flex:1}
 .switch{position:relative;width:38px;height:22px;flex-shrink:0}
 .switch input{opacity:0;width:0;height:0;position:absolute}
 .slider{position:absolute;inset:0;background:#ddd;border-radius:11px;cursor:pointer;transition:background .2s}
-.slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.switch input:checked+.slider{background:#d25343}
+.slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:var(--white);border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch input:checked+.slider{background:var(--brand)}
 .switch input:checked+.slider:before{transform:translateX(16px)}
 .swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;padding:4px 2px;overflow:visible}
 #swatch-row:not([style*="flex"]){margin:0;padding:0}
 .swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s,border-color .15s;flex-shrink:0;box-shadow:0 0 0 1px rgba(0,0,0,0.25)}
 .swatch:hover{transform:scale(1.15)}
-.swatch.active{border-color:#d25343;transform:scale(1.1)}
+.swatch.active{border-color:var(--brand);transform:scale(1.1)}
 
 /* ── CANVAS PANEL ──────────────────────────────────────────────────── */
-.canvas-panel{background:#ffffff;border-radius:14px;padding:16px;border:1px solid #e4e1dc;display:flex;flex-direction:column;gap:10px;box-sizing:border-box;position:sticky;top:16px}
-.canvas-label{font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#d25343}
+.canvas-panel{background:var(--white);border-radius:14px;padding:16px;border:1px solid var(--border);display:flex;flex-direction:column;gap:10px;box-sizing:border-box;position:sticky;top:16px}
+.canvas-label{font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--brand)}
 .canvas-outer{display:flex;justify-content:center;align-items:center;flex:1;min-height:0}
 .canvas-outer{display:flex;align-items:center;justify-content:center;flex:1;overflow:hidden}
 .canvas-wrap{position:relative;border-radius:8px;overflow:hidden;outline:1px solid rgba(0,0,0,0.15);margin:0 auto;display:block;flex-shrink:0}
 .checker{background:repeating-conic-gradient(#e8e5e0 0% 25%,#f5f3ef 0% 50%) 0 0/14px 14px}
 canvas{display:block;width:100%;height:100%;max-width:100%}
-.dl-btn{width:100%;padding:12px 10px;border:1.5px solid #d25343;border-radius:9px;background:#d25343;color:#fff;font-size:13px;cursor:pointer;font-family:inherit;font-weight:700;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.dl-btn{width:100%;padding:12px 10px;border:1.5px solid var(--brand);border-radius:9px;background:var(--brand);color:var(--white);font-size:13px;cursor:pointer;font-family:inherit;font-weight:700;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
 .dl-main{font-size:14px;font-weight:800}
 .dl-sub{font-size:10px;font-weight:400;opacity:0.85;letter-spacing:.01em}
 .dl-btn:hover{background:#b8392a}
 .dl-btn:active{transform:scale(.98)}
 .reset-btn{background:none;border:none;font-size:11px;color:#bbb;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:2px}
-.reset-btn:hover{color:#666}
+.reset-btn:hover{color:var(--text-secondary)}
 
 /* ── SOCIAL INSTRUCTIONS ───────────────────────────────────────────── */
 .help-section{max-width:1100px;margin:12px auto 0;padding:0 16px}
-.help-box{background:#fff;border-radius:14px;padding:20px;border:1px solid #e4e1dc}
+.help-box{background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--border)}
 .help-tab-inner{display:grid;grid-template-columns:1fr 228px;gap:27px;align-items:start;padding-right:27px}
 .help-inspo{width:120px;border-radius:8px;object-fit:cover;display:block;margin:0 auto;box-shadow:0 2px 8px rgba(0,0,0,0.12)}
 @media(max-width:825px){.help-tab-inner{grid-template-columns:1fr;padding-right:0;gap:16px}.inspo-gallery{justify-content:flex-start}.inspo-item img{width:80px}}
@@ -155,48 +162,53 @@ canvas{display:block;width:100%;height:100%;max-width:100%}
 .inspo-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
 .inspo-item img{border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.12);transition:transform .15s;width:110px}
 .inspo-item img:hover{transform:scale(1.03)}
-.inspo-caption{font-size:10px;color:#aaa;text-align:center}
+.inspo-caption{font-size:10px;color:var(--text-faint);text-align:center}
 .inspo-video{width:180px;aspect-ratio:9/16;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.12);display:block;object-fit:cover;background:#000}
 @media(max-width:825px){.inspo-video{width:140px}}
 .lightbox-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
 .lightbox-overlay.open{opacity:1;pointer-events:all}
 .lightbox-overlay img{max-width:100%;max-height:90vh;border-radius:12px;object-fit:contain}
-.help-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:#364049;padding:0;text-align:left}
-.help-toggle:hover{color:#444}
-.help-arrow{font-size:11px;color:#aaa;transition:transform .2s}
+.help-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:var(--text);padding:0;text-align:left}
+.help-toggle:hover{color:var(--text-body)}
+.help-arrow{font-size:11px;color:var(--text-faint);transition:transform .2s}
 .help-arrow.open{transform:rotate(180deg)}
 .help-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.help-tab{padding:6px 14px;border:1px solid #e0ddd8;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:600;background:#faf9f7;color:#777;transition:all .15s}
-.help-tab.active{background:#d25343;color:#fff;border-color:#d25343}
+.help-tab{padding:6px 14px;border:1px solid var(--border-input);border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:600;background:var(--surface);color:var(--text-muted2);transition:all .15s}
+.help-tab.active{background:var(--brand);color:var(--white);border-color:var(--brand)}
 .help-content{display:none}
 .help-content.active{display:block}
 .help-content ol{padding-left:18px;display:flex;flex-direction:column;gap:4px}
-.help-content li{font-size:13px;color:#444;line-height:1.5;margin:0!important;padding:0!important}
-.help-content li strong{color:#364049}
+.help-content li{font-size:13px;color:var(--text-body);line-height:1.5;margin:0!important;padding:0!important}
+.help-content li strong{color:var(--text)}
 
 /* ── FOOTER ────────────────────────────────────────────────────────── */
 .footer{max-width:1100px;margin:10px auto;padding:0 16px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
-.footer-copy{font-size:11px;color:#aaa}.footer-shawn{font-size:11px!important;color:#aaa!important;text-decoration:underline;text-underline-offset:2px;font-family:inherit!important;font-weight:normal!important;letter-spacing:normal!important;}
+.footer-copy{font-size:11px;color:var(--text-faint)}.footer-shawn{font-size:11px!important;color:var(--text-faint)!important;text-decoration:underline;text-underline-offset:2px;font-family:inherit!important;font-weight:normal!important;letter-spacing:normal!important;}
 .footer-links{display:flex;gap:16px}
-.footer-links a,.footer-links button{font-size:11px;color:#364049;text-decoration:underline;text-underline-offset:2px;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
-.footer-links a:hover,.footer-links button:hover{color:#666}
+.footer-links a,.footer-links button{font-size:11px;color:var(--text);text-decoration:underline;text-underline-offset:2px;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
+.footer-links a:hover,.footer-links button:hover{color:var(--text-secondary)}
 
 /* ── MODAL ─────────────────────────────────────────────────────────── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:999998;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:#fff;border-radius:16px;padding:24px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;position:relative}
+.modal{background:var(--white);border-radius:16px;padding:24px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;position:relative}
 .modal h2{font-size:16px;font-weight:700;margin-bottom:14px}
-.modal p,.modal li{font-size:13px;color:#444;line-height:1.6}
+.modal p,.modal li{font-size:13px;color:var(--text-body);line-height:1.6}
 .modal ul,.modal ol{padding-left:18px;margin:10px 0;display:flex;flex-direction:column;gap:6px}
 .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#888;line-height:1}
-.modal-close:hover{color:#364049}
+.modal-close:hover{color:var(--text)}
 .modal h3{font-size:13px;font-weight:700;margin:16px 0 6px}
+.hail-mary-modal{text-align:center;z-index:1000000}
+.hail-mary-gif{width:100%;max-width:280px;border-radius:12px;margin:4px auto 6px;display:block}
+.hail-mary-caption{font-size:22px!important;margin:8px 0 4px;font-weight:800}
+.hail-mary-thumbs{position:fixed;inset:0;z-index:999999;pointer-events:none;overflow:hidden}
+.hail-mary-thumbs span{position:absolute;top:0;left:0;font-size:28px;will-change:transform}
 
 /* ── CONGRATS MODAL ────────────────────────────────────────────────── */
 .congrats-modal{text-align:center}
 .congrats-modal .emoji{font-size:48px;margin-bottom:12px}
 .congrats-modal h2{font-size:22px;margin-bottom:8px}
-.congrats-modal p{font-size:14px;color:#666;margin-bottom:20px}
+.congrats-modal p{font-size:14px;color:var(--text-secondary);margin-bottom:20px}
 .congrats-modal .dl-btn{max-width:200px;margin:0 auto}
 
 /* ── MOBILE ────────────────────────────────────────────────────────── */
@@ -248,8 +260,9 @@ html,body{max-width:100%;overflow-x:hidden}
 <div class="page-intro">Ever been jealous of runners sharing their workout stats after every run? Now it's readers' turn to celebrate that they sat down with a book today. Log your reading session, download your personalised stats card, add it on top of a picture or video, and share it with the world. Perfect for Silent Book Club sessions or any time you sit down with a good book. Tag <strong>@silentbookclub</strong> on social when you share, and bookmark this page so you can come back after every session.</div>
 
 <div class="mode-switcher">
-  <button class="mode-btn active" id="mode-physical" onclick="setMode('physical')">📖 Physical Book</button>
-  <button class="mode-btn" id="mode-audiobook" onclick="setMode('audiobook')">🎧 Audiobook</button>
+  <button class="mode-btn active" id="mode-physical" onclick="setMode('physical')"><svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6v13m9-13v13m9-13v13"/></svg> Physical Book</button>
+  <button class="mode-btn" id="mode-audiobook" onclick="setMode('audiobook')"><svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4 15a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm11 0a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2z"/><path d="M4 15v-3a8 8 0 0 1 16 0v3"/></svg> Audiobook</button>
+  <button class="mode-btn" id="mode-ebook" onclick="setMode('ebook')"><svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6v13m9-13v13m9-13v13"/></svg> E-Reader<!-- PLACEHOLDER icon: reused physical book icon, swap when Shawn finds an e-reader icon --></button>
 </div>
 <div class="app">
   <div class="panel">
@@ -294,9 +307,9 @@ html,body{max-width:100%;overflow-x:hidden}
         </div>
         <div class="custom-stat-instruction">Choose one below, or type your own</div>
         <div class="preset-btns" id="audiobook-presets">
-          <button class="preset-btn active" data-label="Distance Walked" data-emoji="🚶" id="preset-walked">🚶 Distance Walked</button>
-          <button class="preset-btn" data-label="Distance Driven" data-emoji="🚗" id="preset-driven">🚗 Distance Driven</button>
-          <button class="preset-btn" data-label="Listening Speed" data-emoji="⚡" id="preset-speed">⚡ Listening Speed</button>
+          <button class="preset-btn active" data-label="Distance Walked" data-emoji="&#x1F6B6;" id="preset-walked"><svg class="icon-inline" viewBox="0 0 48 48" fill="currentColor"><path d="M31.25 8a4 4 0 1 1-8 0a4 4 0 0 1 8 0m-5.557 20.397l5.193 5.124a2 2 0 0 1 .457.693l2.769 7.055a2 2 0 0 1-3.724 1.462l-2.614-6.661l-8.928-8.81a2 2 0 0 1-.583-1.649l.715-6.32c-1.724 1.714-3.054 4.123-4.073 7.316a2 2 0 1 1-3.81-1.216c1.87-5.86 4.975-10.246 10.185-12.257l.023-.009c1.327-.493 2.707-.453 3.937.182c1.181.611 2.022 1.666 2.573 2.848c.232.498.446.963.648 1.4c.488 1.058.898 1.95 1.293 2.732c.553 1.1.998 1.83 1.438 2.342c.408.474.813.766 1.33.968c.556.217 1.335.367 2.538.403a2 2 0 1 1-.12 3.998c-1.445-.043-2.728-.228-3.873-.675c-1.183-.462-2.116-1.165-2.91-2.09c-.5-.582-.94-1.247-1.35-1.97z"/><path d="m18.263 30.22l3.315 3.18l-1.526 5.147a2 2 0 0 1-.684 1.006l-5.134 4.023a2 2 0 0 1-2.467-3.15l4.632-3.628l1.395-4.71z"/></svg> Distance Walked</button>
+          <button class="preset-btn" data-label="Distance Driven" data-emoji="&#x1F697;" id="preset-driven"><svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0m10 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M5 17H3v-6l2-5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0H9m-6-6h15m-6 0V6"/></svg> Distance Driven</button>
+          <button class="preset-btn" data-label="Listening Speed" data-emoji="&#x26A1;" id="preset-speed"><svg class="icon-inline" viewBox="0 0 12 12" fill="none" stroke="currentColor"><path d="M8.76 5.5H6.85L9.3.86C9.38.66 9.29.5 9.1.5H5.39c-.2 0-.43.16-.51.36L3.04 5.14c-.09.2 0 .36.2.36H5L3.07 11c-.13.37-.03.68.43.27l5.28-5.23c.3-.29.29-.54-.02-.54z"/></svg> Listening Speed</button>
         </div>
         <!-- Distance selected: stat label | choose units | distance -->
         <div id="ab-distance-inputs" class="ab-preset-inputs">
@@ -340,6 +353,46 @@ html,body{max-width:100%;overflow-x:hidden}
         </div>
       </div>
     </div>
+
+    <!-- ── EBOOK STATS ── -->
+    <div id="ebook-stats" style="display:none;flex-direction:column;gap:11px">
+      <!-- Row 1: Time spent reading + Percent complete -->
+      <div class="row">
+        <div class="ab-stats-label-row">
+          <div class="lbl">Time spent reading</div>
+          <div class="lbl">Percent complete</div>
+        </div>
+        <div class="three-col">
+          <div><input type="number" id="inp-eb-hours" placeholder="Hours" min="0" max="99" class="is-default"></div>
+          <div><input type="number" id="inp-eb-mins" placeholder="Minutes" min="0" max="59" class="is-default"></div>
+          <div><input type="number" id="inp-eb-pct" placeholder="Enter %" min="0" max="100" class="is-default"></div>
+        </div>
+      </div>
+      <!-- Row 2: Custom stat (always visible, no toggle) -- reuses the physical book presets -->
+      <div class="row">
+        <div class="custom-stat-header">
+          <div class="lbl">Choose your custom stat</div>
+        </div>
+        <div class="custom-stat-instruction">Choose one below, or type your own</div>
+        <div class="preset-btns" id="ebook-presets">
+          <button class="preset-btn active" data-label="Cups of Tea" data-emoji="&#x1F375;" id="preset-eb-tea"><svg class="icon-inline" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h8.5v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2V4.5A.5.5 0 0 1 2 4M.5 13.5h13m-3-9.5h1a2 2 0 0 1 0 4h-1M3 .5v1m5-1v1M5.5.5v1"/></svg> Cups of Tea</button>
+          <button class="preset-btn" data-label="Tears Cried" data-emoji="&#x1F62D;" id="preset-eb-tears"><svg class="icon-inline" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5.072a8 8 0 1 0 .951 13.215a2.47 2.47 0 0 0 1.63.592q.42 0 .794-.122C16.277 22.144 11.14 23.05 7 20.66C2.217 17.9.578 11.783 3.34 7S12.217.58 17 3.34c4.325 2.497 6.079 7.735 4.334 12.252q-.049-.938-.51-1.982q-.26-.586-.823-1.57a8 8 0 0 0-4-6.968"/><path d="M19.865 17.032a1.8 1.8 0 0 1-1.284.513q-.75 0-1.284-.513a1.65 1.65 0 0 1-.534-1.234q0-.59.341-1.255q.341-.666 1.477-2.238q1.136 1.572 1.478 2.238q.34.666.34 1.255q0 .72-.534 1.234M9.264 9.539c-.03.154-.13.444-.318.712c-.184.263-.42.461-.72.541c-.298.08-.602.027-.893-.108a2 2 0 0 1-.631-.459l-1.131.986c.229.262.625.598 1.13.833c.51.237 1.182.393 1.914.197c.731-.196 1.236-.667 1.56-1.128c.319-.455.494-.944.561-1.286zm5.472 0c.03.154.13.444.318.712c.184.263.42.461.72.541c.298.08.602.027.893-.108c.297-.139.528-.34.631-.459l1.131.986a3.5 3.5 0 0 1-1.13.833c-.51.237-1.182.393-1.914.197s-1.236-.667-1.56-1.128a3.5 3.5 0 0 1-.561-1.286zm-4.544 7.676a1 1 0 0 1-1.664-1.11C9.438 14.74 11.01 14.34 12 14.34s2.562.4 3.472 1.766a1 1 0 1 1-1.664 1.11c-.41-.615-1.213-.876-1.808-.876s-1.399.261-1.808.875"/></svg> Tears Cried</button>
+          <button class="preset-btn" data-label="Plot Twists" data-emoji="&#x1F631;" id="preset-eb-plot"><svg class="icon-inline" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="7" cy="3" rx="6" ry="2.5"/><path d="M11.87 6.73c-.87.79-2.73 1.34-4.94 1.34A10.17 10.17 0 0 1 3 7.37m7.86 2.47a6.84 6.84 0 0 1-3.36.73a8.47 8.47 0 0 1-2.5-.35m5.37 3.22c-.95.21-1.83-.16-2-.83"/></svg> Plot Twists</button>
+          <button class="preset-btn" data-label="Days Read in a Row" data-emoji="&#x1F4D5;" id="preset-eb-days"><svg class="icon-inline" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2c-.277 0-.5.223-.5.5v9c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-9c0-.277-.223-.5-.5-.5zm3 1c-.277 0-.5.223-.5.5v8c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-8c0-.277-.223-.5-.5-.5zm3.549.99a.5.5 0 0 0-.102.018l-.965.258a.5.5 0 0 0-.353.613l1.81 6.762a.5.5 0 0 0 .614.353l.965-.26a.5.5 0 0 0 .353-.611l-1.81-6.762a.5.5 0 0 0-.512-.37M1.5 4c-.277 0-.5.223-.5.5v7c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-7c0-.277-.223-.5-.5-.5zm0 9a.499.499 0 1 0 0 1h12a.499.499 0 1 0 0-1z"/></svg> Days in a Row</button>
+        </div>
+        <div class="custom-stat-inputs">
+          <div>
+            <div class="mini">Stat label</div>
+            <input type="text" id="inp-eb-custom-label" maxlength="20" placeholder="Cups of Tea" autocomplete="off" class="is-placeholder">
+          </div>
+          <div class="custom-num-wrap">
+            <div class="mini">Number</div>
+            <input type="number" id="inp-eb-custom-val" placeholder="0" min="0" maxlength="5">
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="row" id="pct-section-row">
       <div class="custom-stat-header">
         <div class="lbl" id="pct-section-lbl">Percent complete</div>
@@ -362,10 +415,10 @@ html,body{max-width:100%;overflow-x:hidden}
         <div class="custom-stat-instruction">Choose one below, or type your own</div>
         <!-- Physical book presets -->
         <div class="preset-btns" id="physical-presets">
-          <button class="preset-btn active" data-label="Cups of Tea" data-emoji="🍵" id="preset-tea">🍵 Cups of Tea</button>
-          <button class="preset-btn" data-label="Tears Cried" data-emoji="😭" id="preset-tears">😭 Tears Cried</button>
-          <button class="preset-btn" data-label="Plot Twists" data-emoji="😱" id="preset-plot">😱 Plot Twists</button>
-          <button class="preset-btn" data-label="Days Read in a Row" data-emoji="📕" id="preset-days">📕 Days in a Row</button>
+          <button class="preset-btn active" data-label="Cups of Tea" data-emoji="&#x1F375;" id="preset-tea"><svg class="icon-inline" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h8.5v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2V4.5A.5.5 0 0 1 2 4M.5 13.5h13m-3-9.5h1a2 2 0 0 1 0 4h-1M3 .5v1m5-1v1M5.5.5v1"/></svg> Cups of Tea</button>
+          <button class="preset-btn" data-label="Tears Cried" data-emoji="&#x1F62D;" id="preset-tears"><svg class="icon-inline" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5.072a8 8 0 1 0 .951 13.215a2.47 2.47 0 0 0 1.63.592q.42 0 .794-.122C16.277 22.144 11.14 23.05 7 20.66C2.217 17.9.578 11.783 3.34 7S12.217.58 17 3.34c4.325 2.497 6.079 7.735 4.334 12.252q-.049-.938-.51-1.982q-.26-.586-.823-1.57a8 8 0 0 0-4-6.968"/><path d="M19.865 17.032a1.8 1.8 0 0 1-1.284.513q-.75 0-1.284-.513a1.65 1.65 0 0 1-.534-1.234q0-.59.341-1.255q.341-.666 1.477-2.238q1.136 1.572 1.478 2.238q.34.666.34 1.255q0 .72-.534 1.234M9.264 9.539c-.03.154-.13.444-.318.712c-.184.263-.42.461-.72.541c-.298.08-.602.027-.893-.108a2 2 0 0 1-.631-.459l-1.131.986c.229.262.625.598 1.13.833c.51.237 1.182.393 1.914.197c.731-.196 1.236-.667 1.56-1.128c.319-.455.494-.944.561-1.286zm5.472 0c.03.154.13.444.318.712c.184.263.42.461.72.541c.298.08.602.027.893-.108c.297-.139.528-.34.631-.459l1.131.986a3.5 3.5 0 0 1-1.13.833c-.51.237-1.182.393-1.914.197s-1.236-.667-1.56-1.128a3.5 3.5 0 0 1-.561-1.286zm-4.544 7.676a1 1 0 0 1-1.664-1.11C9.438 14.74 11.01 14.34 12 14.34s2.562.4 3.472 1.766a1 1 0 1 1-1.664 1.11c-.41-.615-1.213-.876-1.808-.876s-1.399.261-1.808.875"/></svg> Tears Cried</button>
+          <button class="preset-btn" data-label="Plot Twists" data-emoji="&#x1F631;" id="preset-plot"><svg class="icon-inline" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="7" cy="3" rx="6" ry="2.5"/><path d="M11.87 6.73c-.87.79-2.73 1.34-4.94 1.34A10.17 10.17 0 0 1 3 7.37m7.86 2.47a6.84 6.84 0 0 1-3.36.73a8.47 8.47 0 0 1-2.5-.35m5.37 3.22c-.95.21-1.83-.16-2-.83"/></svg> Plot Twists</button>
+          <button class="preset-btn" data-label="Days Read in a Row" data-emoji="&#x1F4D5;" id="preset-days"><svg class="icon-inline" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2c-.277 0-.5.223-.5.5v9c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-9c0-.277-.223-.5-.5-.5zm3 1c-.277 0-.5.223-.5.5v8c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-8c0-.277-.223-.5-.5-.5zm3.549.99a.5.5 0 0 0-.102.018l-.965.258a.5.5 0 0 0-.353.613l1.81 6.762a.5.5 0 0 0 .614.353l.965-.26a.5.5 0 0 0 .353-.611l-1.81-6.762a.5.5 0 0 0-.512-.37M1.5 4c-.277 0-.5.223-.5.5v7c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-7c0-.277-.223-.5-.5-.5zm0 9a.499.499 0 1 0 0 1h12a.499.499 0 1 0 0-1z"/></svg> Days in a Row</button>
         </div>
         <div class="custom-stat-inputs">
           <div>
@@ -392,7 +445,7 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="upload-box" id="upload-box">
         <input type="file" accept="image/*" id="book-file" aria-label="Upload book cover image">
         <div id="upload-preview">
-          <div class="upload-icon">📖</div>
+          <div class="upload-icon"><svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6v13m9-13v13m9-13v13"/></svg></div>
           <div class="upload-hint" id="upload-hint">Take a photo of your book, or Google the cover and upload it. Portrait works best.</div>
         </div>
       </div>
@@ -402,15 +455,24 @@ html,body{max-width:100%;overflow-x:hidden}
       <input type="text" id="inp-title" maxlength="50" placeholder="e.g. The Hitchhiker's Guide to the Galaxy" autocomplete="off">
     </div>
     <hr class="sep">
-    <div class="sec">Color &amp; Background Preview</div>
-    <div class="row">
-      <div class="bg-subhead">Font color</div>
-      <div class="tog-row">
-        <button class="tog active" data-key="ink" data-val="black">Black</button>
-        <button class="tog" data-key="ink" data-val="white">White</button>
+    <div class="sec">Design</div>
+    <div class="design-row">
+      <div class="design-group">
+        <div class="bg-subhead">Font color</div>
+        <div class="tog-row">
+          <button class="tog active" data-key="ink" data-val="black">Black</button>
+          <button class="tog" data-key="ink" data-val="white">White</button>
+        </div>
+      </div>
+      <div class="design-group">
+        <div class="bg-subhead">Orientation</div>
+        <div class="tog-row" id="orientation-toggle">
+          <button class="tog active" data-key="orientation" data-val="vertical">Vertical</button>
+          <button class="tog" data-key="orientation" data-val="horizontal">Horizontal</button>
+        </div>
       </div>
     </div>
-    <div class="row" style="margin-top:2px">
+    <div class="row" style="margin-top:10px">
       <div class="bg-subhead">Try it on a background</div>
       <div class="bg-hint">See how your font color looks on different backgrounds before you share.</div>
       <div id="swatch-row" class="swatches" style="margin-top:6px"></div>
@@ -425,7 +487,7 @@ html,body{max-width:100%;overflow-x:hidden}
       </div>
     </div>
     <button class="dl-btn" id="dl-btn">
-  <span class="dl-main">↓ Download Your StoryStat</span>
+  <span class="dl-main"><svg class="icon-inline" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M.5 10.5v1a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1M4 6l3 3.5L10 6M7 9.5v-9"/></svg> Download Your StoryStat</span>
   <span class="dl-sub">Downloads as a transparent PNG</span>
 </button>
   </div>
@@ -502,7 +564,7 @@ html,body{max-width:100%;overflow-x:hidden}
 <div class="modal-overlay" id="modal-email">
   <div class="modal" style="text-align:center;max-width:420px">
     <button class="modal-close" onclick="skipEmail()">&times;</button>
-    <div style="font-size:32px;margin-bottom:10px">📬</div>
+    <div style="font-size:32px;margin-bottom:10px"><svg class="icon-inline" viewBox="0 0 24 24" fill="currentColor"><path d="M19 4H5a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Zm-.41 2l-5.88 5.88a1 1 0 0 1-1.42 0L5.41 6ZM20 17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7.41l5.88 5.88a3 3 0 0 0 4.24 0L20 7.41Z"/></svg></div>
     <h2 style="margin-bottom:8px">One last thing...</h2>
     <p style="margin-bottom:16px;color:#444;font-size:13px;line-height:1.6">Sign up for our newsletter to get book recommendations, event updates, and news from Silent Book Club delivered right to your inbox.</p>
     <input type="email" id="email-input" placeholder="your@email.com" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #e4e1dc;border-radius:8px;font-size:14px;font-family:inherit;margin-bottom:10px;outline:none;">
@@ -510,7 +572,7 @@ html,body{max-width:100%;overflow-x:hidden}
       <input type="checkbox" id="email-optin" aria-label="Subscribe to email updates" style="margin-top:2px;flex-shrink:0;">
       <span>Yes, sign me up for the Silent Book Club newsletter. You can unsubscribe at any time. See our <a href="https://silentbook.club/policies/privacy-policy" target="_blank" style="color:#d25343;text-decoration:underline;font-size:inherit;">Privacy Policy</a>.</span>
     </label>
-    <button class="dl-btn" id="email-submit-btn" onclick="submitEmail()" style="margin-bottom:8px">↓ Download My StoryStat</button>
+    <button class="dl-btn" id="email-submit-btn" onclick="submitEmail()" style="margin-bottom:8px"><svg class="icon-inline" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M.5 10.5v1a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1M4 6l3 3.5L10 6M7 9.5v-9"/></svg> Download My StoryStat</button>
     <button onclick="skipEmail()" style="background:none;border:none;font-size:12px;color:#aaa;cursor:pointer;text-decoration:underline;font-family:inherit;">Skip and download without signing up</button>
   </div>
 </div>
@@ -553,7 +615,7 @@ html,body{max-width:100%;overflow-x:hidden}
   </div>
   <div style="background:#1a1a1a;padding:12px 20px;text-align:center;flex-shrink:0">
     <div id="mobile-save-home-prompt" style="display:none;background:#2a2a2a;border-radius:8px;padding:10px 14px;margin-bottom:10px;text-align:left">
-      <div style="color:#fff;font-size:13px;font-weight:700;margin-bottom:3px">📱 Add StoryStats to your home screen</div>
+      <div style="color:#fff;font-size:13px;font-weight:700;margin-bottom:3px"><svg class="icon-inline" viewBox="0 0 417 768" fill="currentColor"><path d="M76 0h265c42 0 76 34 76 76v616c0 42-34 76-76 76H76c-42 0-76-34-76-76V76C0 34 34 0 76 0zM49 617h319V144H49v473zm159 105c24 0 42-18 42-41c0-24-18-42-42-42c-23 0-41 18-41 42c0 23 18 41 41 41z"/></svg> Add StoryStats to your home screen</div>
       <div id="home-prompt-text" style="color:#aaa;font-size:11px;line-height:1.6"></div>
     </div>
     <button onclick="document.getElementById('modal-mobile-save').classList.remove('open')" style="background:none;border:none;color:#aaa;font-size:12px;font-family:'Mulish',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:2px">Close</button>
@@ -564,7 +626,7 @@ html,body{max-width:100%;overflow-x:hidden}
 <div class="modal-overlay" id="modal-mobile-tip">
   <div class="modal" style="text-align:center">
     <button class="modal-close" onclick="document.getElementById('modal-mobile-tip').classList.remove('open')">&times;</button>
-    <div style="font-size:36px;margin-bottom:12px">📸</div>
+    <div style="font-size:36px;margin-bottom:12px"><svg class="icon-inline" viewBox="0 0 1024 1024" fill="currentColor"><path d="M928 224H780.816L704 96H320l-76.8 128H96c-32 0-96 32-96 95.008V832c0 53.008 48 96 89.328 96H930c42 0 94-44.992 94-94.992V320c0-32-32-96-96-96zm32 609.008c0 12.624-20.463 30.288-29.999 31.008H89.521c-7.408-.609-25.52-15.04-25.52-32.016V319.008c0-20.272 27.232-30.496 32-31.008h183.44l76.8-128h313.647l57.12 96.945l17.6 31.055H928c22.56 0 31.68 29.472 32 32v513.008zM512.001 320c-123.712 0-224 100.288-224 224s100.288 224 224 224s224-100.288 224-224s-100.288-224-224-224zm0 384c-88.224 0-160-71.776-160-160s71.776-160 160-160s160 71.776 160 160s-71.776 160-160 160z"/></svg></div>
     <h2 style="margin-bottom:8px">Save to your camera roll</h2>
     <p style="margin-bottom:16px">Your StoryStats card has opened in a new tab. Long press the image and tap <strong>Save to Photos</strong> to add it to your camera roll.</p>
     <button class="dl-btn" onclick="document.getElementById('modal-mobile-tip').classList.remove('open')">Got it</button>
@@ -575,11 +637,11 @@ html,body{max-width:100%;overflow-x:hidden}
 <div class="modal-overlay" id="modal-saved">
   <div class="modal" style="text-align:center">
     <button class="modal-close" onclick="document.getElementById('modal-saved').classList.remove('open')">&times;</button>
-    <div style="font-size:36px;margin-bottom:12px">&#x2705;</div>
+    <div style="font-size:36px;margin-bottom:12px"><svg class="icon-inline" viewBox="0 0 20 20" fill="currentColor"><path d="m0 11l2-2l5 5L18 3l2 2L7 18z"/></svg></div>
     <h2 style="margin-bottom:8px">Your StoryStat is saved!</h2>
     <p style="margin-bottom:20px;color:#666">Check your downloads folder.</p>
     <div id="home-screen-prompt" style="display:none;background:#f7f4f1;border-radius:10px;padding:14px 16px;margin-bottom:16px;text-align:left">
-      <div style="font-size:14px;font-weight:700;color:#364049;margin-bottom:4px">📱 Add StoryStats to your home screen</div>
+      <div style="font-size:14px;font-weight:700;color:#364049;margin-bottom:4px"><svg class="icon-inline" viewBox="0 0 417 768" fill="currentColor"><path d="M76 0h265c42 0 76 34 76 76v616c0 42-34 76-76 76H76c-42 0-76-34-76-76V76C0 34 34 0 76 0zM49 617h319V144H49v473zm159 105c24 0 42-18 42-41c0-24-18-42-42-42c-23 0-41 18-41 42c0 23 18 41 41 41z"/></svg> Add StoryStats to your home screen</div>
       <div id="home-prompt-text-saved" style="font-size:12px;color:#666;line-height:1.6"></div>
     </div>
     <a href="javascript:location.reload()" style="font-size:13px;color:#d25343;text-decoration:underline;text-underline-offset:3px">Make another one?</a>
@@ -589,11 +651,22 @@ html,body{max-width:100%;overflow-x:hidden}
 <!-- ── CONGRATS MODAL ── -->
 <div class="modal-overlay" id="modal-congrats">
   <div class="modal congrats-modal">
-    <div class="emoji">🎉</div>
+    <div class="emoji"><svg class="icon-inline" viewBox="0 0 24 24" fill="currentColor"><path d="M2 22L7 8l9 9l-14 5Zm3.3-3.3l7.05-2.5l-4.55-4.55l-2.5 7.05Zm9.25-6.15L13.5 11.5l5.6-5.6q.8-.8 1.925-.8t1.925.8l.6.6l-1.05 1.05l-.6-.6q-.35-.35-.875-.35t-.875.35l-5.6 5.6Zm-4-4L9.5 7.5l.6-.6q.35-.35.35-.85t-.35-.85l-.65-.65L10.5 3.5l.65.65q.8.8.8 1.9t-.8 1.9l-.6.6Zm2 2L11.5 9.5l3.6-3.6q.35-.35.35-.875t-.35-.875l-1.6-1.6l1.05-1.05l1.6 1.6q.8.8.8 1.925t-.8 1.925l-3.6 3.6Zm4 4L15.5 13.5l1.6-1.6q.8-.8 1.925-.8t1.925.8l1.6 1.6l-1.05 1.05l-1.6-1.6q-.35-.35-.875-.35t-.875.35l-1.6 1.6ZM5.3 18.7Z"/></svg></div>
     <h2 id="congrats-heading">You finished a book!</h2>
     <p>That's a big deal. Download your stats card and share it with the world!</p>
     <button class="dl-btn" id="congrats-dl-btn" style="max-width:260px;margin:0 auto">Get My StoryStat</button>
     <button class="reset-btn" style="margin-top:10px" onclick="document.getElementById('modal-congrats').classList.remove('open')">Close</button>
+  </div>
+</div>
+
+<!-- ── PROJECT HAIL MARY EASTER EGG MODAL ── -->
+<div class="modal-overlay" id="modal-hail-mary">
+  <div class="hail-mary-thumbs" id="hail-mary-thumbs"></div>
+  <div class="modal hail-mary-modal">
+    <button class="modal-close" onclick="closeHailMaryModal()" aria-label="Close">&times;</button>
+    <img src="Icons/hail-mary-rocky.gif" alt="Rocky" class="hail-mary-gif">
+    <h2 class="hail-mary-caption">Amaze, amaze, amaze!</h2>
+    <button class="dl-btn" id="hail-mary-proceed-btn" style="max-width:260px;margin:12px auto 0" onclick="proceedHailMaryDownload()">Proceed to Download</button>
   </div>
 </div>
 
@@ -602,13 +675,17 @@ const isMobile=/Mobi|Android|iPhone|iPad/.test(navigator.userAgent);
 const _ua=navigator.userAgent;
 const _os=(/iPhone|iPad|iPod/.test(_ua)?'iOS':/Android/.test(_ua)?'Android':/Windows/.test(_ua)?'Windows':/Mac/.test(_ua)?'Mac':/Linux/.test(_ua)?'Linux':'Other');
 const _source='shopify';
-document.getElementById('dl-btn').querySelector('.dl-main').textContent=isMobile?'↓ Save Your StoryStat':'↓ Download Your StoryStat';
+const ICON_DOWNLOAD='<svg class="icon-inline" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M.5 10.5v1a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1M4 6l3 3.5L10 6M7 9.5v-9"/></svg>';
+document.getElementById('dl-btn').querySelector('.dl-main').innerHTML=ICON_DOWNLOAD+(isMobile?' Save Your StoryStat':' Download Your StoryStat');
 document.getElementById('dl-btn').querySelector('.dl-sub').textContent=isMobile?'Opens image to save to camera roll':'Downloads as a transparent PNG';
 function getUploadHintText(){
   if(typeof S !== 'undefined' && S.mode==='audiobook') return 'Screenshot your audiobook or Google the cover and upload it. Square works best.';
+  if(typeof S !== 'undefined' && S.mode==='ebook') return 'Screenshot your book or Google the cover and upload it. Portrait works best.';
   return isMobile ? 'Take a photo of your book, or upload from your camera roll. Portrait works best.' : 'Take a photo of your book, or Google the cover and upload it. Portrait works best.';
 }
-function defaultPreviewHTML(){ return `<div class="upload-icon">${typeof S !== 'undefined' && S.mode==='audiobook'?'🎧':'📖'}</div><div class="upload-hint">${getUploadHintText()}</div>`; }
+const ICON_BOOK='<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6v13m9-13v13m9-13v13"/></svg>';
+const ICON_HEADPHONES='<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4 15a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm11 0a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2z"/><path d="M4 15v-3a8 8 0 0 1 16 0v3"/></svg>';
+function defaultPreviewHTML(){ return `<div class="upload-icon">${typeof S !== 'undefined' && S.mode==='audiobook'?ICON_HEADPHONES:ICON_BOOK}</div><div class="upload-hint">${getUploadHintText()}</div>`; }
 function resetBook(){
   S.bookImg=null;S.useDefault=true;
   trackEvent('ss_cover_reset');
@@ -653,7 +730,7 @@ function detectUnit(){
   return isUS ? 'mi' : 'km';
 }
 
-const S={ink:'black',bgOn:false,bgColor:'#87CEEB',title:'',hours:'0',mins:'55',pages:'50',pct:'25',bookImg:null,useDefault:true,hideBook:false,customStat:false,customLabel:'Cups of Tea',customEmoji:'🍵',customVal:'0',mode:'physical',unit:detectUnit(),abHours:'0',abMins:'00',abTrHours:'0',abTrMins:'00',abSpeed:'1.0'};
+const S={ink:'black',bgOn:false,bgColor:'#87CEEB',title:'',hours:'0',mins:'55',pages:'50',pct:'25',bookImg:null,useDefault:true,hideBook:false,customStat:false,customLabel:'Cups of Tea',customEmoji:'\uD83C\uDF75',customVal:'0',mode:'physical',unit:detectUnit(),abHours:'0',abMins:'00',abTrHours:'0',abTrMins:'00',abSpeed:'1.0',orientation:'vertical',ebHours:'0',ebMins:'55',ebCustomLabel:'Cups of Tea',ebCustomEmoji:'\uD83C\uDF75',ebCustomVal:'0'};
 document.getElementById('upload-hint').innerHTML = getUploadHintText();
 const DEFAULTS={hours:'0',mins:'55',pages:'50',pct:'25',curpage:'25',total:'100'};
 
@@ -737,9 +814,16 @@ BG_OPTIONS.forEach((opt)=>{
 });
 document.querySelectorAll('.tog').forEach(t=>{
   t.addEventListener('click',()=>{
+    if(t.dataset.key==='orientation' && S.orientation===t.dataset.val) return;
     S[t.dataset.key]=t.dataset.val;
     if(t.dataset.key==='ink') trackEvent('ss_ink_color',{color:t.dataset.val});
     document.querySelectorAll(`.tog[data-key="${t.dataset.key}"]`).forEach(b=>b.classList.toggle('active',b.dataset.val===t.dataset.val));
+    if(t.dataset.key==='orientation'){
+      const c=document.getElementById('c');
+      if(S.orientation==='horizontal'){c.width=LS.W;c.height=LS.H;}else{c.width=W;c.height=H;}
+      _cachedFormH=0;matchHeights();
+      trackEvent('ss_orientation_toggle',{orientation:S.orientation});
+    }
     renderDebounced();
   });
 });
@@ -751,34 +835,59 @@ const PHYSICAL_DEFAULTS = {hours:'0', mins:'55', pages:'50', pct:'25'};
 function updateDistanceLabels(){
   const walked = document.getElementById('preset-walked');
   const driven = document.getElementById('preset-driven');
-  if(walked) walked.textContent = `🚶 Distance Walked`;
-  if(driven) driven.textContent = `🚗 Distance Driven`;
+  if(walked) walked.innerHTML = '<svg class="icon-inline" viewBox="0 0 48 48" fill="currentColor"><path d="M31.25 8a4 4 0 1 1-8 0a4 4 0 0 1 8 0m-5.557 20.397l5.193 5.124a2 2 0 0 1 .457.693l2.769 7.055a2 2 0 0 1-3.724 1.462l-2.614-6.661l-8.928-8.81a2 2 0 0 1-.583-1.649l.715-6.32c-1.724 1.714-3.054 4.123-4.073 7.316a2 2 0 1 1-3.81-1.216c1.87-5.86 4.975-10.246 10.185-12.257l.023-.009c1.327-.493 2.707-.453 3.937.182c1.181.611 2.022 1.666 2.573 2.848c.232.498.446.963.648 1.4c.488 1.058.898 1.95 1.293 2.732c.553 1.1.998 1.83 1.438 2.342c.408.474.813.766 1.33.968c.556.217 1.335.367 2.538.403a2 2 0 1 1-.12 3.998c-1.445-.043-2.728-.228-3.873-.675c-1.183-.462-2.116-1.165-2.91-2.09c-.5-.582-.94-1.247-1.35-1.97z"/><path d="m18.263 30.22l3.315 3.18l-1.526 5.147a2 2 0 0 1-.684 1.006l-5.134 4.023a2 2 0 0 1-2.467-3.15l4.632-3.628l1.395-4.71z"/></svg> Distance Walked';
+  if(driven) driven.innerHTML = '<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0m10 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M5 17H3v-6l2-5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0H9m-6-6h15m-6 0V6"/></svg> Distance Driven';
+}
+
+// Carry time + percent between mode field sets. A field that the user never
+// touched (still is-default) keeps the destination mode's own default; an
+// edited field copies across so the value isn't lost on switch. Works between
+// any two of the three modes (and any future mode added the same way).
+const MODE_TIME_FIELDS = {
+  physical:  {h:'inp-hours',    m:'inp-mins',    pct:'inp-pct',    hKey:'hours',   mKey:'mins'},
+  audiobook: {h:'inp-ab-hours', m:'inp-ab-mins', pct:'inp-ab-pct', hKey:'abHours', mKey:'abMins'},
+  ebook:     {h:'inp-eb-hours', m:'inp-eb-mins', pct:'inp-eb-pct', hKey:'ebHours', mKey:'ebMins'},
+};
+function syncModeFields(fromMode, toMode){
+  if(fromMode===toMode || !MODE_TIME_FIELDS[fromMode] || !MODE_TIME_FIELDS[toMode]) return;
+  const src=MODE_TIME_FIELDS[fromMode], dst=MODE_TIME_FIELDS[toMode];
+  const srcH=document.getElementById(src.h), srcM=document.getElementById(src.m), srcP=document.getElementById(src.pct);
+  const dstH=document.getElementById(dst.h), dstM=document.getElementById(dst.m), dstP=document.getElementById(dst.pct);
+  const copyField=(s,d)=>{
+    if(!s.classList.contains('is-default')){ d.value=s.value; d.classList.remove('is-default'); }
+  };
+  copyField(srcH,dstH); copyField(srcM,dstM); copyField(srcP,dstP);
+  if(!dstH.classList.contains('is-default')) S[dst.hKey]=dstH.value;
+  if(!dstM.classList.contains('is-default')) S[dst.mKey]=dstM.value;
+  // S.pct is shared state already, so percent renders correctly regardless;
+  // the copy above only syncs which input box displays the value.
 }
 
 function setMode(mode){
   if(S.mode === mode) return;
+  const fromMode = S.mode;
   S.mode = mode;
 
   // Toggle mode buttons
   document.getElementById('mode-physical').classList.toggle('active', mode==='physical');
   document.getElementById('mode-audiobook').classList.toggle('active', mode==='audiobook');
+  document.getElementById('mode-ebook').classList.toggle('active', mode==='ebook');
 
-  // Show/hide the physical custom stat toggle row
-  const physCustomRow = document.querySelector('#physical-stats ~ .row');
-  // Hide pct/custom toggle row in audiobook (audiobook has its own always-visible custom stat)
-  document.getElementById('pct-section-row').style.display = mode==='audiobook' ? 'none' : '';
+  // Hide pct/custom toggle row in audiobook and ebook (both have their own
+  // always-visible custom stat, no toggle) \u2014 only physical uses the toggle.
+  document.getElementById('pct-section-row').style.display = (mode==='audiobook'||mode==='ebook') ? 'none' : '';
 
   // Show/hide stat sections
   document.getElementById('physical-stats').style.display = mode==='physical' ? '' : 'none';
   document.getElementById('audiobook-stats').style.display = mode==='audiobook' ? 'flex' : 'none';
+  document.getElementById('ebook-stats').style.display = mode==='ebook' ? 'flex' : 'none';
 
   // Show/hide preset buttons (physical only in main custom stat section)
   document.getElementById('physical-presets').style.display = mode==='physical' ? '' : 'none';
 
-  // Show/hide unit toggle (now in ab custom stat row, handled by ab preset JS)
-
-
-  // Update section headings and labels
+  // Update section headings and labels. Ebook reads like physical ("Reading
+  // stats", "Book") since it's still a book, just digital \u2014 only audiobook
+  // gets its own "Listening"/"Audiobook" wording.
   document.getElementById('stats-section-heading').textContent = mode==='audiobook' ? 'Listening stats' : 'Reading stats';
   document.getElementById('book-section-heading').innerHTML = mode==='audiobook'
     ? 'Audiobook <span class="optional-inline">(Optional)</span>'
@@ -788,7 +897,7 @@ function setMode(mode){
   document.getElementById('title-lbl').textContent = mode==='audiobook' ? 'Audiobook title' : 'Book title';
   document.getElementById('hide-graphic-lbl').textContent = 'Hide graphic';
 
-  // Update pct calculator labels
+  // Update pct calculator labels (physical-only fields, unaffected by ebook)
   document.getElementById('curpage-lbl').textContent = mode==='audiobook' ? 'Time I\'m on (h:mm)' : 'Page I\'m on';
   document.getElementById('total-lbl').textContent = mode==='audiobook' ? 'Total time (h:mm)' : 'Total pages';
 
@@ -796,23 +905,26 @@ function setMode(mode){
   const uploadHint = document.getElementById('upload-hint');
   if(uploadHint) uploadHint.innerHTML = getUploadHintText();
 
-  // Reset custom stat to audiobook defaults if switching to audiobook
+  // Reset custom stat to audiobook defaults if switching to audiobook.
+  // (Ebook doesn't need this \u2014 it has its own dedicated custom-stat state,
+  // handled entirely by the EBOOK CUSTOM STAT block below.)
   if(mode==='audiobook' && S.customStat){
     // Switch to first audiobook preset
-    S.customLabel='Distance Walked'; S.customEmoji='🚶';
-    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+    S.customLabel='Distance Walked'; S.customEmoji='\uD83D\uDEB6';
+    document.querySelectorAll('#audiobook-presets .preset-btn').forEach(b=>b.classList.remove('active'));
     const walkedBtn=document.getElementById('preset-walked');
     if(walkedBtn) walkedBtn.classList.add('active');
   } else if(mode==='physical' && S.customStat){
-    S.customLabel='Cups of Tea'; S.customEmoji='🍵';
-    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+    S.customLabel='Cups of Tea'; S.customEmoji='\uD83C\uDF75';
+    document.querySelectorAll('#physical-presets .preset-btn').forEach(b=>b.classList.remove('active'));
     const teaBtn=document.getElementById('preset-tea');
     if(teaBtn) teaBtn.classList.add('active');
   }
 
-  // Reset to defaults
-  resetBook();
-  S.useDefault=true;
+  // Carry shared values across instead of resetting. Pages only exist in
+  // physical, but time, percent, and the uploaded cover carry between any
+  // two modes. The default graphic swaps automatically in render.
+  syncModeFields(fromMode, mode);
 
   trackEvent('ss_mode_toggle',{mode});
   setTimeout(matchHeights, 50);
@@ -822,9 +934,9 @@ function setMode(mode){
 // ── AUDIOBOOK CUSTOM STAT ─────────────────────────────────────────────────────
 (()=>{
   const AB_PRESETS = [
-    {id:'preset-walked',    label:'Distance Walked',  emoji:'🚶', type:'distance'},
-    {id:'preset-driven',    label:'Distance Driven',  emoji:'🚗', type:'distance'},
-    {id:'preset-speed',     label:'Listening Speed',  emoji:'⚡', type:'speed'},
+    {id:'preset-walked',    label:'Distance Walked',  emoji:'\uD83D\uDEB6', type:'distance'},
+    {id:'preset-driven',    label:'Distance Driven',  emoji:'\uD83D\uDE97', type:'distance'},
+    {id:'preset-speed',     label:'Listening Speed',  emoji:'\u26A1', type:'speed'},
   ];
 
   const distanceInputs  = document.getElementById('ab-distance-inputs');
@@ -1016,7 +1128,29 @@ initAbTimeField('inp-ab-hours','abHours',99,'0');
 initAbTimeField('inp-ab-mins','abMins',59,'00');
 
 function wire(id,key){document.getElementById(id).addEventListener('input',e=>{S[key]=e.target.value;renderDebounced();});}
-wire('inp-title','title');
+
+// Reject a keystroke that would make the title overflow past 2 lines on the
+// card, instead of silently dropping text at render time. Uses whichever
+// orientation is currently active, since vertical (720px) and landscape
+// (LS.TITLE_MAXW) wrap differently.
+const _titleFitCtx=document.createElement('canvas').getContext('2d');
+function titleFitsMaxLines(text,maxW,maxLines){
+  _titleFitCtx.font=`700 ${TTL_FS}px 'Inter',sans-serif`;
+  const rawLines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+  let total=0;
+  for(const line of rawLines){ total+=wrapText(_titleFitCtx,line,maxW).length; if(total>maxLines) return false; }
+  return true;
+}
+document.getElementById('inp-title').addEventListener('input',e=>{
+  const val=e.target.value;
+  const maxW=S.orientation==='horizontal'?LS.TITLE_MAXW:720;
+  if(val.trim() && !titleFitsMaxLines(val,maxW,2)){
+    e.target.value=S.title;   // reject: revert to last value that fit
+    return;
+  }
+  S.title=val;
+  renderDebounced();
+});
 document.getElementById('inp-title').addEventListener('blur',e=>{if(e.target.value.trim()) trackEvent('ss_title_entered');});
 
 // Hours/mins/pages clamp on blur
@@ -1195,6 +1329,7 @@ function wrapText(ctx,text,maxW){
 }
 
 function drawCard(canvas,forExport){
+  if(S.orientation==='horizontal'){drawCardLandscape(canvas,forExport);return;}
   const ctx=canvas.getContext('2d');
   ctx.clearRect(0,0,W,H);
   if(!forExport&&S.bgOn){
@@ -1227,16 +1362,19 @@ function drawCard(canvas,forExport){
 
   // Y positions — scale spacing proportionally with font size in custom mode
   const scaleFactor = S.customStat ? (activeValFS / VAL_FS) : 1;
+  const isAudiobook = S.mode === 'audiobook';
+  const isEbook = S.mode === 'ebook';
+  const usesTimeLayout = isAudiobook || isEbook; // time+pct+customstat, no pages, bar after stat 2
   const l1 = POS.l1_base;
   const v1 = l1 + Math.round(116 * scaleFactor);
   const l2 = v1 + Math.round(118 * scaleFactor);
   const v2 = l2 + Math.round(116 * scaleFactor);
-  // For audiobook: l3/v3 anchor below the progress bar (bar is at v2+36)
+  // For audiobook/ebook: l3/v3 anchor below the progress bar (bar is at v2+36)
   const abBarY = v2 + 36;
-  const l3 = S.mode==='audiobook' ? (abBarY + BAR_H + 118) : v2 + Math.round(118 * scaleFactor);
+  const l3 = usesTimeLayout ? (abBarY + BAR_H + 118) : v2 + Math.round(118 * scaleFactor);
   const v3 = l3 + Math.round(116 * scaleFactor);
   // Bottom of the stats block (book zone starts here)
-  const statsBottom = S.mode==='audiobook'
+  const statsBottom = usesTimeLayout
     ? (v3 + 40)
     : S.customStat ? (v3 + Math.round(20 * scaleFactor)) : (POS.bar + BAR_H);
 
@@ -1244,26 +1382,27 @@ function drawCard(canvas,forExport){
   ctx.font=`600 ${activeLblFS}px 'Inter',sans-serif`;
   ctx.fillStyle=ink;
 
-  if(S.mode==='audiobook'){
-    // Stat 1: Time Spent Listening
-    ctx.fillText('Time Spent Listening',CX,l1);
+  if(usesTimeLayout){
+    // Stat 1: Time Spent Listening (audiobook) / Time Spent Reading (ebook)
+    ctx.fillText(isAudiobook?'Time Spent Listening':'Time Spent Reading',CX,l1);
     // Stat 2: Percent Complete
     ctx.font=`600 ${activeLblFS}px 'Inter',sans-serif`;
     ctx.fillStyle=ink;
     ctx.fillText('Percent Complete',CX,l2);
     // Stat 3: Custom stat label
-    const abLabel = (S.customLabel||'Distance Walked').trim().slice(0,20);
-    let ab3FontSize = activeLblFS;
-    ctx.font=`600 ${ab3FontSize}px 'Inter',sans-serif`;
-    while(ctx.measureText(abLabel).width > 900 && ab3FontSize > 36){
-      ab3FontSize -= 2;
-      ctx.font=`600 ${ab3FontSize}px 'Inter',sans-serif`;
+    const label3 = isAudiobook ? (S.customLabel||'Distance Walked') : (S.ebCustomLabel||'Cups of Tea');
+    const label3Trim = label3.trim().slice(0,20);
+    let l3FontSize = activeLblFS;
+    ctx.font=`600 ${l3FontSize}px 'Inter',sans-serif`;
+    while(ctx.measureText(label3Trim).width > 900 && l3FontSize > 36){
+      l3FontSize -= 2;
+      ctx.font=`600 ${l3FontSize}px 'Inter',sans-serif`;
     }
-    ctx.fillText(abLabel, CX, l3);
+    ctx.fillText(label3Trim, CX, l3);
   } else {
-    // Physical: Stat 1 = Pages Read, Stat 2 = Time Spent
+    // Physical: Stat 1 = Pages Read, Stat 2 = Time Spent Reading
     ctx.fillText('Pages Read',CX,l1);
-    ctx.fillText('Time Spent',CX,l2);
+    ctx.fillText('Time Spent Reading',CX,l2);
     // Stat 3 label
     if(S.customStat){
       const rawLabel = (S.customLabel||'Cups of Tea').trim().slice(0,20);
@@ -1285,37 +1424,40 @@ function drawCard(canvas,forExport){
   ctx.fillStyle=ink;
   const pct=Math.max(0,Math.min(100,parseInt(S.pct)||0));
 
-  if(S.mode==='audiobook'){
-    // Stat 1: Time Spent Listening
-    const abH=Math.min(99,Math.max(0,parseInt(S.abHours)||0));
-    const abM=Math.min(59,Math.max(0,parseInt(S.abMins)||0));
-    ctx.fillText(`${abH}h ${String(abM).padStart(2,'0')}m`,CX,v1);
+  if(usesTimeLayout){
+    // Stat 1: Time Spent (Listening / Reading)
+    const tH=isAudiobook?S.abHours:S.ebHours, tM=isAudiobook?S.abMins:S.ebMins;
+    const vH=Math.min(99,Math.max(0,parseInt(tH)||0));
+    const vM=Math.min(59,Math.max(0,parseInt(tM)||0));
+    ctx.fillText(`${vH}h ${String(vM).padStart(2,'0')}m`,CX,v1);
     // Stat 2: Percent Complete
     ctx.fillText(pct+'%',CX,v2);
     // Stat 3: Custom stat value
-    const isDistance = S.customLabel==='Distance Walked' || S.customLabel==='Distance Driven';
-    const isSpeed = S.customLabel==='Listening Speed';
     let customValStr;
-    if(isDistance){
-      customValStr = `${S.customVal||'0'} ${S.unit}`;
-    } else if(isSpeed){
-      customValStr = `${parseFloat(S.abSpeed||1.0).toFixed(1)}x`;
+    if(isAudiobook){
+      // Audiobook presets include distance (with unit) and speed (with x suffix)
+      const isDistance = S.customLabel==='Distance Walked' || S.customLabel==='Distance Driven';
+      const isSpeed = S.customLabel==='Listening Speed';
+      if(isDistance) customValStr = `${S.customVal||'0'} ${S.unit}`;
+      else if(isSpeed) customValStr = `${parseFloat(S.abSpeed||1.0).toFixed(1)}x`;
+      else customValStr = String(parseInt(S.customVal)||0);
     } else {
-      customValStr = String(parseInt(S.customVal)||0);
+      // Ebook presets are all simple numbers, same as physical's
+      customValStr = String(parseInt(S.ebCustomVal)||0);
     }
-    let ab3ValSize = activeValFS;
-    ctx.font=`800 ${ab3ValSize}px 'Inter',sans-serif`;
-    while(ctx.measureText(customValStr).width > 900 && ab3ValSize > 60){
-      ab3ValSize -= 4;
-      ctx.font=`800 ${ab3ValSize}px 'Inter',sans-serif`;
+    let v3FontSize = activeValFS;
+    ctx.font=`800 ${v3FontSize}px 'Inter',sans-serif`;
+    while(ctx.measureText(customValStr).width > 900 && v3FontSize > 60){
+      v3FontSize -= 4;
+      ctx.font=`800 ${v3FontSize}px 'Inter',sans-serif`;
     }
     ctx.fillText(customValStr, CX, v3);
     // Progress bar sits below stat 2 (pct value)
     ctx.fillStyle=ink;
     pill(ctx,BAR_X,abBarY,BAR_W,BAR_H,BAR_H/2);ctx.fill();
-    const abFw=Math.max(BAR_H,Math.round(BAR_W*pct/100));
+    const barFw=Math.max(BAR_H,Math.round(BAR_W*pct/100));
     ctx.fillStyle=RED;
-    pill(ctx,BAR_X,abBarY,abFw,BAR_H,BAR_H/2);ctx.fill();
+    pill(ctx,BAR_X,abBarY,barFw,BAR_H,BAR_H/2);ctx.fill();
   } else {
     // Physical mode
     const h=Math.min(99,Math.max(0,parseInt(S.hours)||0));
@@ -1364,8 +1506,8 @@ function drawCard(canvas,forExport){
   const TTL_LINE_H = TTL_FS * 1.35;
   const TITLE_GAP = 12;
 
-  // Audiobook mode: square graphic. Physical: portrait graphic.
-  const isAudiobook = S.mode === 'audiobook';
+  // Audiobook mode: square graphic. Physical and ebook: portrait graphic
+  // (isAudiobook already declared above; ebook falls into the portrait branch).
   let bkW, bkH;
   if(isAudiobook){
     // Square headphones graphic — sized to fit available space
@@ -1426,6 +1568,261 @@ function drawCard(canvas,forExport){
   }
 }
 
+// ── LANDSCAPE CARD (1440x1080) ───────────────────────────────────────────────
+// Left column: graphic + logo. Right column: stats scaled from vertical constants.
+const LS={W:1440,H:1080,M:70,COL_L:443,GAP:152,COL_R:705,LG_H:166,LOGO_GAP:121,TITLE_MAXW:560};
+
+function drawCardLandscape(canvas,forExport){
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,LS.W,LS.H);
+  if(!forExport&&S.bgOn){
+    if(S.bgType==='color'){
+      ctx.fillStyle=S.bgSrc;ctx.fillRect(0,0,LS.W,LS.H);
+    } else {
+      const bgImg=bgImgCache[S.bgLabel];
+      if(bgImg&&bgImg.complete&&bgImg.naturalWidth>0){
+        const bRatio=bgImg.naturalWidth/bgImg.naturalHeight,cRatio=LS.W/LS.H;
+        let bw,bh,bx,by;
+        if(bRatio>cRatio){bh=LS.H;bw=bgImg.naturalWidth*(LS.H/bgImg.naturalHeight);bx=(LS.W-bw)/2;by=0;}
+        else{bw=LS.W;bh=bgImg.naturalHeight*(LS.W/bgImg.naturalWidth);bx=0;by=(LS.H-bh)/2;}
+        ctx.drawImage(bgImg,bx,by,bw,bh);
+      } else {ctx.fillStyle='#87CEEB';ctx.fillRect(0,0,LS.W,LS.H);}
+    }
+  }
+  const ink=S.ink==='white'?'#ffffff':'#000000';
+  const isAudiobook=S.mode==='audiobook';
+  const isEbook=S.mode==='ebook';
+  const usesTimeLayout=isAudiobook||isEbook; // time+pct+customstat, no pages, bar after stat 2
+
+  // ── Right column geometry: redistribute the same 940px budget instead of
+  // uniformly stretching the vertical card's spacing. Text stays close to the
+  // original landscape size, but the gap BETWEEN stat groups tightens (a fixed,
+  // collision-safe value, not a naive scale-down — bigger text needs a real
+  // minimum gap or the descender of one value collides with the ascender of the
+  // next label). The whole block centers in the column, so leftover room becomes
+  // small even margins, not dead space at the bottom.
+  const TEXT_SCALE=1.4, GROUP_GAP=130;
+  const activeLblFS0=S.customStat?62:LBL_FS;
+  const activeValFS0=S.customStat?140:VAL_FS;
+  const sf=S.customStat?(activeValFS0/VAL_FS):1;
+  const lblFS=Math.round(activeLblFS0*TEXT_SCALE), valFS=Math.round(activeValFS0*TEXT_SCALE);
+  const withinGap=Math.round(116*sf*TEXT_SCALE);      // label -> its own value
+  const groupGap=Math.round(GROUP_GAP*sf);            // value -> next label (tightened)
+  const barGap=Math.round(45*sf*TEXT_SCALE);
+  const barW=Math.round(BAR_W*TEXT_SCALE), barH=Math.round(BAR_H*TEXT_SCALE);
+
+  const l1=0, v1=l1+withinGap, l2=v1+groupGap, v2=l2+withinGap;
+  const abBarY=v2+Math.round(36*TEXT_SCALE);
+  const l3=usesTimeLayout?(abBarY+barH+groupGap):(v2+groupGap);
+  const v3=l3+withinGap;
+  const blockBottom=(!usesTimeLayout&&!S.customStat)?(v3+barGap+barH):(v3+0.2*valFS);
+  // l1=0 is label1's BASELINE, but its ink rises ~0.8*lblFS above that — include
+  // that ascent so the centering math balances against the true visual top, not
+  // the baseline (otherwise the block reads top-heavy).
+  const ascent=0.8*lblFS;
+  const blockVisualH=blockBottom+ascent;
+  const blockTopOffset=Math.round(LS.M+(940-blockVisualH)/2+ascent);   // true-center in the column
+  const mapY=y=>Math.round(blockTopOffset+y);
+  const RX=LS.M+LS.COL_L+LS.GAP;            // right column left edge = 665
+
+  ctx.textAlign='left';
+  ctx.textBaseline='alphabetic';
+  const pct=Math.max(0,Math.min(100,parseInt(S.pct)||0));
+
+  // Value drawer with auto-shrink to right column width
+  function drawValue(str,y){
+    let fs=valFS;
+    ctx.font=`800 ${fs}px 'Inter',sans-serif`;
+    while(ctx.measureText(str).width>LS.COL_R&&fs>60*TEXT_SCALE){fs-=4;ctx.font=`800 ${fs}px 'Inter',sans-serif`;}
+    ctx.fillText(str,RX,y);
+  }
+  function drawLabel(str,y){
+    let fs=lblFS;
+    ctx.font=`600 ${fs}px 'Inter',sans-serif`;
+    while(ctx.measureText(str).width>LS.COL_R&&fs>36*TEXT_SCALE){fs-=2;ctx.font=`600 ${fs}px 'Inter',sans-serif`;}
+    ctx.fillText(str,RX,y);
+  }
+
+  ctx.fillStyle=ink;
+  if(usesTimeLayout){
+    drawLabel(isAudiobook?'Time Spent Listening':'Time Spent Reading',mapY(l1));
+    const tH=isAudiobook?S.abHours:S.ebHours, tM=isAudiobook?S.abMins:S.ebMins;
+    const vH=Math.min(99,Math.max(0,parseInt(tH)||0));
+    const vM=Math.min(59,Math.max(0,parseInt(tM)||0));
+    drawValue(`${vH}h ${String(vM).padStart(2,'0')}m`,mapY(v1));
+    drawLabel('Percent Complete',mapY(l2));
+    drawValue(pct+'%',mapY(v2));
+    // Progress bar below stat 2
+    ctx.fillStyle=ink;
+    pill(ctx,RX,mapY(abBarY),barW,barH,barH/2);ctx.fill();
+    ctx.fillStyle=RED;
+    pill(ctx,RX,mapY(abBarY),Math.max(barH,Math.round(barW*pct/100)),barH,barH/2);ctx.fill();
+    ctx.fillStyle=ink;
+    const label3 = isAudiobook ? (S.customLabel||'Distance Walked') : (S.ebCustomLabel||'Cups of Tea');
+    drawLabel(label3.trim().slice(0,20),mapY(l3));
+    let cv;
+    if(isAudiobook){
+      const isDistance=S.customLabel==='Distance Walked'||S.customLabel==='Distance Driven';
+      const isSpeed=S.customLabel==='Listening Speed';
+      if(isDistance){cv=`${S.customVal||'0'} ${S.unit}`;}
+      else if(isSpeed){cv=`${parseFloat(S.abSpeed||1.0).toFixed(1)}x`;}
+      else{cv=String(parseInt(S.customVal)||0);}
+    } else {
+      cv=String(parseInt(S.ebCustomVal)||0);
+    }
+    drawValue(cv,mapY(v3));
+  } else {
+    drawLabel('Pages Read',mapY(l1));
+    const h=Math.min(99,Math.max(0,parseInt(S.hours)||0));
+    const m=Math.min(59,Math.max(0,parseInt(S.mins)||0));
+    drawValue((S.pages||'0')+' Pages',mapY(v1));
+    drawLabel('Time Spent Reading',mapY(l2));
+    drawValue(`${h}h ${String(m).padStart(2,'0')}m`,mapY(v2));
+    if(S.customStat){
+      drawLabel((S.customLabel||'Cups of Tea').trim().slice(0,20),mapY(l3));
+      drawValue(String(parseInt(S.customVal)||0),mapY(v3));
+    } else {
+      drawLabel('Percent Complete',mapY(l3));
+      drawValue(pct+'%',mapY(v3));
+      const barY=v3+barGap;
+      ctx.fillStyle=ink;
+      pill(ctx,RX,mapY(barY),barW,barH,barH/2);ctx.fill();
+      ctx.fillStyle=RED;
+      pill(ctx,RX,mapY(barY),Math.max(barH,Math.round(barW*pct/100)),barH,barH/2);ctx.fill();
+    }
+  }
+
+  // ── Left column: graphic + title + logo ──
+  const LCX=LS.M+LS.COL_L/2;               // left column centre x = 291.5
+  ctx.textAlign='center';
+
+  // Title lines. Fixed font size, same as vertical. Wrap width is wider than
+  // the graphic column itself (LS.COL_L=443) — centered text is allowed to
+  // bleed into the gap on both sides, up to LS.TITLE_MAXW, while staying well
+  // clear of the stats column (RX). No auto-shrink; a title that needs a 3rd
+  // line is capped at 2, same rule vertical already uses.
+  const landscapeTtlFs=TTL_FS;
+  let titleLines=[];
+  if(S.title&&S.title.trim()){
+    const rawLines=S.title.split('\n').map(l=>l.trim()).filter(Boolean);
+    ctx.font=`700 ${landscapeTtlFs}px 'Inter',sans-serif`;
+    for(const line of rawLines){
+      const wrapped=wrapText(ctx,line,LS.TITLE_MAXW);
+      for(const wl of wrapped){titleLines.push(wl);if(titleLines.length>=2)break;}
+      if(titleLines.length>=2)break;
+    }
+    titleLines=titleLines.slice(0,2);
+  }
+  const TTL_LINE_H=landscapeTtlFs*1.35, TITLE_GAP=12;
+
+  // Graphic size and the graphic/logo POSITIONS are computed as if there is no
+  // title, so adding a title never shrinks or moves the graphic and never shifts
+  // the logo. The title is drawn into the fixed gap that already sits between the
+  // graphic and the logo (see below). Group [graphic + gap + logo] is centered
+  // vertically. (Vertical card is a separate draw path and is untouched.)
+  const contentH=LS.H-2*LS.M;                       // 940
+  const TIGHT_LOGO_GAP=55;   // tighter than the original 121 — book grows into the freed space
+  const graphicMaxH=contentH-TIGHT_LOGO_GAP-LS.LG_H;
+  let bkW,bkH;
+  if(isAudiobook){
+    // Square graphic (headphones or uploaded cover cropped to square)
+    const side=Math.min(LS.COL_L,graphicMaxH);
+    bkW=Math.round(side);bkH=Math.round(side);
+  } else {
+    const isDefault=S.useDefault||!S.bookImg;
+    const natW=isDefault?381:(S.bookImg&&S.bookImg.naturalWidth>0?S.bookImg.naturalWidth:381);
+    const natH=isDefault?582:(S.bookImg&&S.bookImg.naturalHeight>0?S.bookImg.naturalHeight:582);
+    const fit=Math.min(LS.COL_L/natW,graphicMaxH/natH);
+    bkW=Math.round(natW*fit);bkH=Math.round(natH*fit);
+  }
+  // The default book PNG has empty transparent space baked into the top and
+  // bottom of its own bounding box (the drawn line art doesn't reach either
+  // edge). Measured: ~5% at the top, ~6% at the bottom.
+  const isDefaultPhysical=!isAudiobook&&(S.useDefault||!S.bookImg);
+  const bookTopPad=isDefaultPhysical?Math.round(bkH*0.05):0;
+  let bookArtPad=isDefaultPhysical?Math.round(bkH*0.06):0;
+
+  const groupH=bkH+TIGHT_LOGO_GAP+LS.LG_H;
+  let blockTop=Math.round(LS.M+(contentH-groupH)/2);   // graphic top
+  let logoY=blockTop+bkH+TIGHT_LOGO_GAP;                   // logo top
+  // Audiobook: when a title is present, spread the layout — nudge the graphic
+  // (with its title attached) up and the logo down, without shrinking anything.
+  if(isAudiobook && titleLines.length>0){
+    // A 2-line title is taller than 1-line, so it needs more spread or the
+    // second line collides with the logo. Scale the spread so both cases end
+    // up with roughly the same clearance below the title's last line.
+    const SPREAD=titleLines.length>=2?76:25;
+    blockTop-=SPREAD;
+    logoY+=SPREAD;
+  }
+  // Physical, no title: nudge the logo up by the book art's own top padding.
+  // The book itself stays put — only the logo moves.
+  if(isDefaultPhysical && titleLines.length===0){
+    logoY-=bookTopPad;
+  }
+  // Physical, 2-line title: a 2nd line needs more room than the 1-line layout
+  // has. Rather than crowd the logo, shrink the book (from the bottom, top
+  // stays put) so the LAST title line sits the same distance above the logo
+  // that a 1-line title does — keeps the title-to-logo gap visually constant
+  // regardless of title length, per Shawn's spec.
+  if(isDefaultPhysical && titleLines.length===2){
+    const gapBelow1Line = logoY - (blockTop+bkH-bookArtPad+TITLE_GAP+landscapeTtlFs);
+    const newTitleTop = logoY - gapBelow1Line - landscapeTtlFs - TTL_LINE_H;
+    const newBookBottom = newTitleTop - TITLE_GAP + bookArtPad;
+    const shrunkH = newBookBottom - blockTop;
+    if(shrunkH > 0 && shrunkH < bkH){
+      const scale = shrunkH / bkH;
+      bkH = Math.round(shrunkH);
+      bkW = Math.round(bkW * scale);
+      bookArtPad = Math.round(bkH*0.06);
+    }
+  }
+  const bkX=Math.round(LCX-bkW/2);
+
+  if(!S.hideBook){
+    const isDefault=S.useDefault||!S.bookImg;
+    if(isDefault){
+      const defaultSrc=isAudiobook?headphonesImg:distImg;
+      if(defaultSrc&&defaultSrc.complete&&defaultSrc.naturalWidth>0){
+        ctx.drawImage(defaultSrc,bkX,blockTop,bkW,bkH);
+      }
+    } else {
+      const src=S.bookImg;
+      if(src&&src.complete&&src.naturalWidth>0){
+        if(isAudiobook){
+          // Square frame — cover-fit + clip so the cover fills the square cleanly
+          const sw=src.naturalWidth,sh=src.naturalHeight;
+          const sa=bkW/bkH,ia=sw/sh;
+          let idw,idh,ix,iy;
+          if(ia>sa){idh=bkH;idw=sw*(bkH/sh);ix=bkX-(idw-bkW)/2;iy=blockTop;}
+          else{idw=bkW;idh=sh*(bkW/sw);ix=bkX;iy=blockTop-(idh-bkH)/2;}
+          ctx.save();ctx.beginPath();ctx.rect(bkX,blockTop,bkW,bkH);ctx.clip();
+          ctx.drawImage(src,ix,iy,idw,idh);ctx.restore();
+        } else {
+          // Portrait — box already matches cover aspect, contain-fit
+          ctx.drawImage(src,bkX,blockTop,bkW,bkH);
+        }
+      }
+    }
+  }
+
+  if(titleLines.length>0){
+    // Title hangs just below the graphic in both modes, so it reads as the book's
+    // (or audiobook's) title. In audiobook the graphic+title were nudged up together
+    // above, so the title moves with the graphic and the logo sits lower.
+    const titleTop=blockTop+bkH-bookArtPad+TITLE_GAP;
+    ctx.fillStyle=ink;
+    ctx.font=`700 ${landscapeTtlFs}px 'Inter',sans-serif`;
+    titleLines.forEach((ln,i)=>ctx.fillText(ln,LCX,titleTop+landscapeTtlFs+i*TTL_LINE_H));
+  }
+
+  // Logo scaled to column width
+  const logo=S.ink==='white'?logoWhite:logoBlack;
+  if(logo&&logo.complete&&logo.naturalWidth>0){
+    ctx.drawImage(logo,LS.M,logoY,LS.COL_L,LS.LG_H);
+  }
+}
+
 // Debounced render for mobile — prevents Android keyboard dismissal on rapid redraws
 let _renderTimer = null;
 
@@ -1469,13 +1866,14 @@ function fireConfetti(){
 // Core save function — called from main button (sub-100%) and congrats modal (100%)
 function doSave(){
   const exp=document.createElement('canvas');
-  exp.width=W;exp.height=H;
+  const isLandscape=S.orientation==='horizontal';
+  exp.width=isLandscape?LS.W:W;exp.height=isLandscape?LS.H:H;
   drawCard(exp,true);
   const now=new Date();
   const mm=String(now.getMonth()+1).padStart(2,'0');
   const dd=String(now.getDate()).padStart(2,'0');
   const yyyy=now.getFullYear();
-  const fname='StoryStat_'+mm+dd+yyyy+'.png';
+  const fname='StoryStat_'+(isLandscape?'Landscape_':'')+mm+dd+yyyy+'.png';
   if(isMobile){
     const dataUrl=exp.toDataURL('image/png');
     const overlay=document.getElementById('modal-mobile-save');
@@ -1532,24 +1930,47 @@ const _isReturningUser = !!(getStoredEmail());
 function logStatsToSheet(){
   if(isPreviewMode) return;
   const now = new Date();
-  const hoursEl   = document.getElementById('inp-hours');
-  const minsEl    = document.getElementById('inp-mins');
   const pagesEl   = document.getElementById('inp-pages');
-  const pctEl     = document.getElementById('inp-pct');
   const curpageEl = document.getElementById('inp-curpage');
   const totalEl   = document.getElementById('inp-total');
 
   const isAudiobook = S.mode === 'audiobook';
-  const hours    = isAudiobook
-    ? (document.getElementById('inp-ab-hours').classList.contains('is-default') ? null : parseInt(document.getElementById('inp-ab-hours').value)||0)
-    : (hoursEl.classList.contains('is-default') ? null : parseInt(hoursEl.value)||0);
-  const mins     = isAudiobook
-    ? (document.getElementById('inp-ab-mins').classList.contains('is-default') ? null : parseInt(document.getElementById('inp-ab-mins').value)||0)
-    : (minsEl.classList.contains('is-default') ? null : parseInt(minsEl.value)||0);
-  const pages    = isAudiobook ? null : (pagesEl.classList.contains('is-default') ? null : parseInt(pagesEl.value)||0);
+  const isEbook = S.mode === 'ebook';
+  // Read hours/mins/pct from whichever mode's own fields are actually visible
+  // and being edited -- reading physical's #inp-pct unconditionally (as this
+  // used to) meant audiobook sessions logged percent_complete:null even when
+  // a percent was entered, since audiobook's own #inp-ab-pct was never checked.
+  const hoursId = isAudiobook?'inp-ab-hours':isEbook?'inp-eb-hours':'inp-hours';
+  const minsId  = isAudiobook?'inp-ab-mins' :isEbook?'inp-eb-mins' :'inp-mins';
+  const pctId   = isAudiobook?'inp-ab-pct'  :isEbook?'inp-eb-pct'  :'inp-pct';
+  const hoursEl = document.getElementById(hoursId);
+  const minsEl  = document.getElementById(minsId);
+  const pctEl   = document.getElementById(pctId);
+  const hours    = hoursEl.classList.contains('is-default') ? null : parseInt(hoursEl.value)||0;
+  const mins     = minsEl.classList.contains('is-default') ? null : parseInt(minsEl.value)||0;
+  const pages    = (isAudiobook||isEbook) ? null : (pagesEl.classList.contains('is-default') ? null : parseInt(pagesEl.value)||0);
   const pct      = pctEl.classList.contains('is-default') ? null : parseInt(pctEl.value)||0;
   const totalPgs = totalEl.classList.contains('is-default') ? null : parseInt(totalEl.value)||0;
   const totalMins = (hours !== null && mins !== null) ? hours*60 + mins : null;
+
+  // Custom stat: audiobook and ebook both always have one active (no on/off
+  // toggle), sourced from their own dedicated state; physical's is optional.
+  let customStatUsed, customStatLabel, customStatValue;
+  if(isAudiobook){
+    customStatUsed = true;
+    customStatLabel = S.customLabel||'Distance Walked';
+    customStatValue = S.customLabel==='Listening Speed'
+      ? parseFloat(S.abSpeed||1.0)
+      : (parseFloat(document.getElementById('inp-ab-custom-val')?.value||document.getElementById('inp-ab-free-val')?.value||0)||0);
+  } else if(isEbook){
+    customStatUsed = true;
+    customStatLabel = S.ebCustomLabel||'Cups of Tea';
+    customStatValue = S.ebCustomVal||0;
+  } else {
+    customStatUsed = S.customStat;
+    customStatLabel = S.customStat ? (S.customLabel||'') : null;
+    customStatValue = S.customStat ? (S.customVal||0) : null;
+  }
 
   const payload = {
     // Timestamp
@@ -1568,13 +1989,9 @@ function logStatsToSheet(){
     total_pages:      totalPgs,
     finished_book:    pct === 100,
     // Custom stat
-    custom_stat_used:   isAudiobook ? true : S.customStat,
-    custom_stat_label:  isAudiobook ? (S.customLabel||'Distance Walked') : (S.customStat ? (S.customLabel||'') : null),
-    custom_stat_value:  isAudiobook
-      ? (S.customLabel==='Listening Speed'
-          ? parseFloat(S.abSpeed||1.0)
-          : (parseFloat(document.getElementById('inp-ab-custom-val')?.value||document.getElementById('inp-ab-free-val')?.value||0)||0))
-      : (S.customStat ? (S.customVal||0) : null),
+    custom_stat_used:   customStatUsed,
+    custom_stat_label:  customStatLabel,
+    custom_stat_value:  customStatValue,
     // Book/audiobook info
     book_title:       S.title ? S.title.trim() : '',
     has_title:        !!(S.title && S.title.trim()),
@@ -1607,6 +2024,7 @@ function logStatsToSheet(){
 
   // Add to payload
   payload.supersedes_ts = supersedesTs;
+  payload.orientation = S.orientation;
 
   fetch(STATS_SHEET_URL, {
     method: 'POST',
@@ -1614,6 +2032,84 @@ function logStatsToSheet(){
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(payload)
   }).catch(function(){});
+}
+
+// ── PROJECT HAIL MARY EASTER EGG ─────────────────────────────────────────────
+function isProjectHailMary(title){
+  if(!title) return false;
+  const t=title.toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+  if(!t) return false;
+  if(/\bphm\b/.test(t)) return true;
+  const hasHail=/\bhail\b/.test(t)||/\bhill\b/.test(t);
+  const hasMary=/\bmary\b/.test(t)||/\bmarry\b/.test(t)||/\bmerry\b/.test(t);
+  return hasHail&&hasMary;
+}
+
+let _hailMaryPendingAction=null;
+let _hailMaryRafId=null;
+let _hailMaryThumbs=[];
+
+function checkHailMary(actionFn){
+  if(isProjectHailMary(S.title)){
+    _hailMaryPendingAction=actionFn;
+    document.getElementById('modal-hail-mary').classList.add('open');
+    startHailMaryThumbs();
+  } else {
+    actionFn();
+  }
+}
+
+function closeHailMaryModal(){
+  document.getElementById('modal-hail-mary').classList.remove('open');
+}
+
+function proceedHailMaryDownload(){
+  document.getElementById('modal-hail-mary').classList.remove('open');
+  const action=_hailMaryPendingAction;
+  _hailMaryPendingAction=null;
+  if(action) action();
+}
+
+function startHailMaryThumbs(){
+  const layer=document.getElementById('hail-mary-thumbs');
+  layer.innerHTML='';
+  _hailMaryThumbs=[];
+  const count=40;
+  for(let i=0;i<count;i++){
+    const el=document.createElement('span');
+    el.textContent='👎';
+    layer.appendChild(el);
+    _hailMaryThumbs.push({
+      el,
+      x:Math.random()*Math.max(1,window.innerWidth-28),
+      y:Math.random()*Math.max(1,window.innerHeight-28),
+      vx:(Math.random()<0.5?-1:1)*(1.5+Math.random()*3),
+      vy:(Math.random()<0.5?-1:1)*(1.5+Math.random()*3)
+    });
+  }
+  if(_hailMaryRafId) cancelAnimationFrame(_hailMaryRafId);
+  animateHailMaryThumbs();
+}
+
+function animateHailMaryThumbs(){
+  const overlay=document.getElementById('modal-hail-mary');
+  if(!overlay.classList.contains('open')){
+    _hailMaryRafId=null;
+    document.getElementById('hail-mary-thumbs').innerHTML='';
+    _hailMaryThumbs=[];
+    _hailMaryPendingAction=null;
+    return;
+  }
+  const w=window.innerWidth, h=window.innerHeight;
+  _hailMaryThumbs.forEach(t=>{
+    t.x+=t.vx; t.y+=t.vy;
+    if(t.x<0){t.x=0;t.vx=Math.abs(t.vx);}
+    if(t.x>w-28){t.x=w-28;t.vx=-Math.abs(t.vx);}
+    if(t.y<0){t.y=0;t.vy=Math.abs(t.vy);}
+    if(t.y>h-28){t.y=h-28;t.vy=-Math.abs(t.vy);}
+    t.el.style.transform='translate('+t.x+'px,'+t.y+'px)';
+  });
+  _hailMaryRafId=requestAnimationFrame(animateHailMaryThumbs);
 }
 
 // ── EMAIL CAPTURE ────────────────────────────────────────────────────────────
@@ -1670,9 +2166,11 @@ document.getElementById('email-input').addEventListener('keydown', function(e){
 // Congrats modal download button
 document.getElementById('congrats-dl-btn').addEventListener('click',()=>{
   document.getElementById('modal-congrats').classList.remove('open');
-  doSave();
-  logStatsToSheet();
-  trackEvent('ss_download',{ink:S.ink,bg_on:S.bgOn,bg_color:S.bgOn?S.bgColor:'none',cover:S.hideBook?'hidden':S.useDefault?'default':'uploaded',has_title:!!(S.title&&S.title.trim()),hours:parseInt(S.hours)||0,mins:parseInt(S.mins)||0,pages:parseInt(S.pages)||0,pct:parseInt(S.pct)||0,total_pages:parseInt(document.getElementById('inp-total').value)||0});
+  checkHailMary(()=>{
+    doSave();
+    logStatsToSheet();
+    trackEvent('ss_download',{ink:S.ink,bg_on:S.bgOn,bg_color:S.bgOn?S.bgColor:'none',cover:S.hideBook?'hidden':S.useDefault?'default':'uploaded',has_title:!!(S.title&&S.title.trim()),hours:parseInt(S.hours)||0,mins:parseInt(S.mins)||0,pages:parseInt(S.pages)||0,pct:parseInt(S.pct)||0,total_pages:parseInt(document.getElementById('inp-total').value)||0,orientation:S.orientation});
+  });
 });
 
 document.getElementById('dl-btn').addEventListener('click',()=>{
@@ -1684,7 +2182,9 @@ document.getElementById('dl-btn').addEventListener('click',()=>{
     trackEvent('ss_book_finished',{mode:S.mode,ink:S.ink,cover:S.hideBook?'hidden':S.useDefault?'default':'uploaded',has_title:!!(S.title&&S.title.trim()),total_pages:parseInt(document.getElementById('inp-total').value)||0});
     triggerSaveWithEmailCheck(()=>document.getElementById('modal-congrats').classList.add('open'));
   } else {
-    triggerSaveWithEmailCheck(()=>{ doSave(); logStatsToSheet(); trackEvent('ss_download',{mode:S.mode}); });
+    checkHailMary(()=>{
+      triggerSaveWithEmailCheck(()=>{ doSave(); logStatsToSheet(); trackEvent('ss_download',{mode:S.mode,orientation:S.orientation}); });
+    });
   }
 });
 
@@ -1716,9 +2216,15 @@ function matchHeights(){
   const outerEl=canvasPanel.querySelector('.canvas-outer');
   const availH=formH-32-labelH-btnH;
   if(outerEl) outerEl.style.height=availH+'px';
-  const wrapW=Math.round(availH*(1080/1920));
-  wrap.style.height=availH+'px';
-  wrap.style.width=wrapW+'px';
+  // Contain-fit the preview inside the available box, preserving the card's true
+  // aspect ratio. If it can't fill the box it letterboxes (a gap) rather than
+  // squishing — matters for the wide landscape card in a tall preview column.
+  const ratio=S.orientation==='horizontal'?(1440/1080):(1080/1920); // w/h
+  const outerW=outerEl?outerEl.clientWidth:availH;
+  let h=availH, w=h*ratio;
+  if(w>outerW){ w=outerW; h=w/ratio; }
+  wrap.style.height=Math.round(h)+'px';
+  wrap.style.width=Math.round(w)+'px';
   wrap.style.maxWidth='100%';
 }
 
@@ -1749,19 +2255,22 @@ window.addEventListener('resize', () => {
   const csFields  = document.getElementById('custom-stat-fields');
   const labelInp  = document.getElementById('inp-custom-label');
   const valInp    = document.getElementById('inp-custom-val');
-  const presets   = document.querySelectorAll('.preset-btn');
+  // Scoped to physical's own buttons only -- a global '.preset-btn' query would
+  // also match audiobook's and ebook's preset buttons (same shared CSS class),
+  // wiring this physical-only handler to buttons it shouldn't control.
+  const presets   = document.querySelectorAll('#physical-presets .preset-btn');
   const sectionLbl = document.getElementById('pct-section-lbl');
 
   const PRESETS_PHYSICAL = [
-    {id:'preset-tea',   label:'Cups of Tea',        emoji:'🍵'},
-    {id:'preset-tears', label:'Tears Cried',         emoji:'😭'},
-    {id:'preset-plot',  label:'Plot Twists',         emoji:'😱'},
-    {id:'preset-days',  label:'Days Read in a Row',  emoji:'📕'},
+    {id:'preset-tea',   label:'Cups of Tea',        emoji:'\uD83C\uDF75'},
+    {id:'preset-tears', label:'Tears Cried',         emoji:'\uD83D\uDE2D'},
+    {id:'preset-plot',  label:'Plot Twists',         emoji:'\uD83D\uDE31'},
+    {id:'preset-days',  label:'Days Read in a Row',  emoji:'\uD83D\uDCD5'},
   ];
   const PRESETS_AUDIO = [
-    {id:'preset-walked',    label:'Distance Walked', emoji:'🚶'},
-    {id:'preset-driven',    label:'Distance Driven', emoji:'🚗'},
-    {id:'preset-remaining', label:'Time Remaining',  emoji:'⏱️'},
+    {id:'preset-walked',    label:'Distance Walked', emoji:'\uD83D\uDEB6'},
+    {id:'preset-driven',    label:'Distance Driven', emoji:'\uD83D\uDE97'},
+    {id:'preset-remaining', label:'Time Remaining',  emoji:'\u23F1\uFE0F'},
   ];
   const PRESETS = [...PRESETS_PHYSICAL, ...PRESETS_AUDIO];
 
@@ -1834,7 +2343,7 @@ window.addEventListener('resize', () => {
       _presetExplicitlyClicked = false;
       activePreset = 'preset-tea';
       S.customLabel = 'Cups of Tea';
-      S.customEmoji = '🍵';
+      S.customEmoji = '\uD83C\uDF75';
       presets.forEach(b=>b.classList.toggle('active', b.id==='preset-tea'));
       setLabelPlaceholder();
       renderDebounced();
@@ -1863,7 +2372,7 @@ window.addEventListener('resize', () => {
       // Label stays gray (placeholder) until user interacts
       setLabelPlaceholder();
       S.customLabel = 'Cups of Tea';
-      S.customEmoji = '🍵';
+      S.customEmoji = '\uD83C\uDF75';
       presets.forEach(b=>b.classList.toggle('active', b.id==='preset-tea'));
     }
     trackEvent('ss_custom_stat_toggle',{enabled:toggle.checked});
@@ -1871,6 +2380,105 @@ window.addEventListener('resize', () => {
     setTimeout(matchHeights,50);
     renderDebounced();
   });
+})();
+
+// ── EBOOK CUSTOM STAT ────────────────────────────────────────────────────────
+// Reuses the same 4 presets as physical (Cups of Tea / Tears Cried / Plot
+// Twists / Days in a Row), always visible (no on/off toggle, unlike physical).
+// Deliberately kept on its OWN state (S.ebCustomLabel/ebCustomVal) rather than
+// sharing physical's S.customLabel/customVal -- simpler and avoids cross-mode
+// contamination when a user carries a value in from audiobook, which has
+// incompatible preset labels (Distance Walked etc).
+(()=>{
+  const labelInp = document.getElementById('inp-eb-custom-label');
+  const valInp   = document.getElementById('inp-eb-custom-val');
+  const presets  = document.querySelectorAll('#ebook-presets .preset-btn');
+
+  const EBOOK_PRESETS = [
+    {id:'preset-eb-tea',   label:'Cups of Tea',        emoji:'🍵'},
+    {id:'preset-eb-tears', label:'Tears Cried',        emoji:'😭'},
+    {id:'preset-eb-plot',  label:'Plot Twists',        emoji:'😱'},
+    {id:'preset-eb-days',  label:'Days Read in a Row', emoji:'📕'},
+  ];
+
+  function setLabelPlaceholder(){
+    labelInp.value = '';
+    labelInp.classList.add('is-placeholder');
+    labelInp.placeholder = 'Cups of Tea';
+  }
+  function setLabelActive(text){
+    labelInp.value = text;
+    labelInp.classList.remove('is-placeholder');
+  }
+
+  let _ebPresetExplicitlyClicked = false;
+
+  function setPreset(id){
+    const p = EBOOK_PRESETS.find(x=>x.id===id);
+    if(!p) return;
+    presets.forEach(b=>b.classList.toggle('active', b.id===id));
+    S.ebCustomLabel = p.label;
+    S.ebCustomEmoji = p.emoji;
+    if(id === 'preset-eb-tea' && !_ebPresetExplicitlyClicked){
+      setLabelPlaceholder();
+    } else {
+      setLabelActive(p.label);
+    }
+    renderDebounced();
+  }
+
+  presets.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      _ebPresetExplicitlyClicked = true;
+      setPreset(btn.id);
+    });
+  });
+
+  labelInp.addEventListener('focus',()=>{
+    if(labelInp.classList.contains('is-placeholder')){
+      labelInp.value='';
+      labelInp.classList.remove('is-placeholder');
+    }
+  });
+
+  labelInp.addEventListener('input',()=>{
+    const val = labelInp.value.trim();
+    const match = EBOOK_PRESETS.find(p=>p.label.toLowerCase()===val.toLowerCase());
+    if(match){
+      S.ebCustomEmoji = match.emoji;
+      presets.forEach(b=>b.classList.toggle('active', b.id===match.id));
+    } else {
+      S.ebCustomEmoji = '';
+      presets.forEach(b=>b.classList.remove('active'));
+    }
+    S.ebCustomLabel = val || 'Cups of Tea';
+    renderDebounced();
+  });
+
+  labelInp.addEventListener('blur',()=>{
+    if(!labelInp.value.trim()){
+      _ebPresetExplicitlyClicked = false;
+      S.ebCustomLabel = 'Cups of Tea';
+      S.ebCustomEmoji = '🍵';
+      presets.forEach(b=>b.classList.toggle('active', b.id==='preset-eb-tea'));
+      setLabelPlaceholder();
+      renderDebounced();
+    }
+  });
+
+  valInp.addEventListener('input',()=>{
+    if(valInp.value.length>5) valInp.value=valInp.value.slice(0,5);
+    S.ebCustomVal = valInp.value;
+    renderDebounced();
+  });
+  valInp.addEventListener('change',()=>{
+    if(valInp.value.length>5) valInp.value=valInp.value.slice(0,5);
+    S.ebCustomVal = valInp.value;
+    renderDebounced();
+  });
+
+  // Start in the same gray-placeholder default state physical uses.
+  setLabelPlaceholder();
 })();
 </script>
 <!-- ── LIGHTBOX ── -->
