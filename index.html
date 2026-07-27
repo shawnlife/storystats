@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v6.24 -->
+<!-- StoryStats v6.25 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -687,7 +687,8 @@ function getUploadHintText(){
 }
 const ICON_BOOK='<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6v13m9-13v13m9-13v13"/></svg>';
 const ICON_HEADPHONES='<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4 15a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm11 0a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2z"/><path d="M4 15v-3a8 8 0 0 1 16 0v3"/></svg>';
-function defaultPreviewHTML(){ return `<div class="upload-icon">${typeof S !== 'undefined' && S.mode==='audiobook'?ICON_HEADPHONES:ICON_BOOK}</div><div class="upload-hint">${getUploadHintText()}</div>`; }
+const ICON_EBOOK='<svg class="icon-inline" viewBox="0 0 1500 1500" fill="currentColor"><defs><clipPath id="4d3007c63c"><path d="M 209 55 L 1297.753906 55 L 1297.753906 1445.539062 L 209 1445.539062 Z M 209 55 " clip-rule="nonzero"/></clipPath></defs><path fill="currentColor" d="M 453.976562 300.898438 L 1065.339844 300.898438 L 1065.339844 345.777344 L 453.976562 345.777344 Z M 453.976562 300.898438 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 424.316406 L 1065.339844 424.316406 L 1065.339844 469.195312 L 453.976562 469.195312 Z M 453.976562 424.316406 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 547.734375 L 1065.339844 547.734375 L 1065.339844 592.613281 L 453.976562 592.613281 Z M 453.976562 547.734375 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 671.152344 L 1065.339844 671.152344 L 1065.339844 716.03125 L 453.976562 716.03125 Z M 453.976562 671.152344 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 794.570312 L 1065.339844 794.570312 L 1065.339844 839.449219 L 453.976562 839.449219 Z M 453.976562 794.570312 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 917.988281 L 1065.339844 917.988281 L 1065.339844 962.867188 L 453.976562 962.867188 Z M 453.976562 917.988281 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 1041.402344 L 1065.339844 1041.402344 L 1065.339844 1086.28125 L 453.976562 1086.28125 Z M 453.976562 1041.402344 " fill-opacity="1" fill-rule="nonzero"/><g clip-path="url(#4d3007c63c)"><path fill="currentColor" d="M 299.125 55.007812 C 250.082031 55.007812 209.96875 95.128906 209.96875 144.183594 L 209.96875 1357.039062 C 209.96875 1406.089844 250.082031 1446.210938 299.125 1446.210938 L 1220.140625 1446.210938 C 1269.1875 1446.210938 1309.300781 1406.089844 1309.300781 1357.039062 L 1309.300781 144.183594 C 1309.300781 95.128906 1269.1875 55.007812 1220.140625 55.007812 Z M 759.632812 1375.4375 C 741.058594 1375.4375 725.980469 1360.359375 725.980469 1341.777344 C 725.980469 1323.199219 741.058594 1308.121094 759.632812 1308.121094 C 778.210938 1308.121094 793.289062 1323.199219 793.289062 1341.777344 C 793.289062 1360.402344 778.210938 1375.4375 759.632812 1375.4375 Z M 1208.339844 1237.480469 L 310.925781 1237.480469 L 310.925781 149.746094 L 1208.339844 149.746094 Z M 1208.339844 1237.480469 " fill-opacity="1" fill-rule="nonzero"/></g></svg>';
+function defaultPreviewHTML(){ const icon = typeof S !== 'undefined' && S.mode==='audiobook' ? ICON_HEADPHONES : typeof S !== 'undefined' && S.mode==='ebook' ? ICON_EBOOK : ICON_BOOK; return `<div class="upload-icon">${icon}</div><div class="upload-hint">${getUploadHintText()}</div>`; }
 function resetBook(){
   S.bookImg=null;S.useDefault=true;
   trackEvent('ss_cover_reset');
@@ -904,9 +905,14 @@ function setMode(mode){
   document.getElementById('curpage-lbl').textContent = mode==='audiobook' ? 'Time I\'m on (h:mm)' : 'Page I\'m on';
   document.getElementById('total-lbl').textContent = mode==='audiobook' ? 'Total time (h:mm)' : 'Total pages';
 
-  // Update upload hint
-  const uploadHint = document.getElementById('upload-hint');
-  if(uploadHint) uploadHint.innerHTML = getUploadHintText();
+  // Update upload placeholder (icon + hint) — only when showing the default
+  // placeholder; an already-uploaded cover should stay put across mode switches.
+  if(S.useDefault || !S.bookImg){
+    document.getElementById('upload-preview').innerHTML = defaultPreviewHTML();
+  } else {
+    const uploadHint = document.getElementById('upload-hint');
+    if(uploadHint) uploadHint.innerHTML = getUploadHintText();
+  }
 
   // Reset custom stat to audiobook defaults if switching to audiobook.
   // (Ebook doesn't need this \u2014 it has its own dedicated custom-stat state,
@@ -1553,22 +1559,12 @@ function drawCard(canvas,forExport){
   if(!S.hideBook){
     const isDefault = S.useDefault || !S.bookImg;
     if(isDefault){
-      // Use headphones, ebook tablet, or physical book graphic
+      // Use headphones, ebook tablet, or physical book graphic. Ebook uses
+      // the exact same box and fill treatment as physical (see isDefaultPhysical
+      // below) so it matches its height/spacing exactly — no separate sizing math.
       const defaultSrc = isAudiobook ? headphonesImg : isEbook ? ebookImg : distImg;
       if(defaultSrc&&defaultSrc.complete&&defaultSrc.naturalWidth>0){
-        if(isEbook){
-          // Unlike distImg (which has ~5/6% baked-in top/bottom padding within
-          // its own art), the ebook graphic is cropped tight to its edges.
-          // Shrink it within the box and anchor to the top, so it reads at a
-          // comparable visual size to the physical book and leaves clearance
-          // above the logo instead of crowding it.
-          const EB_SHRINK=0.72;
-          const fit=Math.min((bkW*EB_SHRINK)/defaultSrc.naturalWidth, (bkH*EB_SHRINK)/defaultSrc.naturalHeight);
-          const fw=Math.round(defaultSrc.naturalWidth*fit), fh=Math.round(defaultSrc.naturalHeight*fit);
-          ctx.drawImage(defaultSrc, bkX+(bkW-fw)/2, bookY, fw, fh);
-        } else {
-          ctx.drawImage(defaultSrc, bkX, bookY, bkW, bkH);
-        }
+        ctx.drawImage(defaultSrc, bkX, bookY, bkW, bkH);
       }
     } else {
       // User uploaded cover -- fit to the bounding box
@@ -1769,11 +1765,10 @@ function drawCardLandscape(canvas,forExport){
   }
   // The default book PNG has empty transparent space baked into the top and
   // bottom of its own bounding box (the drawn line art doesn't reach either
-  // edge). Measured: ~5% at the top, ~6% at the bottom. This is specific to
-  // distImg's own art, so it only applies to physical — ebook gets its own
-  // title-vs-logo handling below instead (it's shrunk/top-anchored at draw
-  // time, so it doesn't need the same padding compensation).
-  const isDefaultPhysical=!isAudiobook&&!isEbook&&(S.useDefault||!S.bookImg);
+  // edge). Measured: ~5% at the top, ~6% at the bottom. Ebook uses the exact
+  // same box, fill, and padding treatment as physical (not a separate default
+  // graphic path) so its height and title/logo spacing match physical exactly.
+  const isDefaultPhysical=!isAudiobook&&(S.useDefault||!S.bookImg);
   const bookTopPad=isDefaultPhysical?Math.round(bkH*0.05):0;
   let bookArtPad=isDefaultPhysical?Math.round(bkH*0.06):0;
 
@@ -1812,39 +1807,24 @@ function drawCardLandscape(canvas,forExport){
       bookArtPad = Math.round(bkH*0.06);
     }
   }
-  // Ebook, any title: the ebook graphic has no baked-in padding to lean on
-  // (unlike distImg), so 1-line titles alone can already crowd the logo.
-  // Guarantee comfortable clearance below the LAST title line, shrinking the
-  // book if needed. Extra buffer beyond TIGHT_LOGO_GAP because that constant
-  // was tuned for icon-to-logo spacing, not text-to-logo (text reads as
-  // "closer" than an icon at the same pixel distance).
-  if(isEbook && titleLines.length>=1){
-    const titleTextH = landscapeTtlFs + (titleLines.length-1)*TTL_LINE_H;
-    const newTitleBottom = logoY - TIGHT_LOGO_GAP - 20;
-    const newTitleTop = newTitleBottom - titleTextH;
-    const newBookBottom = newTitleTop - TITLE_GAP;
-    const shrunkH = newBookBottom - blockTop;
-    if(shrunkH > 0 && shrunkH < bkH){
-      const scale = shrunkH / bkH;
-      bkH = Math.round(shrunkH);
-      bkW = Math.round(bkW * scale);
-    }
-  }
   const bkX=Math.round(LCX-bkW/2);
 
   if(!S.hideBook){
     const isDefault=S.useDefault||!S.bookImg;
     if(isDefault){
       const defaultSrc=isAudiobook?headphonesImg:isEbook?ebookImg:distImg;
-      if(defaultSrc&&defaultSrc.complete&&defaultSrc.naturalWidth>0&&isEbook){
-        // Shrink and top-anchor within the box (see vertical draw fn for why:
-        // distImg has baked-in top/bottom padding the ebook graphic lacks).
-        const EB_SHRINK=0.72;
-        const fit=Math.min((bkW*EB_SHRINK)/defaultSrc.naturalWidth, (bkH*EB_SHRINK)/defaultSrc.naturalHeight);
-        const fw=Math.round(defaultSrc.naturalWidth*fit), fh=Math.round(defaultSrc.naturalHeight*fit);
-        ctx.drawImage(defaultSrc, bkX+(bkW-fw)/2, blockTop, fw, fh);
-      } else if(defaultSrc&&defaultSrc.complete&&defaultSrc.naturalWidth>0){
-        ctx.drawImage(defaultSrc,bkX,blockTop,bkW,bkH);
+      if(defaultSrc&&defaultSrc.complete&&defaultSrc.naturalWidth>0){
+        if(isEbook){
+          // The ebook graphic (unlike distImg) is cropped tight with no baked-in
+          // top/bottom padding, but the title-position math above assumes that
+          // padding exists (bookTopPad/bookArtPad). Inset the draw by those same
+          // amounts so the assumption is actually true, instead of guessing at a
+          // separate size — this keeps the box (and thus height/spacing) identical
+          // to physical while still giving the title real clearance.
+          ctx.drawImage(defaultSrc,bkX,blockTop+bookTopPad,bkW,bkH-bookTopPad-bookArtPad);
+        } else {
+          ctx.drawImage(defaultSrc,bkX,blockTop,bkW,bkH);
+        }
       }
     } else {
       const src=S.bookImg;
