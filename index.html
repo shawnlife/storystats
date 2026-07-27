@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v6.29 -->
+<!-- StoryStats v6.30 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -390,7 +390,7 @@ html,body{max-width:100%;overflow-x:hidden}
           </div>
           <div class="custom-num-wrap">
             <div class="mini">Number</div>
-            <input type="number" id="inp-eb-custom-val" placeholder="0" min="0" maxlength="5">
+            <input type="number" id="inp-eb-custom-val" placeholder="0" min="0" maxlength="7">
           </div>
         </div>
       </div>
@@ -429,7 +429,7 @@ html,body{max-width:100%;overflow-x:hidden}
           </div>
           <div class="custom-num-wrap">
             <div class="mini" id="custom-val-lbl">Number</div>
-            <input type="number" id="inp-custom-val" placeholder="0" min="0" maxlength="5">
+            <input type="number" id="inp-custom-val" placeholder="0" min="0" maxlength="7">
           </div>
         </div>
       </div>
@@ -750,6 +750,7 @@ headphonesImg.crossOrigin = 'anonymous';
 headphonesImg.src = HEADPHONES_IMG;
 
 const ebookImg = new Image();
+ebookImg.crossOrigin = 'anonymous';
 ebookImg.src = 'https://cdn.shopify.com/s/files/1/1194/9120/files/ebook-default-cover.png?v=1785164888';
 
 // Detect unit from locale/timezone
@@ -2415,12 +2416,12 @@ window.addEventListener('resize', () => {
   });
 
   valInp.addEventListener('input',()=>{
-    if(valInp.value.length>5) valInp.value=valInp.value.slice(0,5);
+    if(valInp.value.length>7) valInp.value=valInp.value.slice(0,7);
     S.customVal = valInp.value;
     renderDebounced();
   });
   valInp.addEventListener('change',()=>{
-    if(valInp.value.length>5) valInp.value=valInp.value.slice(0,5);
+    if(valInp.value.length>7) valInp.value=valInp.value.slice(0,7);
     S.customVal = valInp.value;
     renderDebounced();
   });
@@ -2530,12 +2531,12 @@ window.addEventListener('resize', () => {
   });
 
   valInp.addEventListener('input',()=>{
-    if(valInp.value.length>5) valInp.value=valInp.value.slice(0,5);
+    if(valInp.value.length>7) valInp.value=valInp.value.slice(0,7);
     S.ebCustomVal = valInp.value;
     renderDebounced();
   });
   valInp.addEventListener('change',()=>{
-    if(valInp.value.length>5) valInp.value=valInp.value.slice(0,5);
+    if(valInp.value.length>7) valInp.value=valInp.value.slice(0,7);
     S.ebCustomVal = valInp.value;
     renderDebounced();
   });
