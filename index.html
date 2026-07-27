@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v6.23 -->
+<!-- StoryStats v6.24 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -228,7 +228,9 @@ canvas{display:block;width:100%;height:100%;max-width:100%}
   .footer{padding:0 12px 16px}
   .preset-btns{flex-wrap:wrap}
   .preset-btn{font-size:11px;padding:6px 4px;white-space:normal;line-height:1.3;min-width:calc(50% - 3px);flex:none}
-  #audiobook-presets .preset-btn:last-child:nth-child(odd){margin:0 auto;min-width:calc(50% - 3px)}
+  #audiobook-presets .preset-btn:last-child:nth-child(odd),
+  #physical-presets .preset-btn:last-child:nth-child(odd),
+  #ebook-presets .preset-btn:last-child:nth-child(odd){margin:0 auto;min-width:calc(50% - 3px)}
   .ab-stats-label-row .lbl{font-size:12px;word-break:break-word;hyphens:auto}
   .mode-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px;font-size:12px;white-space:normal}
   .mode-btn .icon-inline{width:18px;height:18px;margin-right:0}
@@ -264,17 +266,7 @@ html,body{max-width:100%;overflow-x:hidden}
 <div class="mode-switcher">
   <button class="mode-btn active" id="mode-physical" onclick="setMode('physical')"><svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0M3 6v13m9-13v13m9-13v13"/></svg> Physical Book</button>
   <button class="mode-btn" id="mode-audiobook" onclick="setMode('audiobook')"><svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4 15a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm11 0a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2z"/><path d="M4 15v-3a8 8 0 0 1 16 0v3"/></svg> Audiobook</button>
-  <button class="mode-btn" id="mode-ebook" onclick="setMode('ebook')"><svg class="icon-inline" viewBox="0 0 90 90" fill="currentColor">
-	<path d="M 75.855 90 H 14.145 c -2.961 0 -5.37 -2.408 -5.37 -5.369 V 5.37 c 0 -2.961 2.409 -5.37 5.37 -5.37 h 61.711 c 2.961 0 5.369 2.409 5.369 5.37 v 79.261 C 81.225 87.592 78.816 90 75.855 90 z M 14.145 2 c -1.858 0 -3.37 1.512 -3.37 3.37 v 79.261 c 0 1.857 1.512 3.369 3.37 3.369 h 61.711 c 1.857 0 3.369 -1.512 3.369 -3.369 V 5.37 c 0 -1.858 -1.512 -3.37 -3.369 -3.37 H 14.145 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill:currentColor; fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) "/>
-	<path d="M 72.225 80 h -54.45 c -0.552 0 -1 -0.447 -1 -1 V 9 c 0 -0.552 0.448 -1 1 -1 h 54.45 c 0.553 0 1 0.448 1 1 v 70 C 73.225 79.553 72.777 80 72.225 80 z M 18.775 78 h 52.45 V 10 h -52.45 V 78 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill:currentColor; fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) "/>
-	<path d="M 48.401 85.014 h -6.803 c -0.552 0 -1 -0.447 -1 -1 s 0.448 -1 1 -1 h 6.803 c 0.553 0 1 0.447 1 1 S 48.954 85.014 48.401 85.014 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill:currentColor; fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) "/>
-	<path d="M 62.225 20 h -34.45 c -0.552 0 -1 -0.448 -1 -1 s 0.448 -1 1 -1 h 34.45 c 0.553 0 1 0.448 1 1 S 62.777 20 62.225 20 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill:currentColor; fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) "/>
-	<path d="M 62.225 40 h -34.45 c -0.552 0 -1 -0.448 -1 -1 s 0.448 -1 1 -1 h 34.45 c 0.553 0 1 0.448 1 1 S 62.777 40 62.225 40 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill:currentColor; fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) "/>
-	<path d="M 62.225 30 h -34.45 c -0.552 0 -1 -0.448 -1 -1 s 0.448 -1 1 -1 h 34.45 c 0.553 0 1 0.448 1 1 S 62.777 30 62.225 30 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill:currentColor; fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) "/>
-	<path d="M 62.225 60 h -34.45 c -0.552 0 -1 -0.447 -1 -1 s 0.448 -1 1 -1 h 34.45 c 0.553 0 1 0.447 1 1 S 62.777 60 62.225 60 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill:currentColor; fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) "/>
-	<path d="M 62.225 50 h -34.45 c -0.552 0 -1 -0.447 -1 -1 s 0.448 -1 1 -1 h 34.45 c 0.553 0 1 0.447 1 1 S 62.777 50 62.225 50 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill:currentColor; fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) "/>
-	<path d="M 42.225 70 h -14.45 c -0.552 0 -1 -0.447 -1 -1 s 0.448 -1 1 -1 h 14.45 c 0.552 0 1 0.447 1 1 S 42.777 70 42.225 70 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill:currentColor; fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) "/>
-</svg> Ebook</button>
+  <button class="mode-btn" id="mode-ebook" onclick="setMode('ebook')"><svg class="icon-inline" viewBox="0 0 1500 1500" fill="currentColor"><defs><clipPath id="4d3007c63c"><path d="M 209 55 L 1297.753906 55 L 1297.753906 1445.539062 L 209 1445.539062 Z M 209 55 " clip-rule="nonzero"/></clipPath></defs><path fill="currentColor" d="M 453.976562 300.898438 L 1065.339844 300.898438 L 1065.339844 345.777344 L 453.976562 345.777344 Z M 453.976562 300.898438 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 424.316406 L 1065.339844 424.316406 L 1065.339844 469.195312 L 453.976562 469.195312 Z M 453.976562 424.316406 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 547.734375 L 1065.339844 547.734375 L 1065.339844 592.613281 L 453.976562 592.613281 Z M 453.976562 547.734375 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 671.152344 L 1065.339844 671.152344 L 1065.339844 716.03125 L 453.976562 716.03125 Z M 453.976562 671.152344 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 794.570312 L 1065.339844 794.570312 L 1065.339844 839.449219 L 453.976562 839.449219 Z M 453.976562 794.570312 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 917.988281 L 1065.339844 917.988281 L 1065.339844 962.867188 L 453.976562 962.867188 Z M 453.976562 917.988281 " fill-opacity="1" fill-rule="nonzero"/><path fill="currentColor" d="M 453.976562 1041.402344 L 1065.339844 1041.402344 L 1065.339844 1086.28125 L 453.976562 1086.28125 Z M 453.976562 1041.402344 " fill-opacity="1" fill-rule="nonzero"/><g clip-path="url(#4d3007c63c)"><path fill="currentColor" d="M 299.125 55.007812 C 250.082031 55.007812 209.96875 95.128906 209.96875 144.183594 L 209.96875 1357.039062 C 209.96875 1406.089844 250.082031 1446.210938 299.125 1446.210938 L 1220.140625 1446.210938 C 1269.1875 1446.210938 1309.300781 1406.089844 1309.300781 1357.039062 L 1309.300781 144.183594 C 1309.300781 95.128906 1269.1875 55.007812 1220.140625 55.007812 Z M 759.632812 1375.4375 C 741.058594 1375.4375 725.980469 1360.359375 725.980469 1341.777344 C 725.980469 1323.199219 741.058594 1308.121094 759.632812 1308.121094 C 778.210938 1308.121094 793.289062 1323.199219 793.289062 1341.777344 C 793.289062 1360.402344 778.210938 1375.4375 759.632812 1375.4375 Z M 1208.339844 1237.480469 L 310.925781 1237.480469 L 310.925781 149.746094 L 1208.339844 149.746094 Z M 1208.339844 1237.480469 " fill-opacity="1" fill-rule="nonzero"/></g></svg> Ebook</button>
 </div>
 <div class="app">
   <div class="panel">
@@ -389,7 +381,6 @@ html,body{max-width:100%;overflow-x:hidden}
         <div class="preset-btns" id="ebook-presets">
           <button class="preset-btn active" data-label="Cups of Tea" data-emoji="&#x1F375;" id="preset-eb-tea"><svg class="icon-inline" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h8.5v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2V4.5A.5.5 0 0 1 2 4M.5 13.5h13m-3-9.5h1a2 2 0 0 1 0 4h-1M3 .5v1m5-1v1M5.5.5v1"/></svg> Cups of Tea</button>
           <button class="preset-btn" data-label="Tears Cried" data-emoji="&#x1F62D;" id="preset-eb-tears"><svg class="icon-inline" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5.072a8 8 0 1 0 .951 13.215a2.47 2.47 0 0 0 1.63.592q.42 0 .794-.122C16.277 22.144 11.14 23.05 7 20.66C2.217 17.9.578 11.783 3.34 7S12.217.58 17 3.34c4.325 2.497 6.079 7.735 4.334 12.252q-.049-.938-.51-1.982q-.26-.586-.823-1.57a8 8 0 0 0-4-6.968"/><path d="M19.865 17.032a1.8 1.8 0 0 1-1.284.513q-.75 0-1.284-.513a1.65 1.65 0 0 1-.534-1.234q0-.59.341-1.255q.341-.666 1.477-2.238q1.136 1.572 1.478 2.238q.34.666.34 1.255q0 .72-.534 1.234M9.264 9.539c-.03.154-.13.444-.318.712c-.184.263-.42.461-.72.541c-.298.08-.602.027-.893-.108a2 2 0 0 1-.631-.459l-1.131.986c.229.262.625.598 1.13.833c.51.237 1.182.393 1.914.197c.731-.196 1.236-.667 1.56-1.128c.319-.455.494-.944.561-1.286zm5.472 0c.03.154.13.444.318.712c.184.263.42.461.72.541c.298.08.602.027.893-.108c.297-.139.528-.34.631-.459l1.131.986a3.5 3.5 0 0 1-1.13.833c-.51.237-1.182.393-1.914.197s-1.236-.667-1.56-1.128a3.5 3.5 0 0 1-.561-1.286zm-4.544 7.676a1 1 0 0 1-1.664-1.11C9.438 14.74 11.01 14.34 12 14.34s2.562.4 3.472 1.766a1 1 0 1 1-1.664 1.11c-.41-.615-1.213-.876-1.808-.876s-1.399.261-1.808.875"/></svg> Tears Cried</button>
-          <button class="preset-btn" data-label="Plot Twists" data-emoji="&#x1F631;" id="preset-eb-plot"><svg class="icon-inline" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="7" cy="3" rx="6" ry="2.5"/><path d="M11.87 6.73c-.87.79-2.73 1.34-4.94 1.34A10.17 10.17 0 0 1 3 7.37m7.86 2.47a6.84 6.84 0 0 1-3.36.73a8.47 8.47 0 0 1-2.5-.35m5.37 3.22c-.95.21-1.83-.16-2-.83"/></svg> Plot Twists</button>
           <button class="preset-btn" data-label="Days Read in a Row" data-emoji="&#x1F4D5;" id="preset-eb-days"><svg class="icon-inline" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2c-.277 0-.5.223-.5.5v9c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-9c0-.277-.223-.5-.5-.5zm3 1c-.277 0-.5.223-.5.5v8c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-8c0-.277-.223-.5-.5-.5zm3.549.99a.5.5 0 0 0-.102.018l-.965.258a.5.5 0 0 0-.353.613l1.81 6.762a.5.5 0 0 0 .614.353l.965-.26a.5.5 0 0 0 .353-.611l-1.81-6.762a.5.5 0 0 0-.512-.37M1.5 4c-.277 0-.5.223-.5.5v7c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-7c0-.277-.223-.5-.5-.5zm0 9a.499.499 0 1 0 0 1h12a.499.499 0 1 0 0-1z"/></svg> Days in a Row</button>
         </div>
         <div class="custom-stat-inputs">
@@ -429,7 +420,6 @@ html,body{max-width:100%;overflow-x:hidden}
         <div class="preset-btns" id="physical-presets">
           <button class="preset-btn active" data-label="Cups of Tea" data-emoji="&#x1F375;" id="preset-tea"><svg class="icon-inline" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h8.5v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2V4.5A.5.5 0 0 1 2 4M.5 13.5h13m-3-9.5h1a2 2 0 0 1 0 4h-1M3 .5v1m5-1v1M5.5.5v1"/></svg> Cups of Tea</button>
           <button class="preset-btn" data-label="Tears Cried" data-emoji="&#x1F62D;" id="preset-tears"><svg class="icon-inline" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5.072a8 8 0 1 0 .951 13.215a2.47 2.47 0 0 0 1.63.592q.42 0 .794-.122C16.277 22.144 11.14 23.05 7 20.66C2.217 17.9.578 11.783 3.34 7S12.217.58 17 3.34c4.325 2.497 6.079 7.735 4.334 12.252q-.049-.938-.51-1.982q-.26-.586-.823-1.57a8 8 0 0 0-4-6.968"/><path d="M19.865 17.032a1.8 1.8 0 0 1-1.284.513q-.75 0-1.284-.513a1.65 1.65 0 0 1-.534-1.234q0-.59.341-1.255q.341-.666 1.477-2.238q1.136 1.572 1.478 2.238q.34.666.34 1.255q0 .72-.534 1.234M9.264 9.539c-.03.154-.13.444-.318.712c-.184.263-.42.461-.72.541c-.298.08-.602.027-.893-.108a2 2 0 0 1-.631-.459l-1.131.986c.229.262.625.598 1.13.833c.51.237 1.182.393 1.914.197c.731-.196 1.236-.667 1.56-1.128c.319-.455.494-.944.561-1.286zm5.472 0c.03.154.13.444.318.712c.184.263.42.461.72.541c.298.08.602.027.893-.108c.297-.139.528-.34.631-.459l1.131.986a3.5 3.5 0 0 1-1.13.833c-.51.237-1.182.393-1.914.197s-1.236-.667-1.56-1.128a3.5 3.5 0 0 1-.561-1.286zm-4.544 7.676a1 1 0 0 1-1.664-1.11C9.438 14.74 11.01 14.34 12 14.34s2.562.4 3.472 1.766a1 1 0 1 1-1.664 1.11c-.41-.615-1.213-.876-1.808-.876s-1.399.261-1.808.875"/></svg> Tears Cried</button>
-          <button class="preset-btn" data-label="Plot Twists" data-emoji="&#x1F631;" id="preset-plot"><svg class="icon-inline" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="7" cy="3" rx="6" ry="2.5"/><path d="M11.87 6.73c-.87.79-2.73 1.34-4.94 1.34A10.17 10.17 0 0 1 3 7.37m7.86 2.47a6.84 6.84 0 0 1-3.36.73a8.47 8.47 0 0 1-2.5-.35m5.37 3.22c-.95.21-1.83-.16-2-.83"/></svg> Plot Twists</button>
           <button class="preset-btn" data-label="Days Read in a Row" data-emoji="&#x1F4D5;" id="preset-days"><svg class="icon-inline" viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2c-.277 0-.5.223-.5.5v9c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-9c0-.277-.223-.5-.5-.5zm3 1c-.277 0-.5.223-.5.5v8c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-8c0-.277-.223-.5-.5-.5zm3.549.99a.5.5 0 0 0-.102.018l-.965.258a.5.5 0 0 0-.353.613l1.81 6.762a.5.5 0 0 0 .614.353l.965-.26a.5.5 0 0 0 .353-.611l-1.81-6.762a.5.5 0 0 0-.512-.37M1.5 4c-.277 0-.5.223-.5.5v7c0 .277.223.5.5.5h1c.277 0 .5-.223.5-.5v-7c0-.277-.223-.5-.5-.5zm0 9a.499.499 0 1 0 0 1h12a.499.499 0 1 0 0-1z"/></svg> Days in a Row</button>
         </div>
         <div class="custom-stat-inputs">
@@ -1567,12 +1557,15 @@ function drawCard(canvas,forExport){
       const defaultSrc = isAudiobook ? headphonesImg : isEbook ? ebookImg : distImg;
       if(defaultSrc&&defaultSrc.complete&&defaultSrc.naturalWidth>0){
         if(isEbook){
-          // Contain-fit within the physical-sized box rather than stretching
-          // to distImg's exact aspect ratio, since the ebook graphic has its
-          // own proportions.
-          const fit=Math.min(bkW/defaultSrc.naturalWidth, bkH/defaultSrc.naturalHeight);
+          // Unlike distImg (which has ~5/6% baked-in top/bottom padding within
+          // its own art), the ebook graphic is cropped tight to its edges.
+          // Shrink it within the box and anchor to the top, so it reads at a
+          // comparable visual size to the physical book and leaves clearance
+          // above the logo instead of crowding it.
+          const EB_SHRINK=0.72;
+          const fit=Math.min((bkW*EB_SHRINK)/defaultSrc.naturalWidth, (bkH*EB_SHRINK)/defaultSrc.naturalHeight);
           const fw=Math.round(defaultSrc.naturalWidth*fit), fh=Math.round(defaultSrc.naturalHeight*fit);
-          ctx.drawImage(defaultSrc, bkX+(bkW-fw)/2, bookY+(bkH-fh)/2, fw, fh);
+          ctx.drawImage(defaultSrc, bkX+(bkW-fw)/2, bookY, fw, fh);
         } else {
           ctx.drawImage(defaultSrc, bkX, bookY, bkW, bkH);
         }
@@ -1777,11 +1770,10 @@ function drawCardLandscape(canvas,forExport){
   // The default book PNG has empty transparent space baked into the top and
   // bottom of its own bounding box (the drawn line art doesn't reach either
   // edge). Measured: ~5% at the top, ~6% at the bottom. This is specific to
-  // distImg's own art, so it only applies to physical, not ebook — but ebook
-  // still needs the same title-vs-logo layout logic below (gated on
-  // isDefaultCover), just with zero padding compensation.
-  const isDefaultCover=!isAudiobook&&(S.useDefault||!S.bookImg);
-  const isDefaultPhysical=isDefaultCover&&!isEbook;
+  // distImg's own art, so it only applies to physical — ebook gets its own
+  // title-vs-logo handling below instead (it's shrunk/top-anchored at draw
+  // time, so it doesn't need the same padding compensation).
+  const isDefaultPhysical=!isAudiobook&&!isEbook&&(S.useDefault||!S.bookImg);
   const bookTopPad=isDefaultPhysical?Math.round(bkH*0.05):0;
   let bookArtPad=isDefaultPhysical?Math.round(bkH*0.06):0;
 
@@ -1799,18 +1791,16 @@ function drawCardLandscape(canvas,forExport){
     logoY+=SPREAD;
   }
   // Physical, no title: nudge the logo up by the book art's own top padding.
-  // The book itself stays put — only the logo moves. (Ebook has no baked-in
-  // padding to compensate for, so bookTopPad is 0 there and this is a no-op.)
-  if(isDefaultCover && titleLines.length===0){
+  // The book itself stays put — only the logo moves.
+  if(isDefaultPhysical && titleLines.length===0){
     logoY-=bookTopPad;
   }
-  // Default cover, 2-line title: a 2nd line needs more room than the 1-line
-  // layout has. Rather than crowd the logo, shrink the book (from the bottom,
-  // top stays put) so the LAST title line sits the same distance above the
-  // logo that a 1-line title does — keeps the title-to-logo gap visually
-  // constant regardless of title length, per Shawn's spec. Applies to both
-  // physical and ebook (any mode using its own default graphic, not a photo).
-  if(isDefaultCover && titleLines.length===2){
+  // Physical, 2-line title: a 2nd line needs more room than the 1-line layout
+  // has. Rather than crowd the logo, shrink the book (from the bottom, top
+  // stays put) so the LAST title line sits the same distance above the logo
+  // that a 1-line title does — keeps the title-to-logo gap visually constant
+  // regardless of title length, per Shawn's spec.
+  if(isDefaultPhysical && titleLines.length===2){
     const gapBelow1Line = logoY - (blockTop+bkH-bookArtPad+TITLE_GAP+landscapeTtlFs);
     const newTitleTop = logoY - gapBelow1Line - landscapeTtlFs - TTL_LINE_H;
     const newBookBottom = newTitleTop - TITLE_GAP + bookArtPad;
@@ -1819,7 +1809,25 @@ function drawCardLandscape(canvas,forExport){
       const scale = shrunkH / bkH;
       bkH = Math.round(shrunkH);
       bkW = Math.round(bkW * scale);
-      if(isDefaultPhysical) bookArtPad = Math.round(bkH*0.06);
+      bookArtPad = Math.round(bkH*0.06);
+    }
+  }
+  // Ebook, any title: the ebook graphic has no baked-in padding to lean on
+  // (unlike distImg), so 1-line titles alone can already crowd the logo.
+  // Guarantee comfortable clearance below the LAST title line, shrinking the
+  // book if needed. Extra buffer beyond TIGHT_LOGO_GAP because that constant
+  // was tuned for icon-to-logo spacing, not text-to-logo (text reads as
+  // "closer" than an icon at the same pixel distance).
+  if(isEbook && titleLines.length>=1){
+    const titleTextH = landscapeTtlFs + (titleLines.length-1)*TTL_LINE_H;
+    const newTitleBottom = logoY - TIGHT_LOGO_GAP - 20;
+    const newTitleTop = newTitleBottom - titleTextH;
+    const newBookBottom = newTitleTop - TITLE_GAP;
+    const shrunkH = newBookBottom - blockTop;
+    if(shrunkH > 0 && shrunkH < bkH){
+      const scale = shrunkH / bkH;
+      bkH = Math.round(shrunkH);
+      bkW = Math.round(bkW * scale);
     }
   }
   const bkX=Math.round(LCX-bkW/2);
@@ -1829,11 +1837,12 @@ function drawCardLandscape(canvas,forExport){
     if(isDefault){
       const defaultSrc=isAudiobook?headphonesImg:isEbook?ebookImg:distImg;
       if(defaultSrc&&defaultSrc.complete&&defaultSrc.naturalWidth>0&&isEbook){
-        // Contain-fit within the physical-sized box rather than stretching
-        // to distImg's aspect ratio (see vertical draw fn for the same logic).
-        const fit=Math.min(bkW/defaultSrc.naturalWidth, bkH/defaultSrc.naturalHeight);
+        // Shrink and top-anchor within the box (see vertical draw fn for why:
+        // distImg has baked-in top/bottom padding the ebook graphic lacks).
+        const EB_SHRINK=0.72;
+        const fit=Math.min((bkW*EB_SHRINK)/defaultSrc.naturalWidth, (bkH*EB_SHRINK)/defaultSrc.naturalHeight);
         const fw=Math.round(defaultSrc.naturalWidth*fit), fh=Math.round(defaultSrc.naturalHeight*fit);
-        ctx.drawImage(defaultSrc, bkX+(bkW-fw)/2, blockTop+(bkH-fh)/2, fw, fh);
+        ctx.drawImage(defaultSrc, bkX+(bkW-fw)/2, blockTop, fw, fh);
       } else if(defaultSrc&&defaultSrc.complete&&defaultSrc.naturalWidth>0){
         ctx.drawImage(defaultSrc,bkX,blockTop,bkW,bkH);
       }
@@ -2315,7 +2324,6 @@ window.addEventListener('resize', () => {
   const PRESETS_PHYSICAL = [
     {id:'preset-tea',   label:'Cups of Tea',        emoji:'\uD83C\uDF75'},
     {id:'preset-tears', label:'Tears Cried',         emoji:'\uD83D\uDE2D'},
-    {id:'preset-plot',  label:'Plot Twists',         emoji:'\uD83D\uDE31'},
     {id:'preset-days',  label:'Days Read in a Row',  emoji:'\uD83D\uDCD5'},
   ];
   const PRESETS_AUDIO = [
@@ -2448,7 +2456,6 @@ window.addEventListener('resize', () => {
   const EBOOK_PRESETS = [
     {id:'preset-eb-tea',   label:'Cups of Tea',        emoji:'🍵'},
     {id:'preset-eb-tears', label:'Tears Cried',        emoji:'😭'},
-    {id:'preset-eb-plot',  label:'Plot Twists',        emoji:'😱'},
     {id:'preset-eb-days',  label:'Days Read in a Row', emoji:'📕'},
   ];
 
