@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v6.28 -->
+<!-- StoryStats v6.29 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
-<meta property="og:title" content="StoryStats — Share Your Reading Session">
+<meta property="og:title" content="StoryStats: Share Your Reading Session">
 <meta property="og:description" content="Log your reading session and download a personalised stats card to share on Instagram. Perfect for Silent Book Club sessions.">
 <meta property="og:image" content="https://cdn.shopify.com/s/files/1/1194/9120/files/Preview_Image.jpg?v=1777367692">
 <meta property="og:image:width" content="1200">
@@ -16,7 +16,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/1194/9120/files/Preview_Image.jpg?v=1777367692">
-<meta name="twitter:title" content="StoryStats — Share Your Reading Session">
+<meta name="twitter:title" content="StoryStats: Share Your Reading Session">
 <meta name="twitter:description" content="Log your reading session and download a personalised stats card to share on Instagram. Perfect for Silent Book Club sessions.">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -542,7 +542,7 @@ html,body{max-width:100%;overflow-x:hidden}
             <li>Tap <strong>Overlay</strong> at the bottom, then <strong>Add Overlay</strong>.</li>
             <li><strong>Select your stats card</strong> from your camera roll.</li>
             <li><strong>Resize, reposition and set the duration</strong> to match your clip. You can also adjust opacity for a subtle look.</li>
-            <li><strong>Tip:</strong> Use CapCut's <strong>Freeze Frame</strong> feature to hold a still moment — great for letting your stats linger on screen.</li>
+            <li><strong>Tip:</strong> Use CapCut's <strong>Freeze Frame</strong> feature to hold a still moment, great for letting your stats linger on screen.</li>
             <li><strong>Export</strong> your video and share it, tagging <strong>@silentbookclub</strong>!</li>
           </ol>
           <div class="inspo-column"><video class="inspo-video" autoplay muted loop playsinline preload="metadata" src="https://cdn.shopify.com/videos/c/o/v/39d31a7faed246b989ea1d2fe3ea89cf.mp4"></video></div>
@@ -2142,7 +2142,7 @@ function startHailMaryThumbs(){
   const count=40;
   for(let i=0;i<count;i++){
     const el=document.createElement('span');
-    el.textContent='👎';
+    el.textContent='\uD83D\uDC4E';
     layer.appendChild(el);
     _hailMaryThumbs.push({
       el,
@@ -2459,9 +2459,9 @@ window.addEventListener('resize', () => {
   const presets  = document.querySelectorAll('#ebook-presets .preset-btn');
 
   const EBOOK_PRESETS = [
-    {id:'preset-eb-tea',   label:'Cups of Tea',        emoji:'🍵'},
-    {id:'preset-eb-tears', label:'Tears Cried',        emoji:'😭'},
-    {id:'preset-eb-days',  label:'Days Read in a Row', emoji:'📕'},
+    {id:'preset-eb-tea',   label:'Cups of Tea',        emoji:'\uD83C\uDF75'},
+    {id:'preset-eb-tears', label:'Tears Cried',        emoji:'\uD83D\uDE2D'},
+    {id:'preset-eb-days',  label:'Days Read in a Row', emoji:'\uD83D\uDCD5'},
   ];
 
   function setLabelPlaceholder(){
@@ -2522,7 +2522,7 @@ window.addEventListener('resize', () => {
     if(!labelInp.value.trim()){
       _ebPresetExplicitlyClicked = false;
       S.ebCustomLabel = 'Cups of Tea';
-      S.ebCustomEmoji = '🍵';
+      S.ebCustomEmoji = '\uD83C\uDF75';
       presets.forEach(b=>b.classList.toggle('active', b.id==='preset-eb-tea'));
       setLabelPlaceholder();
       renderDebounced();
