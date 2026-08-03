@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v6.32 -->
+<!-- StoryStats v6.33 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -789,6 +789,7 @@ const BG_OPTIONS = [
   {type:'image', src:'https://cdn.shopify.com/s/files/1/1194/9120/files/10_76f066e6-597e-4b20-bb70-5e78624d9b5b.jpg?v=1777129922', label:'Sunset',  thumb:'#8fa8c8'},
   {type:'image', src:'https://cdn.shopify.com/s/files/1/1194/9120/files/9_e5b7660d-dbdf-476c-a2a4-b45597b51b67.jpg?v=1777129923',  label:'Tree',  thumb:'#a8c8a0'},
   {type:'image', src:'https://cdn.shopify.com/s/files/1/1194/9120/files/11_689d94a3-b854-40bb-b163-f320b321fc56.jpg?v=1777129923', label:'Forest',  thumb:'#c8b8a0'},
+  {type:'image', src:'https://cdn.shopify.com/s/files/1/1194/9120/files/9242F955-1EFE-4A11-A16A-6B5224DD0A59.jpg?v=1785783262',   label:'Beach',   thumb:'#e4b79e', swatchPos:'center 58%'},
   {type:'color', src:'#000000',       label:'Black',   thumb:'#000000'},
   {type:'color', src:'#ffffff',       label:'White',   thumb:'#ffffff'},
 ];
@@ -829,7 +830,12 @@ BG_OPTIONS.forEach((opt)=>{
   el.className='swatch';
   el.style.background=opt.thumb;
   el.style.backgroundSize='cover';
-  el.style.backgroundPosition='center';
+  // A centered crop lands on featureless sky for the Beach photo (it's a
+  // tall shot with a smooth gradient sky in the middle) -- swatchPos lets a
+  // photo opt into a different focal point so the tiny circle still reads
+  // as a photo instead of a flat blob. Defaults to center for every other
+  // background, which all read fine centered.
+  el.style.backgroundPosition=opt.swatchPos||'center';
   if(opt.type==='image') el.style.backgroundImage=`url(${opt.src})`;
   el.title=opt.label;
   el.addEventListener('click',()=>{
