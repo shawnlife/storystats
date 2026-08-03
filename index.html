@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v6.31 -->
+<!-- StoryStats v6.32 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -861,16 +861,6 @@ document.querySelectorAll('.tog').forEach(t=>{
 });
 
 // ── MODE SWITCHER ─────────────────────────────────────────────────────────────
-const AB_DEFAULTS = {abHours:'0', abMins:'00', pct:'25'};
-const PHYSICAL_DEFAULTS = {hours:'0', mins:'55', pages:'50', pct:'25'};
-
-function updateDistanceLabels(){
-  const walked = document.getElementById('preset-walked');
-  const driven = document.getElementById('preset-driven');
-  if(walked) walked.innerHTML = '<svg class="icon-inline" viewBox="0 0 48 48" fill="currentColor"><path d="M31.25 8a4 4 0 1 1-8 0a4 4 0 0 1 8 0m-5.557 20.397l5.193 5.124a2 2 0 0 1 .457.693l2.769 7.055a2 2 0 0 1-3.724 1.462l-2.614-6.661l-8.928-8.81a2 2 0 0 1-.583-1.649l.715-6.32c-1.724 1.714-3.054 4.123-4.073 7.316a2 2 0 1 1-3.81-1.216c1.87-5.86 4.975-10.246 10.185-12.257l.023-.009c1.327-.493 2.707-.453 3.937.182c1.181.611 2.022 1.666 2.573 2.848c.232.498.446.963.648 1.4c.488 1.058.898 1.95 1.293 2.732c.553 1.1.998 1.83 1.438 2.342c.408.474.813.766 1.33.968c.556.217 1.335.367 2.538.403a2 2 0 1 1-.12 3.998c-1.445-.043-2.728-.228-3.873-.675c-1.183-.462-2.116-1.165-2.91-2.09c-.5-.582-.94-1.247-1.35-1.97z"/><path d="m18.263 30.22l3.315 3.18l-1.526 5.147a2 2 0 0 1-.684 1.006l-5.134 4.023a2 2 0 0 1-2.467-3.15l4.632-3.628l1.395-4.71z"/></svg> Distance Walked';
-  if(driven) driven.innerHTML = '<svg class="icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0m10 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M5 17H3v-6l2-5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0H9m-6-6h15m-6 0V6"/></svg> Distance Driven';
-}
-
 // Carry time + percent between mode field sets. A field that the user never
 // touched (still is-default) keeps the destination mode's own default; an
 // edited field copies across so the value isn't lost on switch. Works between
@@ -1178,8 +1168,6 @@ initAbTimeField('inp-eb-mins','ebMins',59,'55');
   ebPctEl.addEventListener('input',()=>{ ebPctEl.classList.remove('is-default'); S.pct=ebPctEl.value; renderDebounced(); });
   ebPctEl.addEventListener('change',()=>{ ebPctEl.classList.remove('is-default'); S.pct=ebPctEl.value; renderDebounced(); });
 })();
-
-function wire(id,key){document.getElementById(id).addEventListener('input',e=>{S[key]=e.target.value;renderDebounced();});}
 
 // Reject a keystroke that would make the title overflow past 2 lines on the
 // card, instead of silently dropping text at render time. Uses whichever
@@ -1889,9 +1877,9 @@ function drawCardLandscape(canvas,forExport){
   }
 }
 
-// Debounced render for mobile — prevents Android keyboard dismissal on rapid redraws
-let _renderTimer = null;
-
+// Not actually debounced (renders directly) -- kept as its own named function
+// since call sites read as intent ("this can redraw on every keystroke") even
+// though there's currently no debounce logic behind it.
 function renderDebounced(){
   render();
 }
