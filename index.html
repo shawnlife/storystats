@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v6.33 -->
+<!-- StoryStats v6.34 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -283,7 +283,7 @@ html,body{max-width:100%;overflow-x:hidden}
           <div class="lbl">Time spent reading</div>
         </div>
         <div class="three-col">
-          <div><input type="number" id="inp-pages" placeholder="Pages" min="1" class="is-default"></div>
+          <div><input type="number" id="inp-pages" placeholder="Pages" min="0" class="is-default"></div>
           <div><input type="number" id="inp-hours" placeholder="Hours" min="0" max="99" class="is-default"></div>
           <div><input type="number" id="inp-mins" placeholder="Minutes" min="0" max="59" class="is-default"></div>
         </div>
@@ -407,9 +407,9 @@ html,body{max-width:100%;overflow-x:hidden}
       <!-- Standard pct fields — physical -->
       <div id="pct-fields">
         <div class="pct-wrap">
-          <div><div class="mini">Enter %</div><input type="number" id="inp-pct" placeholder="25" min="1" max="100"></div>
+          <div><div class="mini">Enter %</div><input type="number" id="inp-pct" placeholder="25" min="0" max="100"></div>
           <div class="or-div">or</div>
-          <div><div class="mini" id="curpage-lbl">Page I'm on</div><input type="number" id="inp-curpage" placeholder="25" min="1"></div>
+          <div><div class="mini" id="curpage-lbl">Page I'm on</div><input type="number" id="inp-curpage" placeholder="25" min="0"></div>
           <div><div class="mini" id="total-lbl">Total pages</div><input type="number" id="inp-total" placeholder="100" min="1"></div>
         </div>
       </div>
@@ -1210,10 +1210,11 @@ document.getElementById('inp-mins').addEventListener('blur',e=>{
 });
 document.getElementById('inp-pages').addEventListener('blur',e=>{
   if(e.target.value) trackEvent('ss_field_pages_read',{value:parseInt(e.target.value)||0});
-  if(e.target.value===''||parseInt(e.target.value)<1){
+  if(e.target.value===''){
     e.target.value='';e.target.classList.add('is-default');S.pages='50';
   } else {
-    const v=Math.max(1,Math.min(99999,parseInt(e.target.value)||1));
+    const parsed=parseInt(e.target.value);
+    const v=Math.max(0,Math.min(99999,isNaN(parsed)?0:parsed));
     e.target.value=v;S.pages=String(v);
   }
   renderDebounced();
@@ -1250,7 +1251,7 @@ document.getElementById('inp-pages').addEventListener('blur',e=>{
   // Edit %: update page I'm on = round(pct/100 * total)
   const onPctChange = () => {
     pctEl.classList.remove('is-default');
-    const pct   = getVal(pctEl, 1, 100, 25);
+    const pct   = getVal(pctEl, 0, 100, 25);
     const total = getVal(totalEl, 1, 99999, 100);
     const page  = Math.round(pct / 100 * total);
     pageEl.value = page; pageEl.classList.remove('is-default');
@@ -1264,18 +1265,22 @@ document.getElementById('inp-pages').addEventListener('blur',e=>{
     if(pctEl.value) trackEvent('ss_field_pct',{value:parseInt(pctEl.value)||0});
     if(pctEl.value === ''){ pctEl.value='25'; pctEl.classList.add('is-default'); S.pct='25'; renderDebounced(); }
     else {
-      const v = clamp(parseInt(pctEl.value)||1, 1, 100);
+      // parseInt(...)||1 used to silently turn a typed "0" into 1 -- "0" is
+      // falsy in JS, so || treated it the same as NaN/empty. Parse first,
+      // then only fall back to 0 (not 1) when it's genuinely not a number.
+      const parsed = parseInt(pctEl.value);
+      const v = clamp(isNaN(parsed)?0:parsed, 0, 100);
       pctEl.value = v; S.pct = String(v); renderDebounced();
     }
   });
 
   const onPageChange = () => {
     pageEl.classList.remove('is-default');
-    let page  = getVal(pageEl, 1, 99999, 25);
+    let page  = getVal(pageEl, 0, 99999, 25);
     let total = getVal(totalEl, 1, 99999, 100);
     if(page > total){ total = page; totalEl.value = total; totalEl.classList.remove('is-default'); }
     const pct = Math.round(page / total * 100);
-    const pctClamped = clamp(pct, 1, 100);
+    const pctClamped = clamp(pct, 0, 100);
     pctEl.value = pctClamped; pctEl.classList.remove('is-default');
     S.pct = String(pctClamped);
     renderDebounced();
@@ -1290,10 +1295,10 @@ document.getElementById('inp-pages').addEventListener('blur',e=>{
 
   const onTotalChange = () => {
     totalEl.classList.remove('is-default');
-    const page  = getVal(pageEl, 1, 99999, 25);
+    const page  = getVal(pageEl, 0, 99999, 25);
     const total = getVal(totalEl, 1, 99999, 100);
     const pct   = Math.round(page / total * 100);
-    const pctClamped = clamp(pct, 1, 100);
+    const pctClamped = clamp(pct, 0, 100);
     pctEl.value = pctClamped; pctEl.classList.remove('is-default');
     S.pct = String(pctClamped);
     renderDebounced();
