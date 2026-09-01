@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v6.34 -->
+<!-- StoryStats v6.35 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -1918,18 +1918,38 @@ function render(){
   drawCard(document.getElementById('c'),false);
 }
 
+// Reported bug: on iOS Safari, the download silently does nothing at 100%
+// complete but works fine at 99% and below -- the only difference between
+// those two paths is that 100% fires confetti first. The confetti loop below
+// used to run uninterrupted for a full 3 seconds with no way to cancel it; if
+// the user taps through the congrats modal quickly (very plausible -- it's
+// one or two taps), doSave()'s heavy synchronous canvas export runs WHILE
+// confetti is still actively animating, competing for the same main thread.
+// That kind of concurrent load is a known source of silent (no catchable
+// error) failures on resource-constrained mobile Safari. Making the loop
+// cancellable and stopping it right as the real save work begins (see
+// doSave()) costs nothing -- the celebratory effect already played out
+// visually by the time the user reaches that button -- and removes the
+// contention regardless of whether this turns out to be the exact mechanism.
+let _confettiRafId=null;
 function fireConfetti(){
   const duration=3000;
   const end=Date.now()+duration;
+  if(_confettiRafId) cancelAnimationFrame(_confettiRafId);
   (function frame(){
     confetti({particleCount:6,angle:60,spread:55,origin:{x:0},colors:['#c24e42','#ffffff','#1a1a1a']});
     confetti({particleCount:6,angle:120,spread:55,origin:{x:1},colors:['#c24e42','#ffffff','#1a1a1a']});
-    if(Date.now()<end)requestAnimationFrame(frame);
+    if(Date.now()<end) _confettiRafId=requestAnimationFrame(frame);
+    else _confettiRafId=null;
   })();
+}
+function stopConfetti(){
+  if(_confettiRafId){ cancelAnimationFrame(_confettiRafId); _confettiRafId=null; }
 }
 
 // Core save function — called from main button (sub-100%) and congrats modal (100%)
 function doSave(){
+  stopConfetti(); // free up the main thread before the heavy canvas export below
   const exp=document.createElement('canvas');
   const isLandscape=S.orientation==='horizontal';
   exp.width=isLandscape?LS.W:W;exp.height=isLandscape?LS.H:H;
