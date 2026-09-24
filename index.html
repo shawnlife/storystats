@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v6.35 -->
+<!-- StoryStats v6.36 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -726,14 +726,22 @@ const LOGO_W='https://cdn.shopify.com/s/files/1/1194/9120/files/SBC_Logo_white.p
 const LOGO_B='https://cdn.shopify.com/s/files/1/1194/9120/files/SBC_Logo_black.png?v=1777098968';
 const DIST  ='https://cdn.shopify.com/s/files/1/1194/9120/files/Reading_Stats_Graphic.png?v=1777136248';
 
-function loadImage(img, src) {
+// Loads a CDN image so it can be drawn onto the EXPORT canvas. Always uses
+// CORS (crossOrigin=anonymous). The old fallback retried with crossOrigin
+// removed after a single failed request; that "worked" visually but tainted the
+// canvas, so on a flaky phone connection toDataURL() then threw a
+// SecurityError and the Download button silently did nothing. Retries now keep
+// CORS on and just add a cache-buster (which is what really fixes the
+// browser-cached-a-non-CORS-copy case the old retry was meant for). If every
+// attempt fails the image stays unloaded and doSave() says so, instead of
+// exporting a broken card or failing silently.
+function loadImage(img, src, attempt) {
+  attempt = attempt || 0;
   img.crossOrigin = 'anonymous';
   img.onload = () => render();
   img.onerror = () => {
-    img.crossOrigin = null;
-    img.onload = () => render();
-    img.onerror = null;
-    img.src = src + (src.includes('?') ? '&' : '?') + 'retry=1';
+    if (attempt >= 3) return;
+    setTimeout(() => loadImage(img, src.split('&retry=')[0].split('?retry=')[0] + (src.includes('?') ? '&' : '?') + 'retry=' + (attempt + 1), attempt + 1), 400 * (attempt + 1));
   };
   img.src = src;
 }
@@ -746,12 +754,10 @@ loadImage(distImg, DIST);
 
 const HEADPHONES_IMG = 'https://cdn.shopify.com/s/files/1/1194/9120/files/Reading_Stats_Graphic_3a514f4f-e8ea-4abd-a6a0-f309efcf5c71.png?v=1780954048';
 const headphonesImg = new Image();
-headphonesImg.crossOrigin = 'anonymous';
-headphonesImg.src = HEADPHONES_IMG;
+loadImage(headphonesImg, HEADPHONES_IMG);
 
 const ebookImg = new Image();
-ebookImg.crossOrigin = 'anonymous';
-ebookImg.src = 'https://cdn.shopify.com/s/files/1/1194/9120/files/ebook-default-cover.png?v=1785164888';
+loadImage(ebookImg, 'https://cdn.shopify.com/s/files/1/1194/9120/files/ebook-default-cover.png?v=1785164888');
 
 // Detect unit from locale/timezone
 function detectUnit(){
@@ -1241,6 +1247,11 @@ document.getElementById('inp-pages').addEventListener('blur',e=>{
     });
   });
 
+  // Which of Enter % / Page I'm on the reader typed last. Total pages then
+  // adjusts the OTHER one, so a percent (or page) they entered is never
+  // silently overwritten by a value the tool derived from a faded default.
+  let driver = 'pct';
+
   function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
 
   function getVal(el, min, max, def){
@@ -1251,6 +1262,7 @@ document.getElementById('inp-pages').addEventListener('blur',e=>{
   // Edit %: update page I'm on = round(pct/100 * total)
   const onPctChange = () => {
     pctEl.classList.remove('is-default');
+    driver = 'pct';
     const pct   = getVal(pctEl, 0, 100, 25);
     const total = getVal(totalEl, 1, 99999, 100);
     const page  = Math.round(pct / 100 * total);
@@ -1276,9 +1288,15 @@ document.getElementById('inp-pages').addEventListener('blur',e=>{
 
   const onPageChange = () => {
     pageEl.classList.remove('is-default');
+    driver = 'page';
     let page  = getVal(pageEl, 0, 99999, 25);
     let total = getVal(totalEl, 1, 99999, 100);
-    if(page > total){ total = page; totalEl.value = total; totalEl.classList.remove('is-default'); }
+    // Total pages still shows its faded default (100): the reader never entered
+    // it, so a page number can't tell us a percent. Deriving one anyway gave
+    // wrong cards (page 18 -> 18%, page 187 -> Total silently rewritten and a
+    // forced 100% "finished!" card). Leave percent alone until Total is filled.
+    if(totalEl.classList.contains('is-default')){ renderDebounced(); return; }
+    if(page > total){ total = page; totalEl.value = total; }
     const pct = Math.round(page / total * 100);
     const pctClamped = clamp(pct, 0, 100);
     pctEl.value = pctClamped; pctEl.classList.remove('is-default');
@@ -1295,8 +1313,16 @@ document.getElementById('inp-pages').addEventListener('blur',e=>{
 
   const onTotalChange = () => {
     totalEl.classList.remove('is-default');
-    const page  = getVal(pageEl, 0, 99999, 25);
     const total = getVal(totalEl, 1, 99999, 100);
+    if(driver === 'pct'){
+      // Reader typed a percent: keep it, fit Page I'm on to the new total.
+      if(pctEl.classList.contains('is-default')){ renderDebounced(); return; } // nothing entered yet
+      const pct = getVal(pctEl, 0, 100, 25);
+      pageEl.value = Math.round(pct / 100 * total); pageEl.classList.remove('is-default');
+      renderDebounced();
+      return;
+    }
+    const page  = getVal(pageEl, 0, 99999, 25);
     const pct   = Math.round(page / total * 100);
     const pctClamped = clamp(pct, 0, 100);
     pctEl.value = pctClamped; pctEl.classList.remove('is-default');
@@ -1948,8 +1974,32 @@ function stopConfetti(){
 }
 
 // Core save function — called from main button (sub-100%) and congrats modal (100%)
+// True only if every CDN image the export will draw has actually loaded.
+// Drawing an unloaded image is silently skipped, which would export a card
+// with the logo or cover graphic missing.
+function exportAssetsReady(){
+  const ok=im=>im&&im.complete&&im.naturalWidth>0;
+  if(!ok(S.ink==='white'?logoWhite:logoBlack)) return false;
+  if(!S.hideBook&&(S.useDefault||!S.bookImg)){
+    const g=S.mode==='audiobook'?headphonesImg:S.mode==='ebook'?ebookImg:distImg;
+    if(!ok(g)) return false;
+  }
+  return true;
+}
+function saveFailed(msg){
+  alert(msg);
+  return false;
+}
+
+// Returns true if the card was produced, false if not (callers only log the
+// download to the sheet / analytics when this is true).
 function doSave(){
   stopConfetti(); // free up the main thread before the heavy canvas export below
+  if(!exportAssetsReady()){
+    // kick the loaders again in case they gave up, then tell the user
+    loadImage(logoWhite, LOGO_W); loadImage(logoBlack, LOGO_B); loadImage(distImg, DIST);
+    return saveFailed("Your card's images are still loading, likely a slow connection. Give it a few seconds and tap the button again.");
+  }
   const exp=document.createElement('canvas');
   const isLandscape=S.orientation==='horizontal';
   exp.width=isLandscape?LS.W:W;exp.height=isLandscape?LS.H:H;
@@ -1960,7 +2010,9 @@ function doSave(){
   const yyyy=now.getFullYear();
   const fname='StoryStat_'+(isLandscape?'Landscape_':'')+mm+dd+yyyy+'.png';
   if(isMobile){
-    const dataUrl=exp.toDataURL('image/png');
+    let dataUrl;
+    try { dataUrl=exp.toDataURL('image/png'); }
+    catch(e){ return saveFailed("Couldn't create your card (" + e.message + "). Please reload the page and try again."); }
     const overlay=document.getElementById('modal-mobile-save');
     const img=document.getElementById('mobile-save-img');
     img.src=dataUrl;
@@ -1974,6 +2026,7 @@ function doSave(){
       ? 'Come back after every session without searching. Tap the <strong style="color:#ddd">three-dot menu</strong> then <strong style="color:#ddd">Add to Home Screen</strong>.'
       : 'Come back after every session without searching. Tap the <strong style="color:#ddd">share icon</strong> then <strong style="color:#ddd">Add to Home Screen</strong>.';
     prompt.style.display = 'block';
+    return true;
   } else {
     try {
       exp.toBlob(function(blob){
@@ -2000,8 +2053,9 @@ function doSave(){
         }
       },'image/png');
     } catch(e) {
-      alert('Download blocked: ' + e.message);
+      return saveFailed('Download blocked: ' + e.message);
     }
+    return true;
   }
 }
 
@@ -2252,7 +2306,7 @@ document.getElementById('email-input').addEventListener('keydown', function(e){
 document.getElementById('congrats-dl-btn').addEventListener('click',()=>{
   document.getElementById('modal-congrats').classList.remove('open');
   checkHailMary(()=>{
-    doSave();
+    if(doSave()===false) return;
     logStatsToSheet();
     trackEvent('ss_download',{ink:S.ink,bg_on:S.bgOn,bg_color:S.bgOn?S.bgColor:'none',cover:S.hideBook?'hidden':S.useDefault?'default':'uploaded',has_title:!!(S.title&&S.title.trim()),hours:parseInt(S.hours)||0,mins:parseInt(S.mins)||0,pages:parseInt(S.pages)||0,pct:parseInt(S.pct)||0,total_pages:parseInt(document.getElementById('inp-total').value)||0,orientation:S.orientation});
   });
@@ -2268,7 +2322,7 @@ document.getElementById('dl-btn').addEventListener('click',()=>{
     triggerSaveWithEmailCheck(()=>document.getElementById('modal-congrats').classList.add('open'));
   } else {
     checkHailMary(()=>{
-      triggerSaveWithEmailCheck(()=>{ doSave(); logStatsToSheet(); trackEvent('ss_download',{mode:S.mode,orientation:S.orientation}); });
+      triggerSaveWithEmailCheck(()=>{ if(doSave()===false) return; logStatsToSheet(); trackEvent('ss_download',{mode:S.mode,orientation:S.orientation}); });
     });
   }
 });
