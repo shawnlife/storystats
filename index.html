@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats</title>
-<!-- StoryStats v6.38 -->
+<!-- StoryStats v6.39 -->
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <meta name="apple-mobile-web-app-title" content="StoryStats">
@@ -35,12 +35,12 @@ body{font-family:'Mulish',-apple-system,sans-serif;background:var(--white);color
 .page-header p strong{color:var(--text)}
 .brand{font-style:normal;font-weight:900;letter-spacing:-.03em}
 
-.inapp-banner{display:none;max-width:560px;margin:0 auto 14px;padding:12px 40px 12px 14px;position:relative;background:#fff4f2;border:1px solid var(--brand);border-radius:12px;font-size:14px;line-height:1.5;color:var(--text);text-align:left;}
-.inapp-banner strong{display:block;margin-bottom:2px;}
-.inapp-banner .inapp-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
-.inapp-banner .inapp-btn{border:1px solid var(--brand);background:var(--brand);color:#fff;border-radius:8px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
-.inapp-banner .inapp-btn.alt{background:#fff;color:var(--brand);}
-.inapp-banner .inapp-x{position:absolute;top:6px;right:8px;border:0;background:none;font-size:22px;line-height:1;color:var(--text-muted);cursor:pointer;padding:4px 6px;}
+.inapp-modal{text-align:center;max-width:380px}
+.inapp-modal h2{font-size:18px;margin-bottom:10px}
+.inapp-modal .inapp-btns{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.inapp-modal .inapp-btn{border:1.5px solid var(--brand);background:var(--brand);color:#fff;border-radius:10px;padding:11px 14px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.inapp-modal .inapp-btn.alt{background:#fff;color:var(--brand)}
+.inapp-modal .inapp-skip{background:none;border:0;color:var(--text-muted);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;padding:6px}
 .page-intro{max-width:1100px;margin:0 auto 16px;padding:0 16px;font-size:16px;line-height:1.7;color:var(--text-body);text-align:center;}
 
 /* ── APP LAYOUT ────────────────────────────────────────────────────── */
@@ -266,13 +266,16 @@ html,body{max-width:100%;overflow-x:hidden}
 </script>
 </head>
 <body>
-<div class="inapp-banner" id="inapp-banner" role="note">
-  <button class="inapp-x" id="inapp-x" type="button" aria-label="Dismiss">&times;</button>
-  <strong>Open this in your regular browser</strong>
-  <span id="inapp-text">This app's built-in browser can stop your card from downloading. For best results, tap the menu (the three dots or the share icon) and choose "Open in browser", Safari or Chrome.</span>
-  <div class="inapp-btns">
-    <button class="inapp-btn" id="inapp-open" type="button" style="display:none">Open in Chrome</button>
-    <button class="inapp-btn alt" id="inapp-copy" type="button">Copy link</button>
+<div class="modal-overlay" id="inapp-banner" style="z-index:1000001">
+  <div class="modal inapp-modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="inapp-x" type="button" aria-label="Close">&times;</button>
+    <h2>Open this in your regular browser</h2>
+    <p>This app's built-in browser can stop your stats card from downloading. For best results, tap the menu (the three dots or the share icon) and choose "Open in browser", Safari or Chrome.</p>
+    <div class="inapp-btns">
+      <button class="inapp-btn" id="inapp-open" type="button" style="display:none">Open in Chrome</button>
+      <button class="inapp-btn alt" id="inapp-copy" type="button">Copy link</button>
+      <button class="inapp-skip" id="inapp-skip" type="button">Continue anyway</button>
+    </div>
   </div>
 </div>
 <!-- ── MAIN APP ── -->
@@ -724,9 +727,9 @@ const _source='shopify';
   if(!m&&!forced) return;
   try{ if(sessionStorage.getItem('ss_inapp_dismissed')==='1') return; }catch(e){}
   var app=m?(/Instagram/.test(m[0])?'instagram':/FB/.test(m[0])?'facebook':/TikTok|musical_ly|Bytedance/.test(m[0])?'tiktok':m[0].toLowerCase()):'test';
-  var b=document.getElementById('inapp-banner'); b.style.display='block';
+  var b=document.getElementById('inapp-banner'); setTimeout(function(){ b.classList.add('open'); },400); try{sessionStorage.setItem('ss_inapp_dismissed','1');}catch(e){}
   trackEvent('ss_inapp_browser',{app:app});
-  document.getElementById('inapp-x').onclick=function(){ b.style.display='none'; try{sessionStorage.setItem('ss_inapp_dismissed','1');}catch(e){} };
+  document.getElementById('inapp-x').onclick=document.getElementById('inapp-skip').onclick=function(){ b.classList.remove('open'); };
   var open=document.getElementById('inapp-open');
   if(/Android/.test(_ua)){
     open.style.display='inline-block';
